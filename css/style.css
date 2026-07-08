@@ -307,3 +307,8 @@ footer {
     letter-spacing:.5px;
     box-shadow:0 8px 20px rgba(37,99,235,.4);
 }
+.stars{
+    font-size:22px;
+    color:#FFD700;
+    margin-bottom:15px;
+}
