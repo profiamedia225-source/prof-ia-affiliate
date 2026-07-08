@@ -177,3 +177,66 @@ footer {
     color:#cbd5e1;
     line-height:1.7;
 }
+/* ===========================
+   FORMATIONS
+=========================== */
+
+.formations{
+    padding:90px 8%;
+    background:#0b1120;
+}
+
+.formations h2{
+    text-align:center;
+    color:white;
+    font-size:2.2rem;
+    margin-bottom:15px;
+}
+
+.formations-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:30px;
+    margin-top:50px;
+}
+
+.formation-card{
+    background:#182235;
+    border-radius:20px;
+    padding:30px;
+    text-align:center;
+    transition:.3s;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.formation-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 20px 40px rgba(0,0,0,.35);
+}
+
+.formation-image{
+    font-size:60px;
+    margin-bottom:20px;
+}
+
+.formation-card h3{
+    color:#fff;
+    margin-bottom:15px;
+}
+
+.formation-card p{
+    color:#cbd5e1;
+    line-height:1.7;
+}
+
+.formation-price{
+    margin-top:20px;
+    color:#fff;
+    font-size:18px;
+}
+
+.commission{
+    margin-top:10px;
+    color:#3b82f6;
+    font-weight:bold;
+}
