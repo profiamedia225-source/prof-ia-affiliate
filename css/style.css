@@ -279,3 +279,31 @@ footer {
     color:#3b82f6;
     margin-top:20px;
 }
+/* ==========================
+   FORMATION VEDETTE
+========================== */
+
+.featured{
+    position:relative;
+    border:2px solid #2563eb;
+    box-shadow:0 0 35px rgba(37,99,235,.35);
+}
+
+.featured:hover{
+    transform:translateY(-10px) scale(1.02);
+}
+
+.featured-badge{
+    position:absolute;
+    top:-15px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#2563eb;
+    color:#fff;
+    padding:8px 18px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:bold;
+    letter-spacing:.5px;
+    box-shadow:0 8px 20px rgba(37,99,235,.4);
+}
