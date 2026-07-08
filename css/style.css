@@ -353,3 +353,33 @@ footer {
     padding:0 20px 20px;
     color:#d1d5db;
 }
+/* FAQ interactive */
+
+.faq-answer{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .35s ease;
+    padding:0 20px;
+}
+
+.faq-item.active .faq-answer{
+    max-height:250px;
+    padding:0 20px 20px;
+}
+
+.faq-question{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.faq-question::after{
+    content:"+";
+    font-size:24px;
+    color:#3b82f6;
+    transition:.3s;
+}
+
+.faq-item.active .faq-question::after{
+    content:"−";
+}
