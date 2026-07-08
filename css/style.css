@@ -1,88 +1,444 @@
+/* ==========================
+   PROF IA MEDIA
+   STYLE.CSS
+========================== */
+
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
 
-background:#0b1020;
+    font-family:Arial, Helvetica, sans-serif;
 
-color:white;
+    background:#060b17;
+
+    color:white;
+
+    line-height:1.6;
 
 }
+
+
+/* ==========================
+        HEADER
+========================== */
 
 header{
 
-display:flex;
+    position:fixed;
 
-justify-content:space-between;
+    top:0;
 
-align-items:center;
+    left:0;
 
-padding:20px 8%;
+    width:100%;
 
-background:#111827;
+    background:rgba(8,13,25,.92);
 
-position:sticky;
+    backdrop-filter:blur(12px);
 
-top:0;
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    z-index:1000;
 
 }
 
-.logo img{
+.navbar{
 
-height:60px;
+    max-width:1250px;
+
+    margin:auto;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 30px;
+
+}
+
+.logo{
+
+    height:55px;
 
 }
 
 nav{
 
-display:flex;
+    display:flex;
 
-gap:35px;
+    gap:35px;
 
 }
 
 nav a{
 
-text-decoration:none;
+    color:white;
 
-color:white;
+    text-decoration:none;
 
-font-weight:600;
+    font-weight:600;
 
-transition:.3s;
+    transition:.3s;
 
 }
 
 nav a:hover{
 
-color:#4da3ff;
+    color:#3b82f6;
 
 }
 
 .buy-btn{
 
-background:#0d6efd;
+    background:#2563eb;
 
-padding:14px 28px;
+    color:white;
 
-border-radius:10px;
+    padding:14px 28px;
 
-text-decoration:none;
+    border-radius:12px;
 
-color:white;
+    text-decoration:none;
 
-font-weight:bold;
+    font-weight:bold;
 
-transition:.3s;
+    transition:.3s;
 
 }
 
 .buy-btn:hover{
 
-background:#0057d8;
+    background:#1d4ed8;
+
+}
+
+
+/* ==========================
+          HERO
+========================== */
+
+.hero{
+
+    max-width:1250px;
+
+    margin:auto;
+
+    min-height:100vh;
+
+    display:grid;
+
+    grid-template-columns:1fr 420px;
+
+    align-items:center;
+
+    gap:70px;
+
+    padding:140px 30px 80px;
+
+}
+
+.badge{
+
+    display:inline-block;
+
+    padding:10px 18px;
+
+    border-radius:50px;
+
+    background:#10213d;
+
+    color:#67b3ff;
+
+    margin-bottom:25px;
+
+    font-size:14px;
+
+}
+
+.hero h1{
+
+    font-size:58px;
+
+    line-height:1.15;
+
+    margin-bottom:25px;
+
+}
+
+.hero h1 span{
+
+    color:#3b82f6;
+
+}
+
+.hero p{
+
+    font-size:20px;
+
+    color:#b7bfd3;
+
+    max-width:650px;
+
+    margin-bottom:35px;
+
+}
+
+
+/* ==========================
+       BUTTONS
+========================== */
+
+.hero-buttons{
+
+    display:flex;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+}
+
+.btn-primary{
+
+    background:#2563eb;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:18px 35px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.btn-secondary{
+
+    border:2px solid #2563eb;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:18px 35px;
+
+    border-radius:12px;
+
+    transition:.3s;
+
+}
+
+.btn-secondary:hover{
+
+    background:#2563eb;
+
+}
+
+
+/* ==========================
+     DASHBOARD CARD
+========================== */
+
+.dashboard-card{
+
+    background:rgba(255,255,255,.06);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:24px;
+
+    padding:35px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+
+}
+
+.dashboard-card h3{
+
+    margin-bottom:30px;
+
+    font-size:24px;
+
+}
+
+.stat{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:25px;
+
+    padding-bottom:20px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+.stat:last-child{
+
+    margin-bottom:0;
+
+    border:none;
+
+}
+
+.stat span{
+
+    color:#b7bfd3;
+
+}
+
+.stat strong{
+
+    font-size:22px;
+
+}
+
+
+/* ==========================
+      BENEFITS
+========================== */
+
+.benefits{
+
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:120px 30px;
+
+}
+
+.benefits h2{
+
+    text-align:center;
+
+    font-size:42px;
+
+    margin-bottom:20px;
+
+}
+
+.section-text{
+
+    text-align:center;
+
+    color:#b7bfd3;
+
+    max-width:700px;
+
+    margin:0 auto 60px;
+
+}
+
+.benefit-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:30px;
+
+}
+
+.benefit-card{
+
+    background:#0e1629;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    transition:.35s;
+
+    border:1px solid rgba(255,255,255,.05);
+
+}
+
+.benefit-card:hover{
+
+    transform:translateY(-10px);
+
+    border-color:#2563eb;
+
+}
+
+.icon{
+
+    font-size:40px;
+
+    margin-bottom:20px;
+
+}
+
+.benefit-card h3{
+
+    margin-bottom:15px;
+
+    font-size:22px;
+
+}
+
+.benefit-card p{
+
+    color:#b7bfd3;
+
+}
+
+
+/* ==========================
+        RESPONSIVE
+========================== */
+
+@media(max-width:980px){
+
+.hero{
+
+grid-template-columns:1fr;
+
+text-align:center;
+
+}
+
+.hero p{
+
+margin:auto auto 35px;
+
+}
+
+.hero-buttons{
+
+justify-content:center;
+
+}
+
+nav{
+
+display:none;
+
+}
 
 }
