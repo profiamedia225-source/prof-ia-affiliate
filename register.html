@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inscription - PROF IA MEDIA</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<section class="register-page">
+
+    <div class="register-card">
+
+        <img src="images/logo.png"
+             class="logo"
+             alt="PROF IA MEDIA">
+
+        <h1>Créer votre compte affilié</h1>
+
+        <p>
+            Rejoignez le programme d'affiliation PROF IA MEDIA et commencez à gagner des commissions.
+        </p>
+
+        <form id="registerForm">
+
+            <input
+                type="text"
+                id="fullname"
+                name="fullname"
+                placeholder="Nom et prénom"
+                autocomplete="name"
+                required
+            >
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Adresse e-mail"
+                autocomplete="email"
+                required
+            >
+
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Téléphone WhatsApp"
+                autocomplete="tel"
+                required
+            >
+
+            <input
+                type="text"
+                id="country"
+                name="country"
+                placeholder="Pays"
+                autocomplete="country-name"
+                required
+            >
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Mot de passe"
+                autocomplete="new-password"
+                required
+            >
+
+            <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Confirmer le mot de passe"
+                autocomplete="new-password"
+                required
+            >
+
+            <label class="checkbox">
+
+                <input
+                    type="checkbox"
+                    id="terms"
+                    required
+                >
+
+                <span>
+                    J'accepte les conditions d'utilisation.
+                </span>
+
+            </label>
+
+            <button
+                type="submit"
+                class="btn-primary">
+
+                Créer mon compte
+
+            </button>
+
+        </form>
+
+        <p class="login-link">
+
+            Déjà inscrit ?
+
+            <a href="login.html">
+
+                Se connecter
+
+            </a>
+
+        </p>
+
+    </div>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/config.js"></script>
+
+<script src="js/utils.js"></script>
+
+<script src="js/auth.js"></script>
+
+</body>
+
+</html>

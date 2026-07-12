@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard - PROF IA MEDIA</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <img src="images/logo.png" alt="PROF IA MEDIA">
+
+            <h2>PROF IA MEDIA</h2>
+
+        </div>
+
+        <ul>
+
+            <li>🏠 Tableau de bord</li>
+
+            <li>👥 Mes filleuls</li>
+
+            <li>💰 Mes commissions</li>
+
+            <li>🔗 Mon lien d'affiliation</li>
+
+            <li>💳 Retraits</li>
+
+            <li>⚙️ Mon profil</li>
+
+            <li>
+
+                <a href="#" onclick="logout(); return false;">
+
+                    🚪 Déconnexion
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="content">
+
+        <h1 id="welcome">
+
+            Bienvenue...
+
+        </h1>
+
+        <div class="profile-card">
+
+            <p>
+
+                <strong>Nom :</strong>
+
+                <span id="fullname"></span>
+
+            </p>
+
+            <p>
+
+                <strong>Email :</strong>
+
+                <span id="email"></span>
+
+            </p>
+
+            <p>
+
+                <strong>Téléphone :</strong>
+
+                <span id="phone"></span>
+
+            </p>
+
+            <p>
+
+                <strong>Pays :</strong>
+
+                <span id="country"></span>
+
+            </p>
+
+            <p>
+
+                <strong>Code affilié :</strong>
+
+                <span id="affiliateCode"></span>
+
+            </p>
+
+            <p>
+
+                <strong>Lien d'affiliation</strong>
+
+            </p>
+
+            <input
+                id="affiliateLink"
+                type="text"
+                readonly
+            >
+
+            <br><br>
+
+            <button
+                class="btn-primary"
+                onclick="copyAffiliateLink()">
+
+                Copier le lien
+
+            </button>
+
+        </div>
+
+        <p>
+
+            Gérez vos commissions, vos ventes et vos retraits.
+
+        </p>
+
+        <div class="stats">
+
+            <div class="card">
+
+                <h3>Commissions</h3>
+
+                <h2 id="commissionAmount">
+
+                    0 FCFA
+
+                </h2>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Filleuls</h3>
+
+                <h2 id="referralCount">
+
+                    0
+
+                </h2>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Ventes</h3>
+
+                <h2 id="salesCount">
+
+                    0
+
+                </h2>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Retraits</h3>
+
+                <h2 id="withdrawAmount">
+
+                    0 FCFA
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/config.js"></script>
+
+<script src="js/utils.js"></script>
+
+<script src="js/auth.js"></script>
+
+<script src="js/profile.js"></script>
+
+<script src="js/dashboard.js"></script>
+
+</body>
+
+</html>
