@@ -1,44 +1,26 @@
-async function waitForSession() {
+const client = window.sb;
 
-    const status = document.getElementById("status");
+async function goToDashboard() {
 
-    for (let i = 0; i < 20; i++) {
+    const {
+        data: { session }
+    } = await client.auth.getSession();
 
-        const {
-            data: { session }
-        } = await sb.auth.getSession();
-
-        if (session) {
-
-            status.textContent =
-                "Connexion réussie. Ouverture de votre espace...";
-
-            setTimeout(() => {
-
-                window.location.replace("dashboard.html");
-
-            }, 1000);
-
-            return;
-
-        }
-
-        status.textContent =
-            "Connexion à votre espace...";
-
-        await new Promise(resolve => setTimeout(resolve, 500));
-
+    if (session) {
+        window.location.href = "dashboard.html";
+    } else {
+        alert("Votre session a expiré. Veuillez vous reconnecter.");
+        window.location.href = "login.html";
     }
-
-    status.textContent =
-        "Session introuvable. Redirection vers la connexion...";
-
-    setTimeout(() => {
-
-        window.location.replace("login.html");
-
-    }, 1500);
 
 }
 
-waitForSession();
+window.addEventListener("DOMContentLoaded", () => {
+
+    const button = document.getElementById("dashboardButton");
+
+    if (button) {
+        button.addEventListener("click", goToDashboard);
+    }
+
+});
