@@ -1,26 +1,16 @@
-const client = window.sb;
-
-async function goToDashboard() {
-
-    const {
-        data: { session }
-    } = await client.auth.getSession();
-
-    if (session) {
-        window.location.href = "dashboard.html";
-    } else {
-        alert("Votre session a expiré. Veuillez vous reconnecter.");
-        window.location.href = "login.html";
-    }
-
-}
+alert("payment-success.js chargé");
 
 window.addEventListener("DOMContentLoaded", () => {
+    alert("DOM chargé");
 
     const button = document.getElementById("dashboardButton");
 
-    if (button) {
-        button.addEventListener("click", goToDashboard);
+    if (!button) {
+        alert("Bouton introuvable");
+        return;
     }
 
+    button.addEventListener("click", () => {
+        alert("Le bouton fonctionne !");
+    });
 });
