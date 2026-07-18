@@ -146,7 +146,7 @@ async function registerUser(e) {
 
     }
 
-    window.location.href = "dashboard.html";
+   window.location.href = "payment.html";
 
 }
 
@@ -174,23 +174,42 @@ async function loginUser(e) {
     const password =
         document.getElementById("password").value;
 
-    const { error } =
-        await sb.auth.signInWithPassword({
-
-            email,
-            password
-
-        });
+    // Connexion
+    const { data, error } = await sb.auth.signInWithPassword({
+        email,
+        password
+    });
 
     if (error) {
-
         alert(error.message);
-
         return;
-
     }
 
-    window.location.href = "dashboard.html";
+    const user = data.user;
+
+    // Vérifie s'il existe une commande payée
+    const { data: order, error: orderError } = await sb
+        .from("orders")
+        .select("status")
+        .eq("user_id", user.id)
+        .eq("status", "paid")
+        .maybeSingle();
+
+    if (orderError) {
+        console.error(orderError);
+    }
+
+    if (order) {
+
+        // Paiement effectué
+        window.location.href = "dashboard.html";
+
+    } else {
+
+        // Paiement non effectué
+        window.location.href = "payment.html";
+
+    }
 
 }
 

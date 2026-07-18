@@ -25,6 +25,32 @@ async function initDashboard() {
 
     const user = session.user;
 
+    // Vérifier le paiement
+    const { data: order, error: orderError } = await sb
+        .from("orders")
+        .select("status")
+        .eq("user_id", user.id)
+        .eq("status", "paid")
+        .maybeSingle();
+
+    if (orderError) {
+
+        console.error(orderError);
+
+        alert("Impossible de vérifier votre paiement.");
+
+        return;
+
+    }
+
+    // Aucun paiement validé
+    if (!order) {
+
+        window.location.href = "payment.html";
+        return;
+
+    }
+
     // Charger le profil
     const { data: profile, error } = await sb
         .from("profiles")

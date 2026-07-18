@@ -1,232 +1,273 @@
 /*
-====================================================
+==========================================================
 PROF IA MEDIA PARTNERS
-PAYMENT.JS V3
-Paiement sécurisé via Edge Function Supabase
-====================================================
+payment.js V4
+Partie 1/3
+==========================================================
 */
 
-import { sb } from "./config.js";
+const client = window.sb;
+const API_URL = window.SUPABASE_URL;
 
-/*
-----------------------------------------------------
-Création d'une référence unique
-----------------------------------------------------
-*/
-function generateOrderReference() {
+let currentUser = null;
+let currentProfile = null;
+let currentProduct = null;
 
-    const date = new Date();
-
-    return (
-        "PIM-ORD-" +
-        date.getFullYear() +
-        (date.getMonth() + 1)
-            .toString()
-            .padStart(2, "0") +
-        date
-            .getDate()
-            .toString()
-            .padStart(2, "0") +
-        "-" +
-        Math.random()
-            .toString(36)
-            .substring(2, 8)
-            .toUpperCase()
-    );
-
+/**
+ * Affiche un message puis stoppe l'exécution.
+ */
+function stop(message) {
+    alert(message);
+    throw new Error(message);
 }
 
-/*
-----------------------------------------------------
-Chargement du produit
-----------------------------------------------------
-*/
+/**
+ * Charge l'utilisateur connecté.
+ */
+async function loadUser() {
 
+    const {
+        data: { user },
+        error
+    } = await client.auth.getUser();
+
+    if (error || !user) {
+        stop("Votre session a expiré. Veuillez vous reconnecter.");
+    }
+
+    currentUser = user;
+    return user;
+}
+
+/**
+ * Charge le profil.
+ */
+async function loadProfile(userId) {
+
+    const { data, error } = await sb
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+    if (error || !data) {
+        stop("Impossible de charger votre profil.");
+    }
+
+    currentProfile = data;
+    return data;
+}
+
+/**
+ * Charge le produit actif.
+ */
 async function loadProduct() {
 
     const { data, error } = await sb
         .from("products")
         .select("*")
-        .eq("is_active", true)
+        .eq("status", true)
         .single();
 
-    if (error) {
-
-        console.error(error);
-
-        return null;
-
+    if (error || !data) {
+        stop("Aucun produit actif disponible.");
     }
 
+    currentProduct = data;
     return data;
+}
 
+/**
+ * Génère une référence de commande.
+ */
+function generateReference() {
+
+    const now = new Date();
+
+    const yyyy = now.getFullYear();
+
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+
+    const dd = String(now.getDate()).padStart(2, "0");
+
+    const random = Math.floor(
+        100000 + Math.random() * 900000
+    );
+
+    return `PIM-ORD-${yyyy}${mm}${dd}-${random}`;
 }
 /*
-----------------------------------------------------
+==========================================================
+PARTIE 2/3
 Création de la commande
-----------------------------------------------------
+==========================================================
 */
 
+/**
+ * Crée une nouvelle commande dans Supabase.
+ */
 async function createOrder() {
 
-    // Utilisateur connecté
-    const {
-        data: { user }
-    } = await sb.auth.getUser();
-
-    if (!user) {
-        alert("Utilisateur non connecté.");
-        return null;
+    if (!currentUser) {
+        stop("Utilisateur introuvable.");
     }
 
-    // Profil utilisateur
+    if (!currentProfile) {
+        stop("Profil introuvable.");
+    }
+
+    if (!currentProduct) {
+        stop("Produit introuvable.");
+    }
+
+    const orderReference = generateReference();
+
+    const order = {
+
+        user_id: currentUser.id,
+
+        order_reference: orderReference,
+
+        product_id: currentProduct.product_code,
+
+        product_name: currentProduct.product_name,
+
+        amount: currentProduct.price,
+
+        currency: currentProduct.currency,
+
+        payment_provider: "paystack",
+
+        status: "pending",
+
+        customer_email: currentUser.email,
+
+        affiliate_id: currentProfile.affiliate_id ?? null
+
+    };
+
     const {
-        data: profile
+
+        data,
+
+        error
+
     } = await sb
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
 
-    if (!profile) {
-        alert("Profil introuvable.");
-        return null;
-    }
-
-    // Produit
-    const product = await loadProduct();
-
-    if (!product) {
-        alert("Produit introuvable.");
-        return null;
-    }
-
-    // Référence
-    const orderReference = generateOrderReference();
-
-    // Création de la commande
-    const { data, error } = await sb
         .from("orders")
-        .insert({
-            order_reference: orderReference,
-            user_id: user.id,
-            affiliate_id: profile.referred_by ?? null,
-            product_id: product.product_code,
-            product_name: product.product_name,
-            amount: product.price,
-            currency: product.currency,
-            payment_provider: "paystack",
-            status: "pending"
-        })
+
+        .insert(order)
+
         .select()
+
         .single();
 
-    if (error) {
-        console.error(error);
-        alert(error.message);
-        return null;
-    }
+    if (error || !data) {
 
-    console.log("✅ Commande créée");
-    console.log(data);
+        console.error(error);
+
+        stop("Impossible de créer la commande.");
+
+    }
 
     return data;
+
 }
 /*
-----------------------------------------------------
-Initialisation du paiement
-(Appel Edge Function Supabase)
-----------------------------------------------------
+==========================================================
+PARTIE 3/3
+Initialisation Paystack
+==========================================================
 */
 
-async function initializePayment(order) {
+async function preparePayment() {
+
+    const button = document.getElementById("payButton");
 
     try {
 
-        const {
-            data: { session }
-        } = await sb.auth.getSession();
+        button.disabled = true;
+        button.textContent = "Initialisation...";
 
-        if (!session) {
-            alert("Session expirée.");
-            return;
+        await loadUser();
+
+        await loadProfile(currentUser.id);
+
+        await loadProduct();
+
+        const order = await createOrder();
+
+        const {
+            data: { session },
+            error: sessionError
+        } = await client.auth.getSession();
+
+        if (sessionError || !session) {
+            stop("Session utilisateur introuvable.");
         }
 
+        console.log("API_URL =", API_URL);
         const response = await fetch(
-            "https://cfikzkivgimvsvwyqpfq.supabase.co/functions/v1/initialize-payment",
+            `${API_URL}/functions/v1/initialize-payment`,
             {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${session.access_token}`,
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${session.access_token}`
                 },
                 body: JSON.stringify({
-                    order_id: order.id
+                    orderId: order.id
                 })
             }
         );
 
         const result = await response.json();
 
-        console.log("Réponse Edge Function :", result);
-
         if (!response.ok) {
 
-            alert(result.error || "Erreur lors de l'initialisation du paiement.");
+            console.error(result);
 
-            return;
-
+            stop(
+                result.error ||
+                "Erreur lors de l'initialisation du paiement."
+            );
         }
 
         if (!result.authorization_url) {
-
-            alert("URL de paiement introuvable.");
-
-            return;
-
+            stop("Lien de paiement Paystack introuvable.");
         }
 
         window.location.href = result.authorization_url;
 
-    }
-    catch (err) {
+    } catch (err) {
 
         console.error(err);
 
-        alert("Impossible de contacter le serveur.");
+        alert(
+            err.message ||
+            "Une erreur est survenue."
+        );
 
+        button.disabled = false;
+        button.textContent = "PAYER MAINTENANT";
     }
-
 }
+
 /*
-----------------------------------------------------
-Préparer le paiement
-----------------------------------------------------
+==========================================================
+Initialisation
+==========================================================
 */
 
-async function preparePayment() {
+window.addEventListener("DOMContentLoaded", () => {
 
-    const order = await createOrder();
+    const button = document.getElementById("payButton");
 
-    if (!order) {
+    if (!button) {
+        console.error("Bouton payButton introuvable.");
         return;
     }
 
-    console.log("==================================");
-    console.log("ORDER READY");
-    console.log(order);
-    console.log("==================================");
+    console.log("✅ payment.js V4 chargé.");
 
-    await initializePayment(order);
-
-}
-
-/*
-----------------------------------------------------
-Export
-----------------------------------------------------
-*/
-
-window.preparePayment = preparePayment;
-window.createOrder = createOrder;
-window.loadProduct = loadProduct;
+});

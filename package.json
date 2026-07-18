@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/profiamedia225-source/prof-ia-affiliate/issues"
   },
-  "homepage": "https://github.com/profiamedia225-source/prof-ia-affiliate#readme"
+  "homepage": "https://github.com/profiamedia225-source/prof-ia-affiliate#readme",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
 }
