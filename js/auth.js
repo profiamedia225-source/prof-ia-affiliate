@@ -54,9 +54,9 @@ async function registerUser(e) {
         .toUpperCase();
 
     const affiliateLink =
-        window.location.origin +
-        "/?ref=" +
-        affiliateCode;
+    APP_URL +
+    "/?ref=" +
+    affiliateCode;
 
     // Création Auth
     const { data, error } = await sb.auth.signUp({
