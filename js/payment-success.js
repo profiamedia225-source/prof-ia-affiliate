@@ -1,16 +1,30 @@
-alert("payment-success.js chargé");
+const client = window.sb;
 
-window.addEventListener("DOMContentLoaded", () => {
-    alert("DOM chargé");
+async function goToDashboard() {
 
-    const button = document.getElementById("dashboardButton");
+    const {
+        data: { session },
+        error
+    } = await client.auth.getSession();
 
-    if (!button) {
-        alert("Bouton introuvable");
+    if (error) {
+        alert("Erreur : " + error.message);
         return;
     }
 
-    button.addEventListener("click", () => {
-        alert("Le bouton fonctionne !");
-    });
+    if (session) {
+        alert("Session trouvée pour : " + session.user.email);
+        window.location.href = "dashboard.html";
+    } else {
+        alert("Aucune session trouvée.");
+    }
+
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    document
+        .getElementById("dashboardButton")
+        .addEventListener("click", goToDashboard);
+
 });
