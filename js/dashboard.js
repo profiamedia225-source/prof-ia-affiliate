@@ -95,7 +95,7 @@ function displayProfile(profile) {
         profile.affiliate_code;
 
     document.getElementById("affiliateLink").value =
-        profile.affiliate_link;
+    APP_URL + "/?ref=" + profile.affiliate_code;
 
     // Statistiques provisoires
     document.getElementById("commissionAmount").textContent =
