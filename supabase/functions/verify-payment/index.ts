@@ -129,7 +129,7 @@ console.log("Réponse Paystack :", JSON.stringify(result, null, 2));
 
     if (order.status === "paid") {
       return Response.redirect(
-  "https://prof-ia-affiliate.vercel.app/dashboard.html",
+  "https://prof-ia-affiliate.vercel.app/payment-success.html",
   302,
 );
     }
@@ -191,7 +191,7 @@ console.log("Réponse Paystack :", JSON.stringify(result, null, 2));
       // après avoir validé le paiement.
     }
 return Response.redirect(
-  "https://prof-ia-affiliate.vercel.app/dashboard.html",
+  "https://prof-ia-affiliate.vercel.app/payment-success.html",
   302,
 );
 

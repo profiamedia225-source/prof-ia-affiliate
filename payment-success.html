@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement confirmé | PROF IA MEDIA</title>
+
+    <style>
+        body{
+            margin:0;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-family:Arial, Helvetica, sans-serif;
+            background:#0f172a;
+            color:white;
+        }
+
+        .card{
+            background:#1e293b;
+            padding:40px;
+            border-radius:12px;
+            text-align:center;
+            width:420px;
+            box-shadow:0 0 25px rgba(0,0,0,.35);
+        }
+
+        h2{
+            color:#22c55e;
+            margin-bottom:15px;
+        }
+
+        p{
+            color:#cbd5e1;
+        }
+
+        .loader{
+            margin:25px auto;
+            width:45px;
+            height:45px;
+            border:5px solid #334155;
+            border-top:5px solid #22c55e;
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+            from{transform:rotate(0deg);}
+            to{transform:rotate(360deg);}
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>✅ Paiement confirmé</h2>
+
+    <p>
+        Votre paiement a été validé.
+    </p>
+
+    <div class="loader"></div>
+
+    <p id="status">
+        Préparation de votre espace affilié...
+    </p>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/payment-success.js"></script>
+
+</body>
+
+</html>
