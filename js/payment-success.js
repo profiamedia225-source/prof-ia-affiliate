@@ -1,7 +1,5 @@
 const client = window.sb;
 
-let timer = 8;
-
 async function goToDashboard() {
 
     const {
@@ -18,32 +16,8 @@ async function goToDashboard() {
 
 window.addEventListener("DOMContentLoaded", () => {
 
-    const button = document.getElementById("dashboardButton");
-
-    if (button) {
-        button.addEventListener("click", goToDashboard);
-    }
-
-    const seconds = document.getElementById("seconds");
-
-    if (seconds) {
-
-        const interval = setInterval(() => {
-
-            timer--;
-
-            seconds.textContent = timer;
-
-            if (timer <= 0) {
-
-                clearInterval(interval);
-
-                goToDashboard();
-
-            }
-
-        }, 1000);
-
-    }
+    document
+        .getElementById("dashboardButton")
+        .addEventListener("click", goToDashboard);
 
 });
