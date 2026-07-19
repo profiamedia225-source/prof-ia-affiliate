@@ -138,7 +138,7 @@ if (referralCode) {
 
             status: "active",
 
-            role: "affiliate"
+            role: "affiliate",
 
             referred_by: referredBy
 
