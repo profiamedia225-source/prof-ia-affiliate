@@ -11,7 +11,7 @@ Rôle : Authentification
 // ==========================================
 
 const referralCode =
-    new URLSearchParams(window.location.search).get("ref");
+    getReferralCode();
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -67,6 +67,8 @@ async function registerUser(e) {
 // Recherche du parrain
 let referredBy = null;
 
+console.log("Referral Code récupéré :", referralCode);
+
 if (referralCode) {
 
     const { data: sponsor } = await sb
@@ -77,6 +79,7 @@ if (referralCode) {
 
     if (sponsor) {
         referredBy = sponsor.id;
+        console.log("UUID du parrain :", referredBy);
     }
 
 }
