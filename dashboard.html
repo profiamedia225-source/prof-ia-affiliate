@@ -26,47 +26,31 @@
             <h2>PROF IA MEDIA</h2>
         </div>
 
-        <ul>
+       <ul>
 
-            <li class="active">
-                🏠 Tableau de bord
-            </li>
+    <li class="active">
+        🏠 Tableau de bord
+    </li>
 
-            <li>
-                👥 Mes filleuls
-            </li>
+    <li>
+        <a href="profile.html">
+            👤 Mon profil
+        </a>
+    </li>
 
-            <li>
-                💰 Mes commissions
-            </li>
+    <li>
+        <a href="settings.html">
+            ⚙ Paramètres
+        </a>
+    </li>
 
-            <li>
-                🔗 Mon lien
-            </li>
+    <li>
+        <a href="#" onclick="logout(); return false;">
+            🚪 Déconnexion
+        </a>
+    </li>
 
-            <li>
-                💳 Retraits
-            </li>
-
-            <li>
-                🎓 Formation
-            </li>
-
-            <li>
-                👤 Mon profil
-            </li>
-
-            <li>
-                ⚙ Paramètres
-            </li>
-
-            <li>
-                <a href="#" onclick="logout(); return false;">
-                    🚪 Déconnexion
-                </a>
-            </li>
-
-        </ul>
+</ul>
 
     </aside>
 
@@ -82,9 +66,9 @@
 
             <div>
 
-                <p class="hello">
-                    Bonjour 👋
-                </p>
+            <p class="hello" id="greeting">
+                Bonjour 👋
+            </p>
 
                 <h1 id="welcome">
                     AMANI CESARD
@@ -96,9 +80,56 @@
 
             </div>
 
+<p id="todayDate"></p>
+
         </header>
 
+<section class="quick-grid">
 
+    <a href="referrals.html" class="quick-card">
+
+        <div class="quick-icon">👥</div>
+
+        <h3>Mes filleuls</h3>
+
+        <p>Voir tous vos affiliés</p>
+
+    </a>
+
+
+    <a href="commissions.html" class="quick-card">
+
+        <div class="quick-icon">💰</div>
+
+        <h3>Mes commissions</h3>
+
+        <p>Consulter vos gains</p>
+
+    </a>
+
+
+    <a href="training.html" class="quick-card">
+
+        <div class="quick-icon">🎓</div>
+
+        <h3>Ma formation</h3>
+
+        <p>Continuer votre apprentissage</p>
+
+    </a>
+
+
+    <a href="withdrawals.html" class="quick-card">
+
+        <div class="quick-icon">💳</div>
+
+        <h3>Retraits</h3>
+
+        <p>Demander un paiement</p>
+
+    </a>
+
+</section>
 
         <!-- CARTES -->
 
@@ -244,6 +275,14 @@
 
             </button>
 
+<div class="qr-section">
+
+    <h3>QR Code</h3>
+
+    <div id="qrcode"></div>
+
+</div>
+
         </section>
 
 
@@ -285,6 +324,8 @@
 <script src="js/auth.js"></script>
 
 <script src="js/profile.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script src="js/dashboard.js"></script>
 

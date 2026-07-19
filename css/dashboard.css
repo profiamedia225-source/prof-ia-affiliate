@@ -62,43 +62,25 @@ SIDEBAR
 
 }
 
-.sidebar ul{
+.sidebar{
 
-    list-style:none;
+position:fixed;
 
-}
+left:0;
 
-.sidebar li{
+top:0;
 
-    padding:15px;
+width:260px;
 
-    border-radius:10px;
+height:100vh;
 
-    margin-bottom:10px;
+background:#0f172a;
 
-    transition:.3s;
+padding:30px 20px;
 
-    cursor:pointer;
+color:white;
 
-}
-
-.sidebar li:hover{
-
-    background:#22c55e;
-
-}
-
-.sidebar li.active{
-
-    background:#22c55e;
-
-}
-
-.sidebar a{
-
-    color:white;
-
-    text-decoration:none;
+overflow-y:auto;
 
 }
 
@@ -108,9 +90,15 @@ CONTENU
 
 .content{
 
-    flex:1;
+margin-left:260px;
 
-    padding:40px;
+padding:40px;
+
+min-height:100vh;
+
+overflow-y:auto;
+
+flex:1;
 
 }
 
@@ -384,19 +372,19 @@ grid-template-columns:1fr;
 
 @media(max-width:768px){
 
-.dashboard{
-
-flex-direction:column;
-
-}
-
 .sidebar{
 
+position:relative;
+
 width:100%;
+
+height:auto;
 
 }
 
 .content{
+
+margin-left:0;
 
 padding:20px;
 
@@ -408,10 +396,128 @@ grid-template-columns:1fr;
 
 }
 
-#welcome{
+.quick-grid{
 
-font-size:30px;
+grid-template-columns:1fr;
 
 }
+
+.profile-grid{
+
+grid-template-columns:1fr;
+
+}
+
+#welcome{
+
+font-size:28px;
+
+}
+
+}
+.quick-actions{
+
+display:flex;
+gap:15px;
+margin-bottom:30px;
+flex-wrap:wrap;
+
+}
+
+.action-btn{
+
+background:white;
+border:none;
+padding:15px 25px;
+border-radius:15px;
+cursor:pointer;
+font-weight:bold;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+transition:.3s;
+
+}
+
+.action-btn:hover{
+
+background:#22c55e;
+color:white;
+
+}
+/* =====================================
+   QUICK CARDS
+===================================== */
+
+.quick-grid{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:15px;
+
+margin:20px 0;
+
+}
+
+.quick-card{
+
+background:white;
+
+padding:15px;
+
+border-radius:15px;
+
+text-decoration:none;
+
+color:#1e293b;
+
+box-shadow:0 6px 18px rgba(0,0,0,.08);
+
+transition:.3s;
+
+text-align:center;
+
+min-height:110px;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+}
+.quick-card:hover{
+
+transform:translateY(-8px);
+
+background:#22c55e;
+
+color:white;
+
+}
+
+.quick-icon{
+
+font-size:28px;
+
+margin-bottom:8px;
+
+}
+
+.quick-card h3{
+
+font-size:16px;
+
+margin-bottom:5px;
+
+}
+
+.quick-card p{
+
+font-size:13px;
+
+color:#64748b;
+
+line-height:1.3;
 
 }

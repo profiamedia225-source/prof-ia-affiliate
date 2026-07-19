@@ -6,6 +6,12 @@ Fichier : auth.js
 Rôle : Authentification
 ==========================================
 */
+// ==========================================
+// CODE D'AFFILIATION
+// ==========================================
+
+const referralCode =
+    new URLSearchParams(window.location.search).get("ref");
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -57,6 +63,23 @@ async function registerUser(e) {
     APP_URL +
     "/?ref=" +
     affiliateCode;
+
+// Recherche du parrain
+let referredBy = null;
+
+if (referralCode) {
+
+    const { data: sponsor } = await sb
+        .from("profiles")
+        .select("id")
+        .eq("affiliate_code", referralCode)
+        .maybeSingle();
+
+    if (sponsor) {
+        referredBy = sponsor.id;
+    }
+
+}
 
     // Création Auth
     const { data, error } = await sb.auth.signUp({
@@ -116,6 +139,8 @@ async function registerUser(e) {
             status: "active",
 
             role: "affiliate"
+
+            referred_by: referredBy
 
         });
 

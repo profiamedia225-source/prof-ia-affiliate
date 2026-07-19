@@ -114,4 +114,31 @@ function displayProfile(profile) {
 
         document.getElementById("greeting").textContent =
     "Bonjour 👋";
+
+    document.getElementById("qrcode").innerHTML="";
+
+new QRCode(document.getElementById("qrcode"),{
+
+text:APP_URL+"/?ref="+profile.affiliate_code,
+
+width:170,
+
+height:170
+
+});
+const options={
+
+weekday:"long",
+
+day:"numeric",
+
+month:"long",
+
+year:"numeric"
+
+};
+
+document.getElementById("todayDate").textContent=
+
+new Date().toLocaleDateString("fr-FR",options);
 }
