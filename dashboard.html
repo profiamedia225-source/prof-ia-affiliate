@@ -9,6 +9,7 @@
 <title>Dashboard - PROF IA MEDIA</title>
 
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
 
 </head>
 
@@ -16,127 +17,107 @@
 
 <div class="dashboard">
 
+    <!-- ===== SIDEBAR ===== -->
+
     <aside class="sidebar">
 
         <div class="logo">
-
             <img src="images/logo.png" alt="PROF IA MEDIA">
-
             <h2>PROF IA MEDIA</h2>
-
         </div>
 
         <ul>
 
-            <li>🏠 Tableau de bord</li>
-
-            <li>👥 Mes filleuls</li>
-
-            <li>💰 Mes commissions</li>
-
-            <li>🔗 Mon lien d'affiliation</li>
-
-            <li>💳 Retraits</li>
-
-            <li>⚙️ Mon profil</li>
+            <li class="active">
+                🏠 Tableau de bord
+            </li>
 
             <li>
+                👥 Mes filleuls
+            </li>
 
+            <li>
+                💰 Mes commissions
+            </li>
+
+            <li>
+                🔗 Mon lien
+            </li>
+
+            <li>
+                💳 Retraits
+            </li>
+
+            <li>
+                🎓 Formation
+            </li>
+
+            <li>
+                👤 Mon profil
+            </li>
+
+            <li>
+                ⚙ Paramètres
+            </li>
+
+            <li>
                 <a href="#" onclick="logout(); return false;">
-
                     🚪 Déconnexion
-
                 </a>
-
             </li>
 
         </ul>
 
     </aside>
 
+
+
+    <!-- ===== CONTENU ===== -->
+
     <main class="content">
 
-        <h1 id="welcome">
+        <!-- HEADER -->
 
-            Bienvenue...
+        <header class="top-header">
 
-        </h1>
+            <div>
 
-        <div class="profile-card">
+                <p class="hello">
+                    Bonjour 👋
+                </p>
 
-            <p>
+                <h1 id="welcome">
+                    AMANI CESARD
+                </h1>
 
-                <strong>Nom :</strong>
+                <span class="status">
+                    🟢 Compte Actif
+                </span>
 
-                <span id="fullname"></span>
+            </div>
 
-            </p>
+        </header>
 
-            <p>
 
-                <strong>Email :</strong>
 
-                <span id="email"></span>
+        <!-- CARTES -->
 
-            </p>
-
-            <p>
-
-                <strong>Téléphone :</strong>
-
-                <span id="phone"></span>
-
-            </p>
-
-            <p>
-
-                <strong>Pays :</strong>
-
-                <span id="country"></span>
-
-            </p>
-
-            <p>
-
-                <strong>Code affilié :</strong>
-
-                <span id="affiliateCode"></span>
-
-            </p>
-
-            <p>
-
-                <strong>Lien d'affiliation</strong>
-
-            </p>
-
-            <input
-                id="affiliateLink"
-                type="text"
-                readonly
-            >
-
-            <br><br>
-
-            <button
-                class="btn-primary"
-                onclick="copyAffiliateLink()">
-
-                Copier le lien
-
-            </button>
-
-        </div>
-
-        <p>
-
-            Gérez vos commissions, vos ventes et vos retraits.
-
-        </p>
-
-        <div class="stats">
+        <section class="stats-grid">
 
             <div class="card">
+
+                <span class="icon">👥</span>
+
+                <h3>Filleuls</h3>
+
+                <h2 id="referralCount">0</h2>
+
+            </div>
+
+
+            <div class="card">
+
+                <span class="icon">💰</span>
 
                 <h3>Commissions</h3>
 
@@ -148,19 +129,11 @@
 
             </div>
 
-            <div class="card">
 
-                <h3>Filleuls</h3>
-
-                <h2 id="referralCount">
-
-                    0
-
-                </h2>
-
-            </div>
 
             <div class="card">
+
+                <span class="icon">📈</span>
 
                 <h3>Ventes</h3>
 
@@ -172,7 +145,11 @@
 
             </div>
 
+
+
             <div class="card">
+
+                <span class="icon">💳</span>
 
                 <h3>Retraits</h3>
 
@@ -184,12 +161,121 @@
 
             </div>
 
-        </div>
+        </section>
+
+
+
+        <!-- PROFIL -->
+
+        <section class="profile-section">
+
+            <h2>
+                Informations du compte
+            </h2>
+
+            <div class="profile-grid">
+
+                <div>
+
+                    <label>Nom complet</label>
+
+                    <p id="fullname"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Email</label>
+
+                    <p id="email"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Téléphone</label>
+
+                    <p id="phone"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Pays</label>
+
+                    <p id="country"></p>
+
+                </div>
+
+                <div>
+
+                    <label>Code affilié</label>
+
+                    <p id="affiliateCode"></p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- LIEN D'AFFILIATION -->
+
+        <section class="affiliate-box">
+
+            <h2>
+
+                🔗 Mon lien d'affiliation
+
+            </h2>
+
+            <input
+                id="affiliateLink"
+                type="text"
+                readonly>
+
+            <button
+                class="btn-primary"
+                onclick="copyAffiliateLink()">
+
+                Copier le lien
+
+            </button>
+
+        </section>
+
+
+
+        <!-- ACTIVITÉ -->
+
+        <section class="activity">
+
+            <h2>
+
+                Activité récente
+
+            </h2>
+
+            <ul>
+
+                <li>✅ Nouveau filleul inscrit</li>
+
+                <li>💰 Commission gagnée</li>
+
+                <li>📈 Vente validée</li>
+
+                <li>💳 Retrait effectué</li>
+
+            </ul>
+
+        </section>
 
     </main>
 
 </div>
-
+<!-- Garde ici tous tes scripts existants -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/config.js"></script>

@@ -74,30 +74,32 @@ async function initDashboard() {
 
 function displayProfile(profile) {
 
-    // Bienvenue
-    document.getElementById("welcome").textContent =
-        "Bienvenue " + profile.fullname;
+    // Nom en MAJUSCULES
+    const fullName = (profile.fullname || "").toUpperCase();
 
-    // Informations
-    document.getElementById("fullname").textContent =
-        profile.fullname;
+    // En-tête
+    document.getElementById("welcome").textContent = fullName;
+
+    // Informations du profil
+    document.getElementById("fullname").textContent = fullName;
 
     document.getElementById("email").textContent =
-        profile.email;
+        profile.email || "-";
 
     document.getElementById("phone").textContent =
-        profile.phone;
+        profile.phone || "-";
 
     document.getElementById("country").textContent =
-        profile.country;
+        profile.country || "-";
 
     document.getElementById("affiliateCode").textContent =
-        profile.affiliate_code;
+        profile.affiliate_code || "-";
 
+    // Lien d'affiliation
     document.getElementById("affiliateLink").value =
-    APP_URL + "/?ref=" + profile.affiliate_code;
+        APP_URL + "/?ref=" + profile.affiliate_code;
 
-    // Statistiques provisoires
+    // Statistiques (provisoires)
     document.getElementById("commissionAmount").textContent =
         "0 FCFA";
 
@@ -110,4 +112,6 @@ function displayProfile(profile) {
     document.getElementById("withdrawAmount").textContent =
         "0 FCFA";
 
+        document.getElementById("greeting").textContent =
+    "Bonjour 👋";
 }
