@@ -1,30 +1,49 @@
 const client = window.sb;
 
+let timer = 8;
+
 async function goToDashboard() {
 
     const {
-        data: { session },
-        error
+        data: { session }
     } = await client.auth.getSession();
 
-    if (error) {
-        alert("Erreur : " + error.message);
-        return;
-    }
-
     if (session) {
-        alert("Session trouvée pour : " + session.user.email);
         window.location.href = "dashboard.html";
     } else {
-        alert("Aucune session trouvée.");
+        window.location.href = "login.html";
     }
 
 }
 
 window.addEventListener("DOMContentLoaded", () => {
 
-    document
-        .getElementById("dashboardButton")
-        .addEventListener("click", goToDashboard);
+    const button = document.getElementById("dashboardButton");
+
+    if (button) {
+        button.addEventListener("click", goToDashboard);
+    }
+
+    const seconds = document.getElementById("seconds");
+
+    if (seconds) {
+
+        const interval = setInterval(() => {
+
+            timer--;
+
+            seconds.textContent = timer;
+
+            if (timer <= 0) {
+
+                clearInterval(interval);
+
+                goToDashboard();
+
+            }
+
+        }, 1000);
+
+    }
 
 });
