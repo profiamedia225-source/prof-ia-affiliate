@@ -6,6 +6,8 @@ async function goToDashboard() {
         data: { session }
     } = await client.auth.getSession();
 
+    console.log("Utilisateur connecté :", session?.user?.email);
+
     if (session) {
         window.location.href = "dashboard.html";
     } else {
