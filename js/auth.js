@@ -11,7 +11,8 @@ Rôle : Authentification
 // ==========================================
 
 const referralCode =
-    getReferralCode();
+    localStorage.getItem("affiliate_ref");
+    console.log("Referral Code :", referralCode);
 
 document.addEventListener("DOMContentLoaded", () => {
 
