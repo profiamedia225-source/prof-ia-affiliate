@@ -73,15 +73,19 @@ console.log("Referral Code récupéré :", referralCode);
 if (referralCode) {
 
     const { data: sponsor } = await sb
-        .from("profiles")
-        .select("id")
-        .eq("affiliate_code", referralCode)
-        .maybeSingle();
+    .from("profiles")
+    .select("id")
+    .eq("affiliate_code", referralCode)
+    .maybeSingle();
+
+console.log("Sponsor :", sponsor);
 
     if (sponsor) {
-        referredBy = sponsor.id;
-        console.log("UUID du parrain :", referredBy);
-    }
+    referredBy = sponsor.id;
+    console.log("UUID du parrain :", referredBy);
+} else {
+    console.log("Aucun parrain trouvé pour :", referralCode);
+}
 
 }
 
