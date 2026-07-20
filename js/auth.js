@@ -65,30 +65,6 @@ async function registerUser(e) {
     "/?ref=" +
     affiliateCode;
 
-// Recherche du parrain
-let referredBy = null;
-
-console.log("Referral Code récupéré :", referralCode);
-
-if (referralCode) {
-
-    const { data: sponsor } = await sb
-    .from("profiles")
-    .select("id")
-    .eq("affiliate_code", referralCode)
-    .maybeSingle();
-
-console.log("Sponsor :", sponsor);
-
-    if (sponsor) {
-    referredBy = sponsor.id;
-    console.log("UUID du parrain :", referredBy);
-} else {
-    console.log("Aucun parrain trouvé pour :", referralCode);
-}
-
-}
-
     // Création Auth
     const { data, error } = await sb.auth.signUp({
 
@@ -130,27 +106,27 @@ console.log("Sponsor :", sponsor);
         .from("profiles")
         .insert({
 
-            id: user.id,
+    id: user.id,
 
-            fullname,
+    fullname,
 
-            email,
+    email,
 
-            phone,
+    phone,
 
-            country,
+    country,
 
-            affiliate_code: affiliateCode,
+    affiliate_code: affiliateCode,
 
-            affiliate_link: affiliateLink,
+    affiliate_link: affiliateLink,
 
-            status: "active",
+    status: "active",
 
-            role: "affiliate",
+    role: "affiliate",
 
-            referred_by: referredBy
+    pending_referral_code: referralCode || null
 
-        });
+});
 
    if (profileError) {
 
