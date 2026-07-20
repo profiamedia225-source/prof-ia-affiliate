@@ -181,15 +181,94 @@ console.log("Réponse Paystack :", JSON.stringify(result, null, 2));
       );
     }
 
-    if (order.affiliate_id) {
-      console.log(
-        "Commission à calculer pour l'affilié :",
-        order.affiliate_id,
-      );
+// ======================================================
+// MOTEUR DE PARRAINAGE
+// ======================================================
 
-      // Nous ajouterons ici la logique de commission
-      // après avoir validé le paiement.
+// Lecture du profil de l'acheteur
+const { data: buyerProfile, error: buyerError } = await supabase
+  .from("profiles")
+  .select("pending_referral_code, referred_by")
+  .eq("id", order.user_id)
+  .maybeSingle();
+
+if (buyerError) {
+  console.error("Erreur lecture profil :", buyerError);
+}
+
+if (
+  buyerProfile &&
+  buyerProfile.pending_referral_code &&
+  !buyerProfile.referred_by
+) {
+
+  console.log(
+    "Code de parrain détecté :",
+    buyerProfile.pending_referral_code,
+  );
+
+  // Recherche du sponsor
+  const { data: sponsor, error: sponsorError } = await supabase
+    .from("profiles")
+    .select("id, affiliate_code")
+    .eq("affiliate_code", buyerProfile.pending_referral_code)
+    .maybeSingle();
+
+  if (sponsorError) {
+    console.error("Erreur sponsor :", sponsorError);
+  }
+
+  if (sponsor) {
+
+    console.log("Sponsor trouvé :", sponsor.id);
+
+    // Mise à jour du profil
+    const { error: updateProfileError } = await supabase
+      .from("profiles")
+      .update({
+        referred_by: sponsor.id,
+        pending_referral_code: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", order.user_id);
+
+    if (updateProfileError) {
+      console.error(updateProfileError);
     }
+
+    // Mise à jour de la commande
+    const { error: updateOrderAffiliateError } = await supabase
+      .from("orders")
+      .update({
+        affiliate_id: sponsor.id,
+      })
+      .eq("id", order.id);
+
+    if (updateOrderAffiliateError) {
+      console.error(updateOrderAffiliateError);
+    }
+
+    console.log("Parrainage enregistré avec succès.");
+  } else {
+    console.log("Aucun sponsor trouvé pour ce code.");
+  }
+}
+
+   const { data: updatedOrder } = await supabase
+  .from("orders")
+  .select("affiliate_id")
+  .eq("id", order.id)
+  .single();
+
+if (updatedOrder?.affiliate_id) {
+
+  console.log(
+    "Commission à calculer pour l'affilié :",
+    updatedOrder.affiliate_id,
+  );
+
+  // Étape suivante : création de la commission
+}
 return Response.redirect(
   "https://prof-ia-affiliate.vercel.app/payment-success.html",
   302,
