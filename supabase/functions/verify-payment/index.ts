@@ -295,3 +295,80 @@ return Response.redirect(
     );
   }
 });
+// Vérifie si une commission existe déjà
+const { data: existingCommission } = await supabase
+  .from("commissions")
+  .select("id")
+  .eq("order_id", order.id)
+  .maybeSingle();
+
+if (existingCommission) {
+
+  console.log(
+    "Commission déjà enregistrée."
+  );
+
+  return Response.redirect(
+    "https://prof-ia-affiliate.vercel.app/payment-success.html",
+    302,
+  );
+
+}
+const saleAmount = Number(order.amount);
+
+const commissionRate = 20;
+
+const commissionAmount =
+    (saleAmount * commissionRate) / 100;
+
+console.log(
+    "Montant vente :",
+    saleAmount
+);
+
+console.log(
+    "Commission :",
+    commissionAmount
+);
+const { error: commissionError } =
+await supabase
+.from("commissions")
+.insert({
+
+    affiliate_id:
+        updatedOrder.affiliate_id,
+
+    buyer_id:
+        order.user_id,
+
+    order_id:
+        order.id,
+
+    sale_amount:
+        saleAmount,
+
+    commission_rate:
+        commissionRate,
+
+    amount:
+        commissionAmount,
+
+    status:
+        "available"
+
+});
+
+if (commissionError) {
+
+    console.error(
+        "Erreur commission :",
+        commissionError
+    );
+
+} else {
+
+    console.log(
+        "Commission créée avec succès."
+    );
+
+}
