@@ -99,19 +99,6 @@ function displayProfile(profile) {
     document.getElementById("affiliateLink").value =
         APP_URL + "/?ref=" + profile.affiliate_code;
 
-    // Statistiques (provisoires)
-    document.getElementById("commissionAmount").textContent =
-        "0 FCFA";
-
-    document.getElementById("referralCount").textContent =
-        "0";
-
-    document.getElementById("salesCount").textContent =
-        "0";
-
-    document.getElementById("withdrawAmount").textContent =
-        "0 FCFA";
-
         document.getElementById("greeting").textContent =
     "Bonjour 👋";
 
@@ -138,7 +125,46 @@ year:"numeric"
 
 };
 
-document.getElementById("todayDate").textContent=
+document.getElementById("todayDate").textContent =
+new Date().toLocaleDateString("fr-FR", options);
 
-new Date().toLocaleDateString("fr-FR",options);
+loadDashboardStats();
+}
+async function loadDashboardStats() {
+
+    const {
+        data: { session }
+    } = await sb.auth.getSession();
+
+    if (!session) return;
+
+    const { data, error } = await sb.functions.invoke(
+        "dashboard-stats",
+        {
+            headers: {
+                Authorization: `Bearer ${session.access_token}`
+            }
+        }
+    );
+
+    if (error) {
+
+        console.error(error);
+        return;
+
+    }
+
+    document.getElementById("referralCount").textContent =
+        data.referrals;
+
+    document.getElementById("commissionAmount").textContent =
+        Number(data.availableBalance).toLocaleString("fr-FR") + " FCFA";
+
+    document.getElementById("salesCount").textContent =
+        data.sales;
+
+    // En attendant la gestion des retraits
+    document.getElementById("withdrawAmount").textContent =
+        "0 FCFA";
+
 }
