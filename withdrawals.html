@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Demandes de retrait</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <img src="images/logo.png">
+            <h2>PROF IA MEDIA</h2>
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="dashboard.html">🏠 Tableau de bord</a>
+            </li>
+
+            <li>
+                <a href="referrals.html">👥 Mes filleuls</a>
+            </li>
+
+            <li>
+                <a href="commissions.html">💰 Mes commissions</a>
+            </li>
+
+            <li class="active">
+                💳 Demandes de retrait
+            </li>
+
+            <li>
+                <a href="#" onclick="logout();return false;">
+                    🚪 Déconnexion
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="content">
+
+        <header class="top-header">
+
+            <h1>💳 Demandes de retrait</h1>
+
+        </header>
+
+<section class="cards">
+
+    <div class="card">
+
+        <h3>💰 Solde disponible</h3>
+
+        <h2 id="availableBalance">
+
+            0 FCFA
+
+        </h2>
+
+    </div>
+
+</section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/config.js"></script>
+
+<script src="js/utils.js"></script>
+
+<script src="js/auth.js"></script>
+
+<script src="js/withdrawals.js"></script>
+
+</body>
+
+</html>

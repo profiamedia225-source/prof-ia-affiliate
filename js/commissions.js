@@ -67,7 +67,17 @@ function displayCommissions(commissions) {
            <td>${commission.buyer?.fullname ?? "Client inconnu"}</td>
             <td>${Number(commission.amount).toLocaleString("fr-FR")} FCFA</td>
             <td>${new Date(commission.created_at).toLocaleDateString("fr-FR")}</td>
-            <td>${commission.status}</td>
+            <td>
+    ${
+        commission.status === "available"
+            ? "Disponible"
+            : commission.status === "paid"
+            ? "Payée"
+            : commission.status === "pending"
+            ? "En attente"
+            : commission.status
+    }
+</td>
         `;
 
         tbody.appendChild(row);
