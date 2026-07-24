@@ -32,7 +32,7 @@ async function initCommissions() {
 
     }
 
-   displayCommissions(data);
+   displayCommissions(data.commissions);
 
 }
 function displayCommissions(commissions) {
