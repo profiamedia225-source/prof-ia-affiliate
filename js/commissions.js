@@ -65,7 +65,7 @@ function displayCommissions(commissions) {
         row.innerHTML = `
             <td>${index + 1}</td>
            <td>${commission.buyer?.fullname ?? "Client inconnu"}</td>
-            <td>${commission.amount}</td>
+            <td>${Number(commission.amount).toLocaleString("fr-FR")} FCFA</td>
             <td>${new Date(commission.created_at).toLocaleDateString("fr-FR")}</td>
             <td>${commission.status}</td>
         `;
