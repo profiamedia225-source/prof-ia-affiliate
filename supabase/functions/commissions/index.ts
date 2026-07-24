@@ -70,11 +70,20 @@ const corsHeaders = {
 
     console.log("Affilié :", userId);
 
-    const { data, error } = await supabase
-      .from("commissions")
-      .select("*")
-      .eq("affiliate_id", userId)
-      .order("created_at", { ascending: false });
+   const { data, error } = await supabase
+  .from("commissions")
+  .select(`
+    id,
+    amount,
+    status,
+    created_at,
+    buyer:profiles!commissions_buyer_id_fkey (
+      fullname,
+      email
+    )
+  `)
+  .eq("affiliate_id", userId)
+  .order("created_at", { ascending: false });
 
     if (error) {
       throw error;
