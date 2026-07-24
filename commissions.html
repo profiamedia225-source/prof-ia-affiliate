@@ -3,13 +3,13 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mes filleuls - PROF IA MEDIA</title>
+    <title>Mes commissions - PROF IA MEDIA</title>
 
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 
 </head>
 
@@ -31,12 +31,12 @@
                 <a href="dashboard.html">🏠 Tableau de bord</a>
             </li>
 
-            <li class="active">
-                👥 Mes filleuls
+            <li>
+                <a href="referrals.html">👥 Mes filleuls</a>
             </li>
 
-            <li>
-                <a href="commissions.html">💰 Mes commissions</a>
+            <li class="active">
+                💰 Mes commissions
             </li>
 
             <li>
@@ -54,37 +54,48 @@
 
         <header class="top-header">
 
-            <h1>👥 Mes filleuls</h1>
+            <h1>💰 Mes commissions</h1>
 
-            <p id="totalReferrals">
-                Total : 0 filleul
+            <p id="totalCommissions">
+                Total : 0 commission
             </p>
 
         </header>
 
-      <section class="profile-section">
+<section class="profile-section">
 
     <div class="table-container">
 
         <table class="table">
 
             <thead>
+
                 <tr>
+
                     <th>N°</th>
-                    <th>Nom</th>
-                    <th>Email</th>
-                    <th>Pays</th>
+
+                    <th>Client</th>
+
+                    <th>Montant</th>
+
                     <th>Date</th>
+
                     <th>Statut</th>
+
                 </tr>
+
             </thead>
 
-            <tbody id="referralsBody">
+            <tbody id="commissionsBody">
 
-                <tr id="loadingRow">
-                    <td colspan="6" style="text-align:center;padding:40px;">
-                        Chargement des filleuls...
+                <tr>
+
+                    <td colspan="5" style="text-align:center;padding:40px;">
+
+                        Chargement des commissions...
+
                     </td>
+
                 </tr>
 
             </tbody>
@@ -94,7 +105,6 @@
     </div>
 
 </section>
-
 
     </main>
 
@@ -108,7 +118,7 @@
 
 <script src="js/auth.js"></script>
 
-<script src="js/referrals.js"></script>
+<script src="js/commissions.js"></script>
 
 </body>
 

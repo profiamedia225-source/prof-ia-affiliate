@@ -46,25 +46,40 @@ function displayReferrals(referrals) {
     document.getElementById("totalReferrals").textContent =
         `Total : ${referrals.length} filleul(s)`;
 
-    referrals.forEach(referral => {
+    if (referrals.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center;padding:40px;">
+                    Aucun filleul pour le moment.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+    referrals.forEach((referral, index) => {
 
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${referral.fullname}</td>
-            <td>${referral.email}</td>
-            <td>${referral.country}</td>
-            <td>${new Date(referral.created_at).toLocaleDateString("fr-FR")}</td>
-            <td>
-    <span class="${
-        referral.status === "Actif"
-            ? "status-active"
-            : "status-pending"
-    }">
-        ${referral.status}
-    </span>
-</td>
-        `;
+    <td>${index + 1}</td>
+    <td>${referral.fullname}</td>
+    <td>${referral.email}</td>
+    <td>${referral.country}</td>
+    <td>${new Date(referral.created_at).toLocaleDateString("fr-FR")}</td>
+    <td>
+        <span class="${
+            referral.status === "Actif"
+                ? "status-active"
+                : "status-pending"
+        }">
+            ${referral.status}
+        </span>
+    </td>
+`;
 
         tbody.appendChild(row);
 
