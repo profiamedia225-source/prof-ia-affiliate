@@ -55,7 +55,15 @@ function displayReferrals(referrals) {
             <td>${referral.email}</td>
             <td>${referral.country}</td>
             <td>${new Date(referral.created_at).toLocaleDateString("fr-FR")}</td>
-            <td>${referral.status}</td>
+            <td>
+    <span class="${
+        referral.status === "Actif"
+            ? "status-active"
+            : "status-pending"
+    }">
+        ${referral.status}
+    </span>
+</td>
         `;
 
         tbody.appendChild(row);
