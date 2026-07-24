@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mes filleuls - PROF IA MEDIA</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <img src="images/logo.png" alt="Logo">
+            <h2>PROF IA MEDIA</h2>
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="dashboard.html">🏠 Tableau de bord</a>
+            </li>
+
+            <li class="active">
+                👥 Mes filleuls
+            </li>
+
+            <li>
+                <a href="commissions.html">💰 Mes commissions</a>
+            </li>
+
+            <li>
+                <a href="#" onclick="logout();return false;">
+                    🚪 Déconnexion
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Contenu -->
+    <main class="content">
+
+        <header class="top-header">
+
+            <h1>👥 Mes filleuls</h1>
+
+            <p id="totalReferrals">
+                Total : 0 filleul
+            </p>
+
+        </header>
+
+        <section class="profile-section">
+
+            <table class="table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Nom</th>
+
+                        <th>Email</th>
+
+                        <th>Pays</th>
+
+                        <th>Date</th>
+
+                        <th>Statut</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="referralsBody">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/config.js"></script>
+
+<script src="js/utils.js"></script>
+
+<script src="js/auth.js"></script>
+
+<script src="js/referrals.js"></script>
+
+</body>
+
+</html>
