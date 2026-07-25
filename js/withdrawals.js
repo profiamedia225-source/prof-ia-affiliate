@@ -77,7 +77,37 @@ form.addEventListener("submit", async (e) => {
 
     }
 
-    alert("Montant valide. La demande peut être envoyée.");
+    const {
+    data: { session }
+} = await sb.auth.getSession();
+
+const response = await sb.functions.invoke(
+    "withdraw-request",
+    {
+        body: {
+            amount,
+            paymentMethod: method.value,
+            paymentDetails: paymentDetails.value
+        },
+        headers: {
+            Authorization: `Bearer ${session.access_token}`
+        }
+    }
+);
+
+if (response.error) {
+
+    console.error(response.error);
+
+    alert("Impossible d'envoyer la demande.");
+
+    return;
+
+}
+
+alert("Votre demande de retrait a été enregistrée avec succès.");
+
+form.reset();
 
 });
 const method = document.getElementById("method");
