@@ -80,13 +80,36 @@ console.log("Montant :", amount);
 console.log("Méthode :", paymentMethod);
 console.log("Détails :", paymentDetails);
 
+const { error: insertError } = await supabase
+  .from("withdrawals")
+  .insert({
+    affiliate_id: userId,
+    amount: Number(amount),
+    payment_method: paymentMethod,
+    payment_details: paymentDetails,
+    status: "En attente",
+  });
+
+if (insertError) {
+
+  return new Response(
+    JSON.stringify({
+      error: insertError.message,
+    }),
+    {
+      status: 500,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+}
     return new Response(
   JSON.stringify({
     success: true,
-    userId,
-    amount,
-    paymentMethod,
-    paymentDetails,
+    message: "Demande enregistrée avec succès",
   }),
   {
     headers: {
