@@ -55,6 +55,25 @@ Deno.serve(async (req) => {
 
   const { withdrawalId, status } = await req.json();
 
+const { data: withdrawal, error: withdrawalError } = await supabase
+  .from("withdrawals")
+  .select("affiliate_id")
+  .eq("id", withdrawalId)
+  .single();
+
+if (withdrawalError || !withdrawal) {
+  return new Response(
+    JSON.stringify({ error: "Retrait introuvable" }),
+    {
+      status: 404,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+}
+
   const { error } = await supabase
     .from("withdrawals")
     .update({
@@ -75,6 +94,19 @@ Deno.serve(async (req) => {
       }
     );
   }
+
+if (status === "paid") {
+
+  await supabase
+    .from("commissions")
+    .update({
+      status: "Payée",
+      paid_at: new Date().toISOString()
+    })
+    .eq("affiliate_id", withdrawal!.affiliate_id)
+    .eq("status", "Disponible");
+
+}
 
   return new Response(
     JSON.stringify({ success: true }),
