@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Administration - Retraits</title>
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/withdrawals.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside id="sidebar"></aside>
+
+    <main class="content">
+
+        <section class="profile-section">
+
+            <div class="page-header">
+
+                <h1>
+                    💳 Gestion des retraits
+                </h1>
+
+                <span id="totalWithdrawals">
+                    Total : 0 demande(s)
+                </span>
+
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Affilié</th>
+
+                            <th>Pays</th>
+
+                            <th>Montant</th>
+
+                            <th>Méthode</th>
+
+                            <th>Date</th>
+
+                            <th>Statut</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="withdrawalsTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/admin-withdrawals.js"></script>
+
+</body>
+
+</html>
