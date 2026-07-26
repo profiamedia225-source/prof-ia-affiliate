@@ -62,11 +62,13 @@ data.forEach((withdrawal) => {
         <td>${new Date(withdrawal.created_at).toLocaleDateString("fr-FR")}</td>
         <td>
 ${
-    withdrawal.status === "pending"
+    withdrawal.status === "En attente"
         ? "🟡 En attente"
         : withdrawal.status === "paid"
         ? "🟢 Payé"
-        : "🔴 Refusé"
+        : withdrawal.status === "Refusé"
+        ? "🔴 Refusé"
+        : withdrawal.status
 }
 </td>
         <td>
@@ -76,7 +78,7 @@ ${
     </button>
 
     <button class="btn-reject"
-        onclick="updateWithdrawal('${withdrawal.id}','rejected')">
+        onclick="updateWithdrawal('${withdrawal.id}','Refusé')">
         Refuser
     </button>
 </td>
