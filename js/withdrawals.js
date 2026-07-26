@@ -1,4 +1,16 @@
-document.addEventListener("DOMContentLoaded", initWithdrawals);
+/*
+==========================================
+PROF IA MEDIA PARTNERS
+withdrawals.js
+Source unique du solde :
+dashboard-stats
+==========================================
+*/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initWithdrawals
+);
 
 async function initWithdrawals() {
 
@@ -7,43 +19,61 @@ async function initWithdrawals() {
     } = await sb.auth.getSession();
 
     if (!session) {
+
         window.location.href = "login.html";
         return;
+
     }
 
-    const { data, error } = await sb.functions.invoke(
-        "commissions",
-        {
-            headers: {
-                Authorization: `Bearer ${session.access_token}`
+    await loadAvailableBalance(session);
+
+}
+
+async function loadAvailableBalance(session) {
+
+    const { data, error } =
+        await sb.functions.invoke(
+            "dashboard-stats",
+            {
+                headers: {
+                    Authorization:
+                        `Bearer ${session.access_token}`
+                }
             }
-        }
-    );
+        );
 
     if (error) {
 
-        console.error(error);
-        alert("Impossible de charger les commissions.");
+        console.error(
+            "Erreur dashboard-stats :",
+            error
+        );
+
+        alert(
+            "Impossible de charger votre solde disponible."
+        );
+
         return;
 
     }
 
-    const commissions = data.commissions ?? data;
+    const availableBalance =
+        Number(
+            data.availableBalance ?? 0
+        );
 
-    const available = commissions.filter(
-        c => c.status === "available"
-    );
-
-    const total = available.reduce(
-        (sum, c) => sum + Number(c.amount),
-        0
-    );
-
-    document.getElementById("availableBalance").textContent =
-        `${total.toLocaleString("fr-FR")} FCFA`;
+    document.getElementById(
+        "availableBalance"
+    ).textContent =
+        `${availableBalance.toLocaleString("fr-FR")} FCFA`;
 
 }
+
 const form = document.getElementById("withdrawForm");
+
+const method = document.getElementById("method");
+const paymentLabel = document.getElementById("paymentLabel");
+const paymentDetails = document.getElementById("paymentDetails");
 
 form.addEventListener("submit", async (e) => {
 
@@ -59,12 +89,12 @@ form.addEventListener("submit", async (e) => {
             .textContent
             .replace("FCFA", "")
             .replace(/\s/g, "")
+            .replace(/,/g, ".")
     );
 
     if (amount <= 0) {
 
         alert("Veuillez saisir un montant valide.");
-
         return;
 
     }
@@ -72,47 +102,58 @@ form.addEventListener("submit", async (e) => {
     if (amount > availableBalance) {
 
         alert("Le montant demandé dépasse votre solde disponible.");
-
         return;
 
     }
 
     const {
-    data: { session }
-} = await sb.auth.getSession();
+        data: { session }
+    } = await sb.auth.getSession();
 
-const response = await sb.functions.invoke(
-    "withdraw-request",
-    {
-        body: {
-            amount,
-            paymentMethod: method.value,
-            paymentDetails: paymentDetails.value
-        },
-        headers: {
-            Authorization: `Bearer ${session.access_token}`
-        }
+    if (!session) {
+
+        alert("Votre session a expiré.");
+        window.location.href = "login.html";
+        return;
+
     }
-);
 
-if (response.error) {
+    const { error } = await sb.functions.invoke(
+        "withdraw-request",
+        {
+            body: {
+                amount,
+                paymentMethod: method.value,
+                paymentDetails: paymentDetails.value
+            },
+            headers: {
+                Authorization: `Bearer ${session.access_token}`
+            }
+        }
+    );
 
-    console.error(response.error);
+    if (error) {
 
-    alert("Impossible d'envoyer la demande.");
+        console.error(error);
 
-    return;
+        alert(
+            "Impossible d'envoyer la demande de retrait."
+        );
 
-}
+        return;
 
-alert("Votre demande de retrait a été enregistrée avec succès.");
+    }
 
-form.reset();
+    alert(
+        "Votre demande de retrait a été enregistrée avec succès."
+    );
+
+    form.reset();
+
+    // Recharge immédiatement le vrai solde
+    await loadAvailableBalance(session);
 
 });
-const method = document.getElementById("method");
-const paymentLabel = document.getElementById("paymentLabel");
-const paymentDetails = document.getElementById("paymentDetails");
 
 method.addEventListener("change", () => {
 
