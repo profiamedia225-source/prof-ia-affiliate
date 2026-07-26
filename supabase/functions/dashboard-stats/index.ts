@@ -144,6 +144,7 @@ console.log("PROFILE :", profile);
 
     let availableBalance = 0;
 let totalWithdrawals = 0;
+let pendingWithdrawals = 0;
 let totalCommissions = 0;
 
 for (const commission of commissions ?? []) {
@@ -160,11 +161,19 @@ for (const commission of commissions ?? []) {
 
     for (const withdrawal of withdrawals ?? []) {
 
-  if (
-  withdrawal.status === "En attente" ||
-  withdrawal.status === "paid"
-) {
-    totalWithdrawals += Number(withdrawal.amount);
+  const amount = Number(withdrawal.amount);
+
+  if (withdrawal.status === "En attente") {
+
+    pendingWithdrawals += amount;
+    totalWithdrawals += amount;
+
+  }
+
+  if (withdrawal.status === "paid") {
+
+    totalWithdrawals += amount;
+
   }
 
 }
@@ -229,6 +238,7 @@ return new Response(
   JSON.stringify({
     referrals: referrals ?? 0,
     availableBalance,
+    pendingWithdrawals,
     totalCommissions,
     totalWithdrawals,
     sales,

@@ -160,6 +160,9 @@ async function loadDashboardStats() {
     document.getElementById("commissionAmount").textContent =
         Number(data.availableBalance).toLocaleString("fr-FR") + " FCFA";
 
+document.getElementById("pendingWithdrawalAmount").textContent =
+    Number(data.pendingWithdrawals).toLocaleString("fr-FR") + " FCFA";
+
     document.getElementById("salesCount").textContent =
         data.sales;
 
