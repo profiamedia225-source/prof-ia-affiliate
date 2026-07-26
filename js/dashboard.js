@@ -165,6 +165,6 @@ async function loadDashboardStats() {
 
     // En attendant la gestion des retraits
     document.getElementById("withdrawAmount").textContent =
-        "0 FCFA";
+    Number(data.totalWithdrawals).toLocaleString("fr-FR") + " FCFA";
 
 }

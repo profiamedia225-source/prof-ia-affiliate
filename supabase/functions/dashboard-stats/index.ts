@@ -225,21 +225,14 @@ console.log("COMMISSIONS :", commissions);
 console.log("WITHDRAWALS :", withdrawals);
 console.log("AVAILABLE :", availableBalance);
 
-    return new Response(
+return new Response(
   JSON.stringify({
     referrals: referrals ?? 0,
     availableBalance,
     totalCommissions,
+    totalWithdrawals,
     sales,
     revenue,
-
-    debug: {
-      userId,
-      commissions,
-      withdrawals,
-      totalWithdrawals,
-      profile,
-    },
   }),
       {
         status: 200,
