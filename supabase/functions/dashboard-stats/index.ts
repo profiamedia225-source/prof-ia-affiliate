@@ -74,6 +74,22 @@ serve(async (req) => {
     const userId =
       authUser.user.id;
 
+// ==========================================
+// Retraits
+// ==========================================
+
+const {
+  data: withdrawals,
+  error: withdrawalError,
+} = await supabase
+  .from("withdrawals")
+  .select("amount,status")
+  .eq("affiliate_id", userId);
+
+if (withdrawalError) {
+  throw withdrawalError;
+}
+
     console.log(
       "Utilisateur :",
       userId,
@@ -115,6 +131,8 @@ serve(async (req) => {
 
     let availableBalance = 0;
 
+    let totalWithdrawals = 0;
+
     let totalCommissions = 0;
 
     for (const commission of commissions ?? []) {
@@ -145,6 +163,23 @@ serve(async (req) => {
       }
 
     }
+
+    for (const withdrawal of withdrawals ?? []) {
+
+  if (
+    withdrawal.status === "pending" ||
+    withdrawal.status === "paid"
+  ) {
+    totalWithdrawals += Number(withdrawal.amount);
+  }
+
+}
+
+availableBalance -= totalWithdrawals;
+
+if (availableBalance < 0) {
+  availableBalance = 0;
+}
 
     // ==========================================
     // 3. Ventes
