@@ -1,4 +1,5 @@
 console.log("admin-withdrawals.js chargé");
+let allWithdrawals = [];
 document.addEventListener("DOMContentLoaded", loadWithdrawals);
 
 async function loadWithdrawals() {
@@ -41,11 +42,10 @@ console.log("Données :", data);
 
     console.log("Retraits :", data);
 
-console.log(data[0]);
+allWithdrawals = data ?? [];
 
-const tbody = document.getElementById("withdrawalsTable");
-
-tbody.innerHTML = "";
+displayWithdrawals(allWithdrawals);
+return;
 
 document.getElementById("totalWithdrawals").textContent =
 `Total : ${data.length} demande(s)`;
@@ -90,6 +90,55 @@ ${
 
 }
 
+function displayWithdrawals(withdrawals) {
+
+    const tbody = document.getElementById("withdrawalsTable");
+
+    tbody.innerHTML = "";
+
+    document.getElementById("totalWithdrawals").textContent =
+        `Total : ${withdrawals.length} demande(s)`;
+
+    withdrawals.forEach((withdrawal) => {
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${withdrawal.profiles?.fullname ?? "-"}</td>
+            <td>${withdrawal.profiles?.country ?? "-"}</td>
+            <td>${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA</td>
+            <td>${withdrawal.payment_method}</td>
+            <td>${new Date(withdrawal.created_at).toLocaleDateString("fr-FR")}</td>
+            <td>
+            ${
+                withdrawal.status === "En attente"
+                    ? "🟡 En attente"
+                    : withdrawal.status === "paid"
+                    ? "🟢 Payé"
+                    : withdrawal.status === "Refusé"
+                    ? "🔴 Refusé"
+                    : withdrawal.status
+            }
+            </td>
+            <td>
+                <button class="btn-approve"
+                    onclick="updateWithdrawal('${withdrawal.id}','paid')">
+                    Valider
+                </button>
+
+                <button class="btn-reject"
+                    onclick="updateWithdrawal('${withdrawal.id}','Refusé')">
+                    Refuser
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+}
+
 async function updateWithdrawal(withdrawalId, status) {
 
     const {
@@ -117,3 +166,33 @@ async function updateWithdrawal(withdrawalId, status) {
 
     loadWithdrawals();
 }
+// ================================
+// Filtre par statut
+// ================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const statusFilter = document.getElementById("statusFilter");
+
+    if (!statusFilter) return;
+
+    statusFilter.addEventListener("change", () => {
+
+        const selectedStatus = statusFilter.value;
+
+        if (selectedStatus === "Tous") {
+
+            displayWithdrawals(allWithdrawals);
+            return;
+
+        }
+
+        const filtered = allWithdrawals.filter((withdrawal) =>
+            withdrawal.status === selectedStatus
+        );
+
+        displayWithdrawals(filtered);
+
+    });
+
+});
