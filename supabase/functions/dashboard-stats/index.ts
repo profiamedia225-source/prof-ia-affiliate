@@ -94,6 +94,19 @@ if (withdrawalError) {
       "Utilisateur :",
       userId,
     );
+
+    console.log("USER ID :", userId);
+
+const {
+  data: profile,
+} = await supabase
+  .from("profiles")
+  .select("fullname")
+  .eq("id", userId)
+  .single();
+
+console.log("PROFILE :", profile);
+
     // ==========================================
     // 1. Nombre de filleuls
     // ==========================================
@@ -207,6 +220,11 @@ if (availableBalance < 0) {
       sales,
       revenue,
     });
+
+console.log("COMMISSIONS :", commissions);
+console.log("WITHDRAWALS :", withdrawals);
+console.log("AVAILABLE :", availableBalance);
+
     return new Response(
       JSON.stringify({
         referrals: referrals ?? 0,
