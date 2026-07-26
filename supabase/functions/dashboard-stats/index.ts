@@ -152,24 +152,26 @@ if (withdrawalError) {
 
       }
 
-      if (
-        commission.status !==
-        "cancelled"
-      ) {
+      for (const commission of commissions ?? []) {
 
-        totalCommissions +=
-          amount;
+  const amount = Number(commission.amount);
 
-      }
+  totalCommissions += amount;
+
+  if (commission.status === "available") {
+    availableBalance += amount;
+  }
+
+}
 
     }
 
     for (const withdrawal of withdrawals ?? []) {
 
   if (
-    withdrawal.status === "pending" ||
-    withdrawal.status === "paid"
-  ) {
+  withdrawal.status === "En attente" ||
+  withdrawal.status === "paid"
+) {
     totalWithdrawals += Number(withdrawal.amount);
   }
 

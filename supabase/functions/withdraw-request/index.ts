@@ -70,62 +70,186 @@ serve(async (req) => {
 
     console.log("Utilisateur :", userId);
 
-const {
-  amount,
-  paymentMethod,
-  paymentDetails,
-} = await req.json();
+    const {
+      amount,
+      paymentMethod,
+      paymentDetails,
+    } = await req.json();
 
-console.log("Montant :", amount);
-console.log("Méthode :", paymentMethod);
-console.log("Détails :", paymentDetails);
+    const requestedAmount = Number(amount);
 
-const { error: insertError } = await supabase
-  .from("withdrawals")
-  .insert({
-    affiliate_id: userId,
-    amount: Number(amount),
-    payment_method: paymentMethod,
-    payment_details: paymentDetails,
-    status: "En attente",
-  });
+    if (
+      !requestedAmount ||
+      requestedAmount <= 0
+    ) {
 
-if (insertError) {
+      return new Response(
+        JSON.stringify({
+          error: "Montant invalide.",
+        }),
+        {
+          status: 400,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
-  return new Response(
-    JSON.stringify({
-      error: insertError.message,
-    }),
-    {
-      status: 500,
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/json",
-      },
-    },
-  );
+    }
 
-}
-    return new Response(
-  JSON.stringify({
-    success: true,
-    message: "Demande enregistrée avec succès",
-  }),
-  {
-    headers: {
-      ...corsHeaders,
-      "Content-Type": "application/json",
-    },
-  },
-);
+    // ==========================================
+    // Récupération des commissions
+    // ==========================================
 
-  } catch (error) {
+    const {
+      data: commissions,
+      error: commissionError,
+    } = await supabase
+      .from("commissions")
+      .select("amount,status")
+      .eq("affiliate_id", userId);
+
+    if (commissionError) {
+      throw commissionError;
+    }
+
+    // ==========================================
+    // Récupération des retraits
+    // ==========================================
+
+    const {
+      data: withdrawals,
+      error: withdrawalError,
+    } = await supabase
+      .from("withdrawals")
+      .select("amount,status")
+      .eq("affiliate_id", userId);
+
+    if (withdrawalError) {
+      throw withdrawalError;
+    }
+
+    // ==========================================
+    // Calcul du solde disponible
+    // ==========================================
+
+    let totalCommissions = 0;
+    let totalWithdrawals = 0;
+
+    for (const commission of commissions ?? []) {
+
+      if (commission.status === "available") {
+        totalCommissions += Number(commission.amount);
+      }
+
+    }
+
+    for (const withdrawal of withdrawals ?? []) {
+
+      if (
+        withdrawal.status === "En attente" ||
+        withdrawal.status === "paid"
+      ) {
+
+        totalWithdrawals += Number(withdrawal.amount);
+
+      }
+
+    }
+
+    const availableBalance = Math.max(
+      0,
+      totalCommissions - totalWithdrawals,
+    );
+        // ==========================================
+    // Vérification du solde disponible
+    // ==========================================
+
+    console.log("Commissions disponibles :", totalCommissions);
+    console.log("Retraits :", totalWithdrawals);
+    console.log("Solde disponible :", availableBalance);
+    console.log("Montant demandé :", requestedAmount);
+
+    if (requestedAmount > availableBalance) {
+
+      return new Response(
+        JSON.stringify({
+          error:
+            `Solde insuffisant. Votre solde disponible est de ${availableBalance} FCFA.`,
+        }),
+        {
+          status: 400,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+    }
+
+    // ==========================================
+    // Enregistrement de la demande de retrait
+    // ==========================================
+
+    const { error: insertError } = await supabase
+      .from("withdrawals")
+      .insert({
+        affiliate_id: userId,
+        amount: requestedAmount,
+        payment_method: paymentMethod,
+        payment_details: paymentDetails,
+        status: "En attente",
+      });
+
+    if (insertError) {
+
+      return new Response(
+        JSON.stringify({
+          error: insertError.message,
+        }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+    }
+
+    const newBalance =
+      availableBalance - requestedAmount;
+
+    console.log("Nouveau solde :", newBalance);
 
     return new Response(
       JSON.stringify({
-        error: error instanceof Error
-          ? error.message
-          : "Erreur interne",
+        success: true,
+        message: "Demande de retrait enregistrée avec succès.",
+        availableBalance: newBalance,
+      }),
+      {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    return new Response(
+      JSON.stringify({
+        error:
+          error instanceof Error
+            ? error.message
+            : "Erreur interne",
       }),
       {
         status: 500,
