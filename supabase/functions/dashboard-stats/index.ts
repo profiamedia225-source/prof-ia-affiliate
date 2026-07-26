@@ -130,29 +130,10 @@ if (withdrawalError) {
     }
 
     let availableBalance = 0;
+let totalWithdrawals = 0;
+let totalCommissions = 0;
 
-    let totalWithdrawals = 0;
-
-    let totalCommissions = 0;
-
-    for (const commission of commissions ?? []) {
-
-      const amount =
-        Number(
-          commission.amount,
-        );
-
-      if (
-        commission.status ===
-        "available"
-      ) {
-
-        availableBalance +=
-          amount;
-
-      }
-
-      for (const commission of commissions ?? []) {
+for (const commission of commissions ?? []) {
 
   const amount = Number(commission.amount);
 
@@ -163,8 +144,6 @@ if (withdrawalError) {
   }
 
 }
-
-    }
 
     for (const withdrawal of withdrawals ?? []) {
 
