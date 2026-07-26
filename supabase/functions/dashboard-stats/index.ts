@@ -226,13 +226,21 @@ console.log("WITHDRAWALS :", withdrawals);
 console.log("AVAILABLE :", availableBalance);
 
     return new Response(
-      JSON.stringify({
-        referrals: referrals ?? 0,
-        availableBalance,
-        totalCommissions,
-        sales,
-        revenue,
-      }),
+  JSON.stringify({
+    referrals: referrals ?? 0,
+    availableBalance,
+    totalCommissions,
+    sales,
+    revenue,
+
+    debug: {
+      userId,
+      commissions,
+      withdrawals,
+      totalWithdrawals,
+      profile,
+    },
+  }),
       {
         status: 200,
         headers: {
