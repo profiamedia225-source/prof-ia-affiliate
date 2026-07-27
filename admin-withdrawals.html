@@ -42,29 +42,70 @@
 
     <div class="filter-group">
 
+        <label for="searchWithdrawal">
+            🔍 Rechercher :
+        </label>
+
+        <input
+            type="text"
+            id="searchWithdrawal"
+            placeholder="Nom, pays ou méthode de paiement">
+
+    </div>
+
+    <div class="filter-group">
+
         <label for="statusFilter">
             Filtrer par statut :
         </label>
 
         <select id="statusFilter">
 
-            <option value="Tous">
-                Tous
-            </option>
+            <option value="Tous">Tous</option>
 
-            <option value="En attente">
-                🟡 En attente
-            </option>
+            <option value="En attente">🟡 En attente</option>
 
-            <option value="paid">
-                🟢 Payés
-            </option>
+            <option value="paid">🟢 Payés</option>
 
-            <option value="Refusé">
-                🔴 Refusés
-            </option>
+            <option value="Refusé">🔴 Refusés</option>
 
         </select>
+
+    </div>
+
+</div>
+
+<div class="admin-stats-grid">
+
+    <div class="admin-stat-card">
+
+        <span>🟡 En attente</span>
+
+        <h2 id="pendingCount">0</h2>
+
+    </div>
+
+    <div class="admin-stat-card">
+
+        <span>🟢 Payés</span>
+
+        <h2 id="paidCount">0</h2>
+
+    </div>
+
+    <div class="admin-stat-card">
+
+        <span>🔴 Refusés</span>
+
+        <h2 id="rejectedCount">0</h2>
+
+    </div>
+
+    <div class="admin-stat-card">
+
+        <span>💰 À payer</span>
+
+        <h2 id="pendingAmount">0 FCFA</h2>
 
     </div>
 
@@ -86,6 +127,8 @@
 
                             <th>Méthode</th>
 
+                            <th>Compte de paiement</th>
+
                             <th>Date</th>
 
                             <th>Statut</th>
@@ -103,6 +146,37 @@
                 </table>
 
             </div>
+
+<div class="pagination-bar">
+
+    <div class="pagination-info">
+        Afficher
+        <select id="rowsPerPage">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+        lignes
+    </div>
+
+    <div class="pagination-controls">
+
+        <button id="prevPage" class="pagination-btn">
+            ← Précédent
+        </button>
+
+        <span id="pageInfo">
+            Page 1 sur 1
+        </span>
+
+        <button id="nextPage" class="pagination-btn">
+            Suivant →
+        </button>
+
+    </div>
+
+</div>
 
         </section>
 

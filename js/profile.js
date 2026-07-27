@@ -79,3 +79,56 @@ async function updateProfile(fullname, phone, country) {
     return true;
 
 }
+// ==========================================
+// Initialisation de la page Profil
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const user = await getCurrentUser();
+
+    if (!user) return;
+
+    const profile = await loadProfile();
+
+    if (!profile) return;
+
+    document.getElementById("fullname").value =
+        profile.fullname ?? "";
+
+    document.getElementById("email").value =
+        user.email ?? "";
+
+    document.getElementById("phone").value =
+        profile.phone ?? "";
+
+    document.getElementById("country").value =
+        profile.country ?? "";
+
+});
+// ==========================================
+// Sauvegarde du profil
+// ==========================================
+
+document
+    .getElementById("profileForm")
+    .addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const fullname =
+            document.getElementById("fullname").value.trim();
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+        const country =
+            document.getElementById("country").value.trim();
+
+        await updateProfile(
+            fullname,
+            phone,
+            country
+        );
+
+    });

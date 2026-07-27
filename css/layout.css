@@ -1,0 +1,67 @@
+/* ==========================================
+   PROF IA MEDIA PARTNERS
+   Layout Global
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    background:#f8fafc;
+
+    color:#1e293b;
+
+}
+
+.dashboard{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+/* ==========================
+   CONTENU
+========================== */
+
+.content{
+
+    margin-left:260px;
+
+    flex:1;
+
+    min-height:100vh;
+
+    padding:40px;
+
+    overflow-y:auto;
+
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:768px){
+
+    .dashboard{
+
+        flex-direction:column;
+
+    }
+
+    .content{
+
+        margin-left:0;
+
+        padding:20px;
+
+    }
+
+}
