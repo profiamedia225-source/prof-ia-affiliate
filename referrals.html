@@ -8,8 +8,12 @@
 
 <title>Mes filleuls - PROF IA MEDIA</title>
 
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/dashboard.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 
@@ -17,38 +21,7 @@
 
 <div class="dashboard">
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-
-        <div class="logo">
-            <img src="images/logo.png" alt="Logo">
-            <h2>PROF IA MEDIA</h2>
-        </div>
-
-        <ul>
-
-            <li>
-                <a href="dashboard.html">🏠 Tableau de bord</a>
-            </li>
-
-            <li class="active">
-                👥 Mes filleuls
-            </li>
-
-            <li>
-                <a href="commissions.html">💰 Mes commissions</a>
-            </li>
-
-            <li>
-                <a href="#" onclick="logout();return false;">
-                    🚪 Déconnexion
-                </a>
-            </li>
-
-        </ul>
-
-    </aside>
-
+    <div id="sidebar-container"></div>
     <!-- Contenu -->
     <main class="content">
 
@@ -109,6 +82,8 @@
 <script src="js/auth.js"></script>
 
 <script src="js/referrals.js"></script>
+
+<script src="js/sidebar.js"></script>
 
 </body>
 

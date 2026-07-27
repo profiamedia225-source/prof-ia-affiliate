@@ -8,8 +8,12 @@
 
 <title>Demandes de retrait</title>
 
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/dashboard.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 
@@ -17,40 +21,7 @@
 
 <div class="dashboard">
 
-    <aside class="sidebar">
-
-        <div class="logo">
-            <img src="images/logo.png">
-            <h2>PROF IA MEDIA</h2>
-        </div>
-
-        <ul>
-
-            <li>
-                <a href="dashboard.html">🏠 Tableau de bord</a>
-            </li>
-
-            <li>
-                <a href="referrals.html">👥 Mes filleuls</a>
-            </li>
-
-            <li>
-                <a href="commissions.html">💰 Mes commissions</a>
-            </li>
-
-            <li class="active">
-                💳 Demandes de retrait
-            </li>
-
-            <li>
-                <a href="#" onclick="logout();return false;">
-                    🚪 Déconnexion
-                </a>
-            </li>
-
-        </ul>
-
-    </aside>
+<div id="sidebar-container"></div>
 
     <main class="content">
 
@@ -155,6 +126,8 @@
 <script src="js/auth.js"></script>
 
 <script src="js/withdrawals.js"></script>
+
+<script src="js/sidebar.js"></script>
 
 </body>
 

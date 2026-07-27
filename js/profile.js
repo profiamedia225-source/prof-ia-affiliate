@@ -110,9 +110,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Sauvegarde du profil
 // ==========================================
 
-document
-    .getElementById("profileForm")
-    .addEventListener("submit", async (e) => {
+const profileForm = document.getElementById("profileForm");
+
+if (profileForm) {
+
+    profileForm.addEventListener("submit", async (e) => {
 
         e.preventDefault();
 
@@ -132,3 +134,60 @@ document
         );
 
     });
+
+}
+
+    const passwordForm = document.getElementById("passwordForm");
+
+if(passwordForm){
+
+    passwordForm.addEventListener("submit", updatePassword);
+
+}
+
+async function updatePassword(e){
+
+    e.preventDefault();
+
+    const password =
+        document.getElementById("newPassword").value;
+
+    const confirm =
+        document.getElementById("confirmPassword").value;
+
+    if(password !== confirm){
+
+        alert("Les mots de passe ne correspondent pas.");
+
+        return;
+
+    }
+
+    if(password.length < 6){
+
+        alert("Le mot de passe doit contenir au moins 6 caractères.");
+
+        return;
+
+    }
+
+    const { data, error } = await sb.auth.updateUser({
+    password
+});
+
+console.log(data);
+console.log(error);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    alert("Mot de passe modifié avec succès.");
+
+    passwordForm.reset();
+
+}

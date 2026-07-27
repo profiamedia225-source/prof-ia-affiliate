@@ -60,13 +60,13 @@ async function initDashboard() {
 
     if (error) {
 
-        console.error(error);
+    console.error(error);
 
-        alert("Impossible de charger votre profil.");
+    alert(JSON.stringify(error, null, 2));
 
-        return;
+    return;
 
-    }
+}
 
     displayProfile(profile);
 
