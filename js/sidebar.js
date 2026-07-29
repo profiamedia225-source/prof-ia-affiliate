@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         window.location.replace("login.html");
 
-await initSidebarFeatures();
-
     });
+
+await initSidebarFeatures();
 
 async function loadNotificationBadge() {
 
