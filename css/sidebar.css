@@ -176,3 +176,30 @@ RESPONSIVE
 }
 
 }
+.notification-badge {
+
+    margin-left: auto;
+
+    min-width: 22px;
+
+    height: 22px;
+
+    padding: 0 6px;
+
+    border-radius: 50px;
+
+    background: #ff3b30;
+
+    color: #fff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}

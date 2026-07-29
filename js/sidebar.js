@@ -51,6 +51,56 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         window.location.replace("login.html");
 
+await initSidebarFeatures();
+
     });
+
+async function loadNotificationBadge() {
+
+    const badge =
+        document.getElementById("notificationBadge");
+
+    if (!badge) return;
+
+    const {
+        data: { user }
+    } = await window.sb.auth.getUser();
+
+    if (!user) return;
+
+    const { count, error } = await window.sb
+        .from("notifications")
+        .select("*", {
+            count: "exact",
+            head: true
+        })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+
+    if (error) {
+
+        console.error(error);
+        return;
+
+    }
+
+    if (!count || count === 0) {
+
+        badge.style.display = "none";
+        return;
+
+    }
+
+    badge.textContent = count;
+
+    badge.style.display = "flex";
+
+}
+
+async function initSidebarFeatures() {
+
+    await loadNotificationBadge();
+
+}
 
 });
