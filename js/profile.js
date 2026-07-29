@@ -137,27 +137,28 @@ if (profileForm) {
 
 }
 
-    const passwordForm = document.getElementById("passwordForm");
+  const changePasswordBtn =
+    document.getElementById("changePasswordBtn");
 
-if(passwordForm){
+if(changePasswordBtn){
 
-    passwordForm.addEventListener("submit", updatePassword);
+    changePasswordBtn.addEventListener("click", updatePassword);
 
 }
 
-async function updatePassword(e){
+async function updatePassword(){
 
-    e.preventDefault();
+    console.log("updatePassword exécutée");
 
     const password =
-        document.getElementById("newPassword").value;
+        document.getElementById("newPassword").value.trim();
 
     const confirm =
-        document.getElementById("confirmPassword").value;
+        document.getElementById("confirmPassword").value.trim();
 
-    if(password !== confirm){
+    if(password === ""){
 
-        alert("Les mots de passe ne correspondent pas.");
+        alert("Veuillez saisir un mot de passe.");
 
         return;
 
@@ -171,12 +172,37 @@ async function updatePassword(e){
 
     }
 
-    const { data, error } = await sb.auth.updateUser({
-    password
-});
+    if(password !== confirm){
 
-console.log(data);
-console.log(error);
+        alert("Les mots de passe ne correspondent pas.");
+
+        return;
+
+    }
+
+    // Vérifier la session
+    const {
+        data:{session},
+        error:sessionError
+    } = await sb.auth.getSession();
+
+    if(sessionError || !session){
+
+        alert("Votre session a expiré. Veuillez vous reconnecter.");
+
+        return;
+
+    }
+
+    // Mise à jour
+    const { data, error } = await sb.auth.updateUser({
+
+        password: password
+
+    });
+
+    console.log("updateUser data :", data);
+    console.log("updateUser error :", error);
 
     if(error){
 
@@ -188,6 +214,7 @@ console.log(error);
 
     alert("Mot de passe modifié avec succès.");
 
-    passwordForm.reset();
+    document.getElementById("newPassword").value = "";
+document.getElementById("confirmPassword").value = "";
 
 }

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { sendNotification } from "../_shared/notification.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -434,11 +435,18 @@ serve(async (req) => {
 
         } else {
 
-          console.log(
-            "Commission créée avec succès.",
-          );
+    console.log(
+        "Commission créée avec succès.",
+    );
 
-        }
+    await sendNotification(supabase, {
+        userId: affiliateId,
+        type: "commission",
+        title: "💰 Nouvelle commission",
+        message: `Une commission de ${commissionAmount.toLocaleString("fr-FR")} FCFA a été créditée sur votre compte.`,
+    });
+
+}
 
       } else {
 

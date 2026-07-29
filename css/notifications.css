@@ -1,0 +1,182 @@
+/* ==========================================
+   NOTIFICATIONS
+========================================== */
+
+.main-content{
+    margin-left:260px;
+    padding:40px;
+    min-height:100vh;
+    background:#f5f7fb;
+}
+
+/* ========================= */
+
+.page-header{
+
+    margin-bottom:30px;
+
+}
+
+.page-header h1{
+
+    font-size:32px;
+
+    color:#111827;
+
+    margin-bottom:8px;
+
+}
+
+.page-header p{
+
+    color:#6b7280;
+
+}
+
+/* ========================= */
+
+.notifications-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+/* ========================= */
+
+.notification-card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    border-left:6px solid #2563eb;
+
+    transition:.3s;
+
+}
+
+.notification-card:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* ========================= */
+
+.notification-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+    color:#111827;
+
+}
+
+.notification-message{
+
+    color:#4b5563;
+
+    line-height:1.6;
+
+    margin-bottom:15px;
+
+}
+
+.notification-date{
+
+    color:#9ca3af;
+
+    font-size:14px;
+
+}
+
+/* ========================= */
+
+.notification-unread{
+
+    border-left:6px solid #22c55e;
+
+}
+
+/* ========================= */
+
+.loading{
+
+    text-align:center;
+
+    padding:50px;
+
+    color:#6b7280;
+
+}
+
+/* ========================= */
+
+.empty{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:50px;
+
+    text-align:center;
+
+    color:#6b7280;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+/* ========================= */
+
+.mark-read-btn{
+
+    margin-top:15px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.mark-read-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ========================= */
+
+@media(max-width:900px){
+
+    .main-content{
+
+        margin-left:0;
+
+        padding:20px;
+
+    }
+
+}
