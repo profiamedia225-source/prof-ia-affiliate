@@ -311,6 +311,19 @@ serve(async (req) => {
 
         affiliateId = sponsor.id;
 
+// ==========================================
+// Informations du nouveau filleul
+// ==========================================
+
+const { data: referralProfile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", order.user_id)
+    .maybeSingle();
+
+const referralName =
+    referralProfile?.full_name || "Un nouvel affilié";
+
         console.log(
           "Sponsor trouvé :",
           affiliateId,
@@ -329,16 +342,34 @@ serve(async (req) => {
             order.user_id,
           );
 
-        await supabase
-          .from("orders")
-          .update({
-            affiliate_id: affiliateId,
-          })
-          .eq(
-            "id",
-            order.id,
-          );
+        const { error: updateOrderError } = await supabase
+    .from("orders")
+    .update({
+        affiliate_id: affiliateId,
+    })
+    .eq("id", order.id);
 
+if (updateOrderError) {
+
+    console.error(
+        "Erreur mise à jour commande :",
+        updateOrderError
+    );
+
+} else {
+
+    await sendNotification(supabase, {
+        userId: affiliateId,
+        type: "new_referral",
+        title: "👥 Nouveau filleul",
+        message: `Félicitations ! ${referralName} a rejoint votre réseau grâce à votre lien de parrainage.`,
+    });
+
+    console.log(
+        "Notification nouveau filleul envoyée."
+    );
+
+}
       }
 
     } else {
