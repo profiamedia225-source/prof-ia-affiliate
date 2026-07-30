@@ -456,6 +456,7 @@ if (updateOrderError) {
               "available",
 
           });
+          
 
         if (commissionError) {
 
