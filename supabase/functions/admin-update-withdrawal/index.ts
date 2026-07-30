@@ -143,7 +143,7 @@ if (status === "paid") {
     userId: withdrawal.affiliate_id,
     type: "withdrawal_paid",
     title: "💳 Retrait validé",
-    message: `Votre demande de retrait de ${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA a été validée. Le paiement sera traité prochainement.`
+    message: `Votre demande de retrait de ${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA a été validée. Le paiement sera traité sous 72 heures.`
   });
 
 }
@@ -154,7 +154,7 @@ if (status === "Refusé") {
     userId: withdrawal.affiliate_id,
     type: "withdrawal_rejected",
     title: "❌ Retrait refusé",
-    message: `Votre demande de retrait de ${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA a été refusée. Consultez votre espace affilié pour plus d'informations.`
+    message: `Votre demande de retrait de ${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA a été refusée. Veuillez contacter le support pour plus d'informations.`
   });
 
 }
