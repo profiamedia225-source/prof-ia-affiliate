@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { sendNotification } from "../_shared/notification.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -93,7 +94,7 @@ Deno.serve(async (req) => {
     // Vérifie que le retrait existe
   const { data: withdrawal, error: withdrawalError } = await supabase
     .from("withdrawals")
-    .select("id, affiliate_id, status")
+    .select("id, affiliate_id, status, amount")
     .eq("id", withdrawalId)
     .single();
 
@@ -135,6 +136,29 @@ Deno.serve(async (req) => {
       }
     );
   }
+
+if (status === "paid") {
+
+  await sendNotification(supabase, {
+    userId: withdrawal.affiliate_id,
+    type: "withdrawal_paid",
+    title: "💳 Retrait validé",
+    message: `Votre demande de retrait de ${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA a été validée. Le paiement sera traité prochainement.`
+  });
+
+}
+
+if (status === "Refusé") {
+
+  await sendNotification(supabase, {
+    userId: withdrawal.affiliate_id,
+    type: "withdrawal_rejected",
+    title: "❌ Retrait refusé",
+    message: `Votre demande de retrait de ${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA a été refusée. Consultez votre espace affilié pour plus d'informations.`
+  });
+
+}
+console.log("Notification de retrait envoyée.");
 
     // La table "commissions" n'est plus modifiée ici.
   // Le solde disponible est calculé dynamiquement par
