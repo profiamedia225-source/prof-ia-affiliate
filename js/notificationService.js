@@ -66,7 +66,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         }
 
-        loadNotifications(user.id);
+        await loadNotifications(user.id);
+
+startNotificationRealtime(user.id);
 
     } catch (err) {
 
@@ -233,3 +235,63 @@ async function markAsRead(
     loadNotifications(userId);
 
 }
+/* ===================================== */
+/* REALTIME */
+/* ===================================== */
+
+let notificationChannel = null;
+
+function startNotificationRealtime(userId) {
+
+    if (notificationChannel) {
+
+        sb.removeChannel(notificationChannel);
+
+    }
+
+    notificationChannel = sb
+
+        .channel(`notifications-${userId}`)
+
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "notifications",
+                filter: `user_id=eq.${userId}`
+            },
+
+            async () => {
+
+                await loadNotifications(userId);
+
+                if (typeof loadNotificationBadge === "function") {
+
+                    await loadNotificationBadge();
+
+                }
+
+            }
+
+        )
+
+        .subscribe(status => {
+
+            console.log(
+                "Notifications Realtime :",
+                status
+            );
+
+        });
+
+}
+window.addEventListener("beforeunload", () => {
+
+    if (notificationChannel) {
+
+        sb.removeChannel(notificationChannel);
+
+    }
+
+});
