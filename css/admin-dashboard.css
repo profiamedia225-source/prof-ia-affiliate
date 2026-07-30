@@ -1,0 +1,201 @@
+/* ==========================================
+   PROF IA MEDIA PARTNERS
+   ADMIN DASHBOARD
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:#f5f7fb;
+
+    display:flex;
+
+    color:#1f2937;
+
+}
+
+/* ========================= */
+
+.dashboard{
+
+    flex:1;
+
+    margin-left:220px;
+
+    padding:35px;
+
+}
+
+/* ========================= */
+
+.dashboard-header{
+
+    margin-bottom:35px;
+
+}
+
+.dashboard-header h1{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.dashboard-header p{
+
+    color:#6b7280;
+
+}
+
+/* ========================= */
+
+.kpi-grid{
+
+    display:grid;
+
+    grid-template-columns:
+repeat(auto-fit,minmax(210px,1fr));
+
+    gap:25px;
+
+}
+
+/* ========================= */
+
+.kpi-card{
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.06);
+
+    transition:
+        .25s;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+    border:1px solid #edf2f7;
+
+}
+
+.kpi-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 18px 35px rgba(0,0,0,.10);
+
+}
+
+/* ========================= */
+
+.kpi-card i{
+
+    font-size:30px;
+
+    color:#4f46e5;
+
+}
+
+/* ========================= */
+
+.kpi-card h3{
+
+    font-size:16px;
+
+    color:#6b7280;
+
+    font-weight:600;
+
+}
+
+/* ========================= */
+
+.kpi-card span{
+
+    font-size:34px;
+
+    font-weight:bold;
+
+    color:#111827;
+
+}
+
+/* ========================= */
+
+.charts{
+
+    margin-top:40px;
+
+}
+
+.chart-card{
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    min-height:350px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.06);
+
+    border:1px solid #edf2f7;
+
+}
+
+.chart-card h2{
+
+    margin-bottom:15px;
+
+}
+
+.chart-card p{
+
+    color:#6b7280;
+
+}
+
+/* ========================= */
+
+@media(max-width:768px){
+
+.dashboard{
+
+    padding:20px;
+
+}
+
+.dashboard-header h1{
+
+    font-size:26px;
+
+}
+
+.kpi-card span{
+
+    font-size:28px;
+
+}
+
+}

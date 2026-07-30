@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Dashboard Administrateur
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/admin-dashboard.css">
+
+    <link
+        rel="stylesheet"
+        href="css/sidebar.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div id="sidebar-container"></div>
+
+    <!-- Contenu -->
+
+    <main class="dashboard">
+
+        <header class="dashboard-header">
+
+            <h1>
+                Dashboard Administrateur
+            </h1>
+
+            <p>
+                Vue globale de la plateforme PROF IA MEDIA PARTNERS
+            </p>
+
+        </header>
+
+        <!-- KPI -->
+
+        <section class="kpi-grid">
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-users"></i>
+
+                <h3>Utilisateurs</h3>
+
+                <span id="totalProfiles">0</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <h3>Commandes</h3>
+
+                <span id="totalOrders">0</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-money-bill-wave"></i>
+
+                <h3>Chiffre d'affaires</h3>
+
+                <span id="totalRevenue">0 FCFA</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-coins"></i>
+
+                <h3>Commissions</h3>
+
+                <span id="totalCommissions">0 FCFA</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-hourglass-half"></i>
+
+                <h3>Retraits en attente</h3>
+
+                <span id="pendingWithdrawals">0</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <h3>Retraits validés</h3>
+
+                <span id="paidWithdrawals">0</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-circle-xmark"></i>
+
+                <h3>Retraits refusés</h3>
+
+                <span id="rejectedWithdrawals">0</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <h3>Notifications</h3>
+
+                <span id="unreadNotifications">0</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-computer-mouse"></i>
+
+                <h3>Clics</h3>
+
+                <span id="totalClicks">0</span>
+
+            </div>
+
+            <div class="kpi-card">
+
+                <i class="fa-solid fa-box"></i>
+
+                <h3>Produits</h3>
+
+                <span id="totalProducts">0</span>
+
+            </div>
+
+        </section>
+
+        <!-- Zone graphique -->
+
+        <section class="charts">
+
+            <div class="chart-card">
+
+                <h2>
+                    Graphiques
+                </h2>
+
+                <p>
+                    Les graphiques seront ajoutés à l'étape suivante.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/config.js"></script>
+
+    <script src="js/sidebar.js"></script>
+
+    <script src="js/admin-dashboard.js"></script>
+
+</body>
+
+</html>
