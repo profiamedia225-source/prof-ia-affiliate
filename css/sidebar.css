@@ -29,6 +29,15 @@
 
 }
 
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:#4F46E5;
+    border-radius:10px;
+}
+
 /* ===============================
 LOGO
 ================================ */
