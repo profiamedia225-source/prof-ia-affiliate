@@ -159,29 +159,111 @@
 
         <section class="charts">
 
-            <div class="chart-card">
+    <div class="chart-card">
 
-                <h2>
-                    Graphiques
-                </h2>
+        <h2>Évolution des ventes</h2>
 
-                <p>
-                    Les graphiques seront ajoutés à l'étape suivante.
-                </p>
+        <canvas id="salesChart" height="280"></canvas>
 
-            </div>
+    </div>
 
-        </section>
+    <div class="chart-card">
+
+        <h2>Évolution des commissions</h2>
+
+        <canvas id="commissionChart"></canvas>
+
+    </div>
+
+</section>
+
+<section class="dashboard-tables">
+
+    <div class="table-card">
+
+        <h2>🏆 Top Affiliés</h2>
+
+        <table id="topAffiliatesTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>Rang</th>
+
+                    <th>Affilié</th>
+
+                    <th>Ventes</th>
+
+                    <th>Commissions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+<section class="dashboard-tables">
+
+    <div class="table-card">
+
+        <h2>📦 Top Produits</h2>
+
+        <table id="topProductsTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>Rang</th>
+
+                    <th>Produit</th>
+
+                    <th>Ventes</th>
+
+                    <th>Chiffre d'affaires</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
 
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="js/config.js"></script>
+    <script src="js/config.js"></script>
 
-    <script src="js/sidebar.js"></script>
+    <script src="js/admin-auth.js"></script>
+
+    <script src="js/admin-sidebar.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="js/admin-dashboard.js"></script>
+    
+    <script src="js/charts.js"></script>
+
+    <script src="js/top-affiliates.js"></script>
+
+    <script src="js/top-products.js"></script>
 
 </body>
 

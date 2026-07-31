@@ -42,3 +42,36 @@ entrypoint = "./functions/withdraw-request/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/withdraw-request/*.html" ]
+
+[functions.admin-dashboard-charts]
+enabled = true
+verify_jwt = false
+import_map = "./functions/admin-dashboard-charts/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/admin-dashboard-charts/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/admin-dashboard-charts/*.html" ]
+
+[functions.admin-top-affiliates]
+enabled = true
+verify_jwt = false
+import_map = "./functions/admin-top-affiliates/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/admin-top-affiliates/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/admin-top-affiliates/*.html" ]
+
+[functions.admin-top-products]
+enabled = true
+verify_jwt = false
+import_map = "./functions/admin-top-products/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/admin-top-products/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/admin-top-products/*.html" ]
