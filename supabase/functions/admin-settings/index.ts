@@ -1,4 +1,3 @@
-import { getAffiliateStats } from "../_shared/affiliate-stats.ts";
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -12,9 +11,11 @@ const corsHeaders = {
 serve(async (req) => {
 
   if (req.method === "OPTIONS") {
+
     return new Response("ok", {
       headers: corsHeaders,
     });
+
   }
 
   try {
@@ -25,51 +26,15 @@ serve(async (req) => {
     );
 
     const { data, error } = await supabase
-  .from("withdrawals")
-  .select(`
-    id,
-    affiliate_id,
-    amount,
-    payment_method,
-    payment_details,
-    status,
-    created_at,
-    profiles!withdrawals_affiliate_id_fkey (
-      fullname,
-      country,
-      email,
-      phone
-    )
-`)
-  .order("created_at", {
-    ascending: false,
-  });
-  
-    if (error) {
-      throw error;
-    }
+      .from("settings")
+      .select("*")
+      .order("category")
+      .order("setting_key");
 
-const withdrawals = [];
-
-for (const withdrawal of data ?? []) {
-
-    const stats = await getAffiliateStats(
-        supabase,
-        withdrawal.affiliate_id
-    );
-
-    withdrawals.push({
-
-        ...withdrawal,
-
-        stats
-
-    });
-
-}
+    if (error) throw error;
 
     return new Response(
-      JSON.stringify(withdrawals),
+      JSON.stringify(data),
       {
         headers: {
           ...corsHeaders,

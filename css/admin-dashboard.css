@@ -262,3 +262,72 @@ repeat(auto-fit,minmax(210px,1fr));
     border-bottom:1px solid #f1f5f9;
 
 }
+.action-menu{
+
+position:relative;
+
+display:inline-block;
+
+}
+
+.action-toggle{
+
+background:none;
+
+border:none;
+
+font-size:22px;
+
+cursor:pointer;
+
+padding:6px;
+
+}
+
+.action-dropdown{
+
+display:none;
+
+position:absolute;
+
+right:0;
+
+top:36px;
+
+background:white;
+
+border-radius:12px;
+
+box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+overflow:hidden;
+
+min-width:220px;
+
+z-index:1000;
+
+}
+
+.action-dropdown button{
+
+width:100%;
+
+padding:12px 18px;
+
+text-align:left;
+
+background:none;
+
+border:none;
+
+cursor:pointer;
+
+transition:.2s;
+
+}
+
+.action-dropdown button:hover{
+
+background:#F8FAFC;
+
+}

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Administration - Paramètres</title>
+
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/dashboard.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<div id="sidebar-container"></div>
+
+<main class="content">
+
+<section class="profile-section">
+
+<div class="page-header">
+
+<h1>⚙️ Paramètres généraux</h1>
+
+<p>
+Configurez le fonctionnement de PROF IA MEDIA PARTNERS.
+</p>
+
+</div>
+
+<!-- ========================= -->
+<!-- AFFILIATION -->
+<!-- ========================= -->
+
+<div class="settings-card">
+
+<h2>💰 Affiliation</h2>
+
+<div class="profile-grid">
+
+<div>
+
+<label>Commission (%)</label>
+
+<input
+type="number"
+id="commission_rate"
+class="settings-input">
+
+</div>
+
+<div>
+
+<label>Retrait minimum (FCFA)</label>
+
+<input
+type="number"
+id="minimum_withdrawal"
+class="settings-input">
+
+</div>
+
+<div>
+
+<label>Programme d'affiliation</label>
+
+<select
+id="affiliate_program_enabled"
+class="settings-input">
+
+<option value="true">Activé</option>
+
+<option value="false">Désactivé</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- FORMATION -->
+<!-- ========================= -->
+
+<div class="settings-card">
+
+<h2>🎓 Formation</h2>
+
+<div class="profile-grid">
+
+<div>
+
+<label>Nom de la formation</label>
+
+<input
+type="text"
+id="formation_name"
+class="settings-input">
+
+</div>
+
+<div>
+
+<label>Prix (FCFA)</label>
+
+<input
+type="number"
+id="formation_price"
+class="settings-input">
+
+</div>
+
+<div style="grid-column:1 / -1;">
+
+<label>Page de vente</label>
+
+<input
+type="text"
+id="sales_page_url"
+class="settings-input">
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- ENTREPRISE -->
+<!-- ========================= -->
+
+<div class="settings-card">
+
+<h2>🏢 Entreprise</h2>
+
+<div class="profile-grid">
+
+<div>
+
+<label>Nom</label>
+
+<input
+type="text"
+id="company_name"
+class="settings-input">
+
+</div>
+
+<div>
+
+<label>Email</label>
+
+<input
+type="email"
+id="support_email"
+class="settings-input">
+
+</div>
+
+<div>
+
+<label>Téléphone</label>
+
+<input
+type="text"
+id="support_phone"
+class="settings-input">
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- PAIEMENTS -->
+<!-- ========================= -->
+
+<div class="settings-card">
+
+<h2>💳 Paiements</h2>
+
+<label>Méthodes autorisées</label>
+
+<input
+type="text"
+id="payment_methods"
+class="settings-input">
+
+</div>
+
+<!-- ========================= -->
+<!-- SECURITE -->
+<!-- ========================= -->
+
+<div class="settings-card">
+
+<h2>🔒 Sécurité</h2>
+
+<div class="profile-grid">
+
+<div>
+
+<label>Mode maintenance</label>
+
+<select
+id="maintenance_mode"
+class="settings-input">
+
+<option value="false">Désactivé</option>
+
+<option value="true">Activé</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label>Autoriser les inscriptions</label>
+
+<select
+id="registration_enabled"
+class="settings-input">
+
+<option value="true">Oui</option>
+
+<option value="false">Non</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+<div style="margin-top:35px;">
+
+<button
+id="saveSettings"
+class="btn-primary">
+
+💾 Enregistrer les modifications
+
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-sidebar.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/admin-settings.js"></script>
+
+</body>
+
+</html>

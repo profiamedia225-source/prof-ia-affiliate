@@ -53,52 +53,19 @@ displayWithdrawals(allWithdrawals);
 updateStats(allWithdrawals);
 return;
 
-document.getElementById("totalWithdrawals").textContent =
-`Total : ${data.length} demande(s)`;
-
-data.forEach((withdrawal) => {
-
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-        <td>${withdrawal.profiles?.fullname ?? "-"}</td>
-        <td>${withdrawal.profiles?.country ?? "-"}</td>
-        <td>${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA</td>
-        <td>${withdrawal.payment_method}</td>
-        <td>${new Date(withdrawal.created_at).toLocaleDateString("fr-FR")}</td>
-        <td>
-${
-    withdrawal.status === "En attente"
-        ? "🟡 En attente"
-        : withdrawal.status === "paid"
-        ? "🟢 Payé"
-        : withdrawal.status === "Refusé"
-        ? "🔴 Refusé"
-        : withdrawal.status
-}
-</td>
-        <td>
-    <button class="btn-approve"
-        onclick="updateWithdrawal('${withdrawal.id}','paid')">
-        Valider
-    </button>
-
-    <button class="btn-reject"
-        onclick="updateWithdrawal('${withdrawal.id}','Refusé')">
-        Refuser
-    </button>
-</td>
-    `;
-
-    tbody.appendChild(tr);
-
-});
-
 }
 
 function displayWithdrawals(withdrawals) {
 
     const tbody = document.getElementById("withdrawalsTable");
+
+document
+.querySelectorAll(".action-dropdown")
+.forEach(menu=>{
+
+menu.style.display="none";
+
+});
 
     tbody.innerHTML = "";
 
@@ -114,9 +81,51 @@ const paginatedWithdrawals = withdrawals.slice(start, end);
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-            <td>${withdrawal.profiles?.fullname ?? "-"}</td>
+            <td>
+
+    <strong>${withdrawal.profiles?.fullname ?? "-"}</strong>
+
+    <br>
+
+    <small style="color:#64748B;">
+
+        💰 Solde :
+        ${Number(withdrawal.stats.availableBalance)
+            .toLocaleString("fr-FR")} FCFA
+
+    </small>
+
+    <br>
+
+    <small style="color:#64748B;">
+
+        📈 Commissions :
+        ${Number(withdrawal.stats.totalCommissions)
+            .toLocaleString("fr-FR")} FCFA
+
+    </small>
+
+</td>
             <td>${withdrawal.profiles?.country ?? "-"}</td>
-            <td>${Number(withdrawal.amount).toLocaleString("fr-FR")} FCFA</td>
+            <td>
+
+    <strong>
+
+        ${Number(withdrawal.amount)
+            .toLocaleString("fr-FR")} FCFA
+
+    </strong>
+
+    <br>
+
+    <small style="color:#64748B;">
+
+        📊 Ventes :
+        ${withdrawal.stats.sales}
+
+    </small>
+
+</td>
             <td>${withdrawal.payment_method}</td>
             <td>
 
@@ -136,28 +145,76 @@ const paginatedWithdrawals = withdrawals.slice(start, end);
 
 </td>
             <td>${new Date(withdrawal.created_at).toLocaleDateString("fr-FR")}</td>
-            <td>
-            ${
-                withdrawal.status === "En attente"
-                    ? "🟡 En attente"
-                    : withdrawal.status === "paid"
-                    ? "🟢 Payé"
-                    : withdrawal.status === "Refusé"
-                    ? "🔴 Refusé"
-                    : withdrawal.status
-            }
-            </td>
-            <td>
-                <button class="btn-approve"
-                    onclick="updateWithdrawal('${withdrawal.id}','paid')">
-                    Valider
-                </button>
+           <td>
 
-                <button class="btn-reject"
-                    onclick="updateWithdrawal('${withdrawal.id}','Refusé')">
-                    Refuser
-                </button>
-            </td>
+<span class="${
+    withdrawal.status === "En attente"
+        ? "status-pending"
+        : withdrawal.status === "paid"
+        ? "status-active"
+        : "status-inactive"
+}">
+
+${
+    withdrawal.status === "En attente"
+        ? "🟡 En attente"
+        : withdrawal.status === "paid"
+        ? "🟢 Payé"
+        : "🔴 Refusé"
+}
+
+</span>
+
+</td>
+           <td>
+
+<div class="action-menu">
+
+<button
+class="action-toggle"
+onclick="toggleActionMenu('${withdrawal.id}')">
+
+⋮
+
+</button>
+
+<div
+id="menu-${withdrawal.id}"
+class="action-dropdown">
+
+<button
+onclick="openAffiliateCRM('${withdrawal.affiliate_id}')">
+
+👁 Voir le CRM
+
+</button>
+
+<button
+onclick="updateWithdrawal('${withdrawal.id}','paid')">
+
+💳 Valider
+
+</button>
+
+<button
+onclick="updateWithdrawal('${withdrawal.id}','Refusé')">
+
+❌ Refuser
+
+</button>
+
+<button
+onclick="copyPaymentNumber('${withdrawal.payment_details}')">
+
+📋 Copier le numéro
+
+</button>
+
+</div>
+
+</div>
+
+</td>
         `;
 
         tbody.appendChild(tr);
@@ -296,7 +353,9 @@ async function updateWithdrawal(withdrawalId, status) {
         return;
     }
 
-    loadWithdrawals();
+    await loadWithdrawals();
+
+applyFilters();
 }
 
 // ================================
@@ -388,5 +447,57 @@ function copyPaymentNumber(number) {
     navigator.clipboard.writeText(number);
 
     alert("Numéro copié : " + number);
+
+}
+function toggleActionMenu(id){
+
+const menu=document.getElementById(`menu-${id}`);
+
+document
+.querySelectorAll(".action-dropdown")
+.forEach(m=>{
+
+if(m!==menu){
+
+m.style.display="none";
+
+}
+
+});
+
+menu.style.display=
+menu.style.display==="block"
+?"none"
+:"block";
+
+}
+
+document.addEventListener("click",(e)=>{
+
+if(!e.target.closest(".action-menu")){
+
+document
+.querySelectorAll(".action-dropdown")
+.forEach(menu=>{
+
+menu.style.display="none";
+
+});
+
+}
+
+});
+async function openAffiliateCRM(affiliateId) {
+
+    const modal = document.getElementById("affiliateModal");
+
+    if (!modal) {
+
+        window.location.href = `admin-affiliates.html?id=${affiliateId}`;
+        return;
+
+    }
+
+    openAffiliateModal(affiliateId);
 
 }

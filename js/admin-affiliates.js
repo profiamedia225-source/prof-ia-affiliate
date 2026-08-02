@@ -50,10 +50,10 @@ function renderAffiliates(list) {
 
             <td>${affiliate.country ?? "-"}</td>
 
-            <td>${Number(affiliate.balance)
+            <td>${Number(affiliate.availableBalance)
                 .toLocaleString("fr-FR")} FCFA</td>
 
-            <td>${Number(affiliate.total_commissions)
+            <td>${Number(affiliate.totalCommissions)
                 .toLocaleString("fr-FR")} FCFA</td>
 
             <td>
@@ -124,17 +124,11 @@ function initSearch() {
 const modal = document.getElementById("affiliateModal");
 const details = document.getElementById("affiliateDetails");
 
-document.addEventListener("click", async (e) => {
-
-    const btn = e.target.closest(".view-btn");
-
-    if (!btn) return;
+async function openAffiliateModal(affiliateId) {
 
     modal.style.display = "flex";
 
     details.innerHTML = "<p>Chargement...</p>";
-
-    const affiliateId = btn.dataset.id;
 
     const { data, error } = await sb.functions.invoke(
         "admin-affiliate-details",
@@ -158,6 +152,49 @@ document.addEventListener("click", async (e) => {
 
     renderAffiliateDetails(data);
 
+}
+
+function closeAffiliateModal() {
+
+    modal.style.display = "none";
+
+}
+// ==========================================
+// MODALE AFFILIÉ
+// ==========================================
+
+document.addEventListener("click", async (e) => {
+
+    const btn = e.target.closest(".view-btn");
+
+    if (!btn) return;
+
+    modal.style.display = "flex";
+
+    details.innerHTML = "<p>Chargement...</p>";
+
+    const { data, error } = await sb.functions.invoke(
+        "admin-affiliate-details",
+        {
+            body: {
+                affiliate_id: btn.dataset.id
+            }
+        }
+    );
+
+    if (error) {
+
+        console.error(error);
+
+        details.innerHTML =
+            "<p>Erreur lors du chargement.</p>";
+
+        return;
+
+    }
+
+    renderAffiliateDetails(data);
+
 });
 
 document
@@ -167,6 +204,17 @@ document
     modal.style.display = "none";
 
 });
+
+window.addEventListener("click", (e) => {
+
+    if (e.target === modal) {
+
+        modal.style.display = "none";
+
+    }
+
+});
+
 function renderAffiliateDetails(data) {
 
     const p = data.profile;
@@ -196,20 +244,16 @@ function renderAffiliateDetails(data) {
                 <h3>💰 Finances</h3>
 
                 <p><strong>Solde :</strong>
-
-                ${Number(p.balance).toLocaleString("fr-FR")} FCFA</p>
+                ${Number(data.stats.availableBalance).toLocaleString("fr-FR")} FCFA</p>
 
                 <p><strong>Commissions :</strong>
-
-                ${Number(p.total_commissions).toLocaleString("fr-FR")} FCFA</p>
+                ${Number(data.stats.totalCommissions).toLocaleString("fr-FR")} FCFA</p>
 
                 <p><strong>Retraits :</strong>
-
-                ${data.withdrawals.length}</p>
+                ${Number(data.stats.totalWithdrawals).toLocaleString("fr-FR")} FCFA</p>
 
                 <p><strong>Ventes :</strong>
-
-                ${data.orders.length}</p>
+                ${data.stats.sales}</p>
 
             </div>
 

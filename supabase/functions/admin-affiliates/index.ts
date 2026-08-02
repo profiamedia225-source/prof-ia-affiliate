@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { getAffiliateStats } from "../_shared/affiliate-stats.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,8 +21,8 @@ Deno.serve(async (req) => {
   );
 
   const { data, error } = await supabase
-    .from("profiles")
-    .select(`
+  .from("profiles")
+  .select(`
       id,
       fullname,
       email,
@@ -29,17 +30,15 @@ Deno.serve(async (req) => {
       country,
       affiliate_code,
       affiliate_link,
-      balance,
-      total_commissions,
       status,
       role,
       created_at
-    `)
-    .eq("role", "affiliate")
-    .order("created_at", { ascending: false });
+  `)
+  .eq("role", "affiliate")
+  .order("created_at", { ascending: false });
 
   if (error) {
-
+    
     return new Response(
       JSON.stringify(error),
       {
@@ -53,8 +52,33 @@ Deno.serve(async (req) => {
 
   }
 
+const affiliates = [];
+
+for (const profile of data ?? []) {
+
+    const stats = await getAffiliateStats(
+        supabase,
+        profile.id
+    );
+
+    affiliates.push({
+
+        ...profile,
+
+        availableBalance: stats.availableBalance,
+
+        totalCommissions: stats.totalCommissions,
+
+        sales: stats.sales,
+
+        referrals: stats.referrals
+
+    });
+
+}
+
   return new Response(
-    JSON.stringify(data),
+    JSON.stringify(affiliates),
     {
       headers: {
         ...corsHeaders,
