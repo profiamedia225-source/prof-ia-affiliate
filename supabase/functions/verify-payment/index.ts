@@ -406,8 +406,30 @@ if (updateOrderError) {
         const saleAmount =
           Number(order.amount);
 
-        const commissionRate =
-          20;
+        const { data: settingsData, error: settingsError } =
+  await supabase
+    .from("settings")
+    .select("setting_key, setting_value");
+
+if (settingsError) {
+
+  throw settingsError;
+
+}
+
+const settings: Record<string, string> = {};
+
+for (const row of settingsData ?? []) {
+
+  settings[row.setting_key] =
+    row.setting_value;
+
+}
+
+const commissionRate =
+  Number(
+    settings.commission_rate ?? 20
+  );
 
         const commissionAmount =
           Number(

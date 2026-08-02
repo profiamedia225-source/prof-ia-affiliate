@@ -67,6 +67,8 @@ async function loadAvailableBalance(session) {
     ).textContent =
         `${availableBalance.toLocaleString("fr-FR")} FCFA`;
 
+        await loadPaymentMethods();
+
 }
 
 const form = document.getElementById("withdrawForm");
@@ -78,6 +80,11 @@ const paymentDetails = document.getElementById("paymentDetails");
 form.addEventListener("submit", async (e) => {
 
     e.preventDefault();
+
+const settings = await loadSettings();
+
+const minimumWithdrawal =
+    Number(settings.minimum_withdrawal ?? 5000);
 
     const amount = Number(
         document.getElementById("amount").value
@@ -98,6 +105,16 @@ form.addEventListener("submit", async (e) => {
         return;
 
     }
+
+    if (amount < minimumWithdrawal) {
+
+    alert(
+        `Le montant minimum de retrait est de ${minimumWithdrawal.toLocaleString("fr-FR")} FCFA.`
+    );
+
+    return;
+
+}
 
     if (amount > availableBalance) {
 
@@ -200,3 +217,30 @@ method.addEventListener("change", () => {
     }
 
 });
+async function loadPaymentMethods() {
+
+    const settings = await loadSettings();
+
+    const methods =
+        (settings.payment_methods || "")
+        .split(",")
+        .map(item => item.trim())
+        .filter(Boolean);
+
+    method.innerHTML = "";
+
+    methods.forEach(paymentMethod => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = paymentMethod;
+        option.textContent = paymentMethod;
+
+        method.appendChild(option);
+
+    });
+
+    method.dispatchEvent(new Event("change"));
+
+}
