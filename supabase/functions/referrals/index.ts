@@ -93,12 +93,14 @@ serve(async (req) => {
 
     for (const referral of referrals ?? []) {
 
-      const { data: paidOrder } = await supabase
-        .from("orders")
-        .select("id")
-        .eq("user_id", referral.id)
-        .eq("status", "paid")
-        .maybeSingle();
+     const { data: paidOrders } = await supabase
+  .from("orders")
+  .select("id")
+  .eq("user_id", referral.id)
+  .eq("status", "paid")
+  .limit(1);
+
+const paidOrder = paidOrders?.length ? paidOrders[0] : null;
 
       result.push({
 

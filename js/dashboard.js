@@ -26,22 +26,21 @@ async function initDashboard() {
     const user = session.user;
 
     // Vérifier le paiement
-    const { data: order, error: orderError } = await sb
-        .from("orders")
-        .select("status")
-        .eq("user_id", user.id)
-        .eq("status", "paid")
-        .maybeSingle();
+    const { data: orders, error: orderError } = await sb
+    .from("orders")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("status", "paid")
+    .limit(1);
 
-    if (orderError) {
+const order = orders?.length ? orders[0] : null;
 
-        console.error(orderError);
+    if (!order) {
 
-        alert("Impossible de vérifier votre paiement.");
+    window.location.href = "payment.html";
+    return;
 
-        return;
-
-    }
+}
 
     // Aucun paiement validé
     if (!order) {

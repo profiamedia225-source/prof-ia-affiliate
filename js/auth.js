@@ -197,12 +197,14 @@ async function loginUser(e) {
     const user = data.user;
 
     // Vérifie s'il existe une commande payée
-    const { data: order, error: orderError } = await sb
-        .from("orders")
-        .select("status")
-        .eq("user_id", user.id)
-        .eq("status", "paid")
-        .maybeSingle();
+    const { data: orders, error: orderError } = await sb
+    .from("orders")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("status", "paid")
+    .limit(1);
+
+const order = orders?.length ? orders[0] : null;
 
     if (orderError) {
         console.error(orderError);

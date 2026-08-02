@@ -66,9 +66,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         }
 
-        await loadNotifications(user.id);
+        const container =
+    document.getElementById("notificationsContainer");
 
-startNotificationRealtime(user.id);
+if (container) {
+
+    await loadNotifications(user.id);
+
+    startNotificationRealtime(user.id);
+
+}
 
     } catch (err) {
 
@@ -83,9 +90,15 @@ startNotificationRealtime(user.id);
 async function loadNotifications(userId) {
 
     const container =
-        document.getElementById("notificationsContainer");
+    document.getElementById("notificationsContainer");
 
-    container.innerHTML = "";
+if (!container) {
+
+    return;
+
+}
+
+container.innerHTML = "";
 
     const { data, error } = await sb
 
