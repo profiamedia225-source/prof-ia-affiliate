@@ -63,18 +63,87 @@ async function loadProfile(userId) {
  */
 async function loadProduct() {
 
-    const { data, error } = await sb
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const productCode =
+        params.get("product");
+
+    if (!productCode) {
+
+        console.error(
+            "Code produit manquant dans l'URL."
+        );
+
+        throw new Error(
+            "Produit non spécifié."
+        );
+    }
+
+    console.log(
+        "Produit demandé :",
+        productCode
+    );
+
+    const {
+        data,
+        error
+    } = await sb
         .from("products")
         .select("*")
-        .eq("status", true)
-        .single();
+        .eq(
+            "product_code",
+            productCode
+        )
+        .eq(
+            "status",
+            true
+        )
+        .maybeSingle();
 
-    if (error || !data) {
-        stop("Aucun produit actif disponible.");
+    if (error) {
+
+        console.error(
+            "Erreur chargement produit :",
+            error
+        );
+
+        throw error;
+    }
+
+    if (!data) {
+
+        console.error(
+            "Produit introuvable ou inactif :",
+            productCode
+        );
+
+        throw new Error(
+            "Produit introuvable ou inactif."
+        );
     }
 
     currentProduct = data;
-    return data;
+
+    console.log(
+        "Produit chargé :",
+        currentProduct
+    );
+
+    document.getElementById(
+        "productName"
+    ).textContent =
+        currentProduct.product_name;
+
+    document.getElementById(
+        "productPrice"
+    ).textContent =
+        Number(
+            currentProduct.price
+        ).toLocaleString("fr-FR")
+        + " "
+        + currentProduct.currency;
 }
 
 /**
