@@ -25,30 +25,46 @@ async function initDashboard() {
 
     const user = session.user;
 
-    // Vérifier le paiement
-    const { data: orders, error: orderError } = await sb
-    .from("orders")
-    .select("id")
+    // ==========================================
+// VÉRIFICATION DES DROITS D'ACCÈS
+// ==========================================
+
+const {
+    data: accesses,
+    error: accessError
+} = await sb
+    .from("product_access")
+    .select("id, product_id, status")
     .eq("user_id", user.id)
-    .eq("status", "paid")
-    .limit(1);
+    .eq("status", "active");
 
-const order = orders?.length ? orders[0] : null;
+if (accessError) {
 
-    if (!order) {
+    console.error(
+        "Erreur vérification des accès :",
+        accessError
+    );
 
-    window.location.href = "payment.html";
+    alert(
+        "Impossible de vérifier vos accès aux produits."
+    );
+
     return;
-
 }
 
-    // Aucun paiement validé
-    if (!order) {
+// Aucun produit accessible
+if (!accesses || accesses.length === 0) {
 
-        window.location.href = "payment.html";
-        return;
+    window.location.href =
+        "payment.html?product=formation_complete";
 
-    }
+    return;
+}
+
+console.log(
+    "✅ Accès produits :",
+    accesses
+);
 
     // Charger le profil
     const { data: profile, error } = await sb
