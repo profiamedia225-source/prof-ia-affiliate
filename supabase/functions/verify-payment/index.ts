@@ -248,6 +248,58 @@ serve(async (req) => {
       );
 
     }
+
+// ==========================================
+// ATTRIBUTION DU DROIT D'ACCÈS AU PRODUIT
+// ==========================================
+
+const { error: accessError } = await supabase
+  .from("product_access")
+  .upsert(
+    {
+      user_id: order.user_id,
+      product_id: order.product_id,
+      order_id: order.id,
+      status: "active",
+      granted_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      onConflict: "user_id,product_id",
+    },
+  );
+
+if (accessError) {
+
+  console.error(
+    "Erreur création accès produit :",
+    accessError,
+  );
+
+  return new Response(
+    JSON.stringify({
+      error:
+        "Impossible d'attribuer l'accès au produit",
+      details:
+        accessError.message,
+    }),
+    {
+      status: 500,
+      headers: {
+        ...corsHeaders,
+        "Content-Type":
+          "application/json",
+      },
+    },
+  );
+
+}
+
+console.log(
+  "Accès produit attribué :",
+  order.product_id,
+);
+
     // ==========================================
     // Mise à jour du profil
     // ==========================================

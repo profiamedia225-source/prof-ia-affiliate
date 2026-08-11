@@ -2,7 +2,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await loadAffiliates();
 
-    initSearch();
+    document
+        .getElementById("searchAffiliate")
+        .addEventListener(
+            "input",
+            applyFilters
+        );
+
+    document
+        .getElementById("statusFilter")
+        .addEventListener(
+            "change",
+            applyFilters
+        );
 
 });
 
@@ -22,11 +34,20 @@ async function loadAffiliates() {
 
     }
 
-    affiliates = data;
+affiliates = data;
 
-console.log("Affiliés chargés :", affiliates);
+renderAffiliateStats();
 
-    renderAffiliates(data);
+document.getElementById(
+    "affiliateResultsCount"
+).textContent =
+    `${affiliates.length} ${
+        affiliates.length > 1
+            ? "affiliés"
+            : "affilié"
+    }`;
+
+renderAffiliates(data);
 
 }
 
@@ -66,7 +87,13 @@ function renderAffiliates(list) {
         : "status-inactive"
 }">
 
-                    ${affiliate.status}
+                    ${
+    affiliate.status === "active"
+        ? "🟢 Actif"
+        : affiliate.status === "pending"
+        ? "🟡 En attente"
+        : "🔴 Inactif"
+}
 
                 </span>
 
@@ -92,73 +119,135 @@ function renderAffiliates(list) {
 
 }
 
-function initSearch() {
+/*
+====================================================
+STATISTIQUES AFFILIÉS
+====================================================
+*/
 
-    const input = document.getElementById("searchAffiliate");
+function renderAffiliateStats() {
 
-    input.addEventListener("input", function () {
+    const total =
+        affiliates.length;
 
-        const keyword = this.value.trim().toLowerCase();
+    const active =
+        affiliates.filter(
+            affiliate =>
+                affiliate.status === "active"
+        ).length;
 
-        const filtered = affiliates.filter(a => {
+    const pending =
+        affiliates.filter(
+            affiliate =>
+                affiliate.status === "pending"
+        ).length;
 
-            const fullname = (a.fullname || "").toLowerCase();
-            const email = (a.email || "").toLowerCase();
-            const code = (a.affiliate_code || "").toLowerCase();
-            const country = (a.country || "").toLowerCase();
+    const inactive =
+        affiliates.filter(
+            affiliate =>
+                affiliate.status === "inactive"
+        ).length;
 
-            return (
+    document.getElementById(
+        "totalAffiliates"
+    ).textContent = total;
+
+    document.getElementById(
+        "activeAffiliates"
+    ).textContent = active;
+
+    document.getElementById(
+        "pendingAffiliates"
+    ).textContent = pending;
+
+    document.getElementById(
+        "inactiveAffiliates"
+    ).textContent = inactive;
+
+}
+
+/*
+====================================================
+RECHERCHE + FILTRE AFFILIÉS
+====================================================
+*/
+
+function applyFilters() {
+
+    const keyword =
+        document
+            .getElementById("searchAffiliate")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const status =
+        document
+            .getElementById("statusFilter")
+            .value;
+
+    const filtered =
+        affiliates.filter(affiliate => {
+
+            const fullname =
+                (affiliate.fullname || "")
+                    .toLowerCase();
+
+            const email =
+                (affiliate.email || "")
+                    .toLowerCase();
+
+            const code =
+                (affiliate.affiliate_code || "")
+                    .toLowerCase();
+
+            const country =
+                (affiliate.country || "")
+                    .toLowerCase();
+
+            const matchSearch =
+
                 fullname.includes(keyword) ||
                 email.includes(keyword) ||
                 code.includes(keyword) ||
-                country.includes(keyword)
+                country.includes(keyword);
+
+            const matchStatus =
+
+                status === "all" ||
+                affiliate.status === status;
+
+            return (
+                matchSearch &&
+                matchStatus
             );
 
         });
 
-        renderAffiliates(filtered);
+const resultsCount =
+    document.getElementById(
+        "affiliateResultsCount"
+    );
 
-    });
+resultsCount.textContent =
+    `${filtered.length} ${
+        filtered.length > 1
+            ? "affiliés"
+            : "affilié"
+    }`;
+
+    renderAffiliates(filtered);
 
 }
 const modal = document.getElementById("affiliateModal");
 const details = document.getElementById("affiliateDetails");
 
-async function openAffiliateModal(affiliateId) {
+const editAffiliateModal =
+    document.getElementById("editAffiliateModal");
 
-    modal.style.display = "flex";
+const editAffiliateForm =
+    document.getElementById("editAffiliateForm");
 
-    details.innerHTML = "<p>Chargement...</p>";
-
-    const { data, error } = await sb.functions.invoke(
-        "admin-affiliate-details",
-        {
-            body: {
-                affiliate_id: affiliateId
-            }
-        }
-    );
-
-    if (error) {
-
-        details.innerHTML =
-            "<p>Erreur lors du chargement.</p>";
-
-        console.error(error);
-
-        return;
-
-    }
-
-    renderAffiliateDetails(data);
-
-}
-
-function closeAffiliateModal() {
-
-    modal.style.display = "none";
-
-}
 // ==========================================
 // MODALE AFFILIÉ
 // ==========================================
@@ -259,6 +348,239 @@ function renderAffiliateDetails(data) {
 
         </div>
 
+<div class="affiliate-actions">
+
+   <button
+    type="button"
+    id="editAffiliateBtn"
+    class="btn-primary"
+    data-id="${p.id}">
+
+    ✏️ Modifier
+
+</button>
+
+</div>
+
     `;
 
 }
+/*
+====================================================
+OUVERTURE MODALE MODIFICATION AFFILIÉ
+====================================================
+*/
+
+document.addEventListener("click", (e) => {
+
+    const btn =
+        e.target.closest("#editAffiliateBtn");
+
+    if (!btn) return;
+
+    const affiliateId =
+        btn.dataset.id;
+
+    const affiliate =
+        affiliates.find(
+            a => a.id == affiliateId
+        );
+
+    if (!affiliate) {
+
+        showToast(
+            "Impossible de retrouver cet affilié.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    document.getElementById(
+        "editAffiliateId"
+    ).value = affiliate.id;
+
+    document.getElementById(
+        "editFullname"
+    ).value = affiliate.fullname || "";
+
+    document.getElementById(
+        "editPhone"
+    ).value = affiliate.phone || "";
+
+    document.getElementById(
+        "editCountry"
+    ).value = affiliate.country || "";
+
+    document.getElementById(
+        "editStatus"
+    ).value = affiliate.status || "pending";
+
+    editAffiliateModal.style.display = "flex";
+
+});
+/*
+====================================================
+FERMETURE MODALE MODIFICATION
+====================================================
+*/
+
+document
+    .getElementById("closeEditAffiliateModal")
+    .addEventListener("click", () => {
+
+        editAffiliateModal.style.display = "none";
+
+    });
+
+document
+    .getElementById("cancelEditAffiliate")
+    .addEventListener("click", () => {
+
+        editAffiliateModal.style.display = "none";
+
+    });
+
+editAffiliateModal.addEventListener("click", (e) => {
+
+    if (e.target === editAffiliateModal) {
+
+        editAffiliateModal.style.display = "none";
+
+    }
+
+});
+/*
+====================================================
+ENREGISTREMENT MODIFICATION AFFILIÉ
+====================================================
+*/
+
+editAffiliateForm.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const saveButton =
+        document.getElementById("saveAffiliate");
+
+    saveButton.disabled = true;
+
+    saveButton.textContent =
+        "⏳ Enregistrement...";
+
+    try {
+
+        const body = {
+
+            id:
+                document.getElementById(
+                    "editAffiliateId"
+                ).value,
+
+            fullname:
+                document.getElementById(
+                    "editFullname"
+                ).value.trim(),
+
+            phone:
+                document.getElementById(
+                    "editPhone"
+                ).value.trim(),
+
+            country:
+                document.getElementById(
+                    "editCountry"
+                ).value.trim(),
+
+            status:
+                document.getElementById(
+                    "editStatus"
+                ).value
+
+        };
+
+        const { data, error } =
+            await sb.functions.invoke(
+                "admin-update-affiliate",
+                {
+                    body
+                }
+            );
+
+        if (error) throw error;
+
+        /*
+        ==============================================
+        FERMETURE MODALE
+        ==============================================
+        */
+
+        editAffiliateModal.style.display =
+            "none";
+
+        /*
+        ==============================================
+        MISE À JOUR LOCALE
+        ==============================================
+        */
+
+        const index =
+            affiliates.findIndex(
+                a => a.id == body.id
+            );
+
+        if (index !== -1) {
+
+            affiliates[index] = {
+
+                ...affiliates[index],
+
+                ...data.affiliate
+
+            };
+
+        }
+
+        renderAffiliates(affiliates);
+
+        renderAffiliateStats();
+        /*
+        ==============================================
+        RÉINITIALISATION BOUTON
+        ==============================================
+        */
+
+        saveButton.disabled = false;
+
+        saveButton.textContent =
+            "💾 Enregistrer";
+
+        showToast(
+            "Affilié modifié avec succès.",
+            "success"
+        );
+
+    }
+
+    catch (err) {
+
+        console.error(
+            "Erreur modification affilié :",
+            err
+        );
+
+        saveButton.disabled = false;
+
+        saveButton.textContent =
+            "💾 Enregistrer";
+
+        showToast(
+            err.message ||
+            "Erreur lors de la modification.",
+            "error"
+        );
+
+    }
+
+});

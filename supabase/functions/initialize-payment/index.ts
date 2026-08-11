@@ -366,6 +366,50 @@ serve(async (req) => {
         },
       );
     }
+
+// ==========================================
+// ENREGISTREMENT DU PAIEMENT
+// ==========================================
+
+const { error: paymentInsertError } =
+  await serviceClient
+    .from("payments")
+    .insert({
+      order_id: order.id,
+      provider: "paystack",
+      reference: result.data.reference,
+      transaction_id: result.data.access_code,
+      amount,
+      currency,
+      status: "initialized",
+      metadata: {
+        access_code: result.data.access_code,
+        order_reference: order.order_reference,
+      },
+    });
+
+if (paymentInsertError) {
+
+  console.error(
+    "Erreur création paiement :",
+    paymentInsertError,
+  );
+
+  return new Response(
+    JSON.stringify({
+      error:
+        "Impossible d'enregistrer le paiement",
+      details:
+        paymentInsertError.message,
+    }),
+    {
+      status: 500,
+      headers: corsHeaders,
+    },
+  );
+
+}
+
         return new Response(
       JSON.stringify({
         authorization_url: result.data.authorization_url,

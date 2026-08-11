@@ -241,3 +241,278 @@ thead{
     margin-bottom:15px;
 
 }
+/* ==========================================
+   MODALE FICHE AFFILIÉ
+========================================== */
+
+.affiliate-modal {
+
+    width: 1000px;
+
+    max-width: 95vw;
+
+    max-height: 88vh;
+
+    overflow-y: auto;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+}
+.affiliate-modal .profile-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 24px;
+
+}
+.affiliate-modal .profile-card {
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 16px;
+
+    padding: 24px;
+
+    box-sizing: border-box;
+
+}
+.affiliate-modal .profile-card h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 20px;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+}
+@media (max-width: 700px) {
+
+    .affiliate-modal .profile-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+/* ==========================================
+   ACTIONS FICHE AFFILIÉ
+========================================== */
+
+.affiliate-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 24px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #e5e7eb;
+
+}
+
+.affiliate-actions .btn-primary {
+
+    background: #2563eb;
+
+    color: white;
+
+    padding: 10px 18px;
+
+    border-radius: 8px;
+
+    border: none;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: .25s;
+
+}
+
+.affiliate-actions .btn-primary:hover {
+
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+}
+/* ==========================================
+   FILTRES AFFILIÉS
+========================================== */
+
+.toolbar {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+
+}
+
+.toolbar input {
+
+    width: 320px;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    border: 1px solid #ddd;
+
+    box-sizing: border-box;
+
+}
+
+#statusFilter {
+
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    border: 1px solid #ddd;
+
+    background: white;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+}
+
+#statusFilter:focus {
+
+    outline: none;
+
+    border-color: #2563eb;
+
+}
+/* ==========================================
+   STATISTIQUES AFFILIÉS
+========================================== */
+
+.affiliate-stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 24px;
+
+}
+
+.stat-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 20px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.05);
+
+}
+
+.stat-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #f1f5f9;
+
+    font-size: 22px;
+
+}
+
+.stat-label {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    margin-bottom: 4px;
+
+}
+
+.stat-card strong {
+
+    display: block;
+
+    font-size: 24px;
+
+    color: #0f172a;
+
+}
+@media (max-width: 900px) {
+
+    .affiliate-stats {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .affiliate-stats {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+/* ==========================================
+   NOMBRE DE RÉSULTATS
+========================================== */
+
+.affiliate-results-count {
+
+    margin-bottom: 15px;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
