@@ -168,6 +168,58 @@ accessibleProducts.forEach(product => {
 
 });
 
+// ==========================================
+// ACCÈS AUX FORMATIONS
+// ==========================================
+
+document
+    .querySelectorAll(".training-access-btn")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const productCode =
+                    button.dataset.productCode;
+
+                const product =
+                    accessibleProducts.find(
+                        item =>
+                            item.product_code ===
+                            productCode
+                    );
+
+                if (!product) {
+
+                    alert(
+                        "Accès au produit impossible."
+                    );
+
+                    return;
+                }
+
+                if (
+                    !product.systeme_course_url ||
+                    product.systeme_course_url.includes(
+                        "TON-LIEN-SYSTEME.IO"
+                    )
+                ) {
+
+                    alert(
+                        "Le lien de cette formation n'est pas encore configuré."
+                    );
+
+                    return;
+                }
+
+                window.location.href =
+                    product.systeme_course_url;
+            }
+        );
+
+    });
+
     // Charger le profil
     const { data: profile, error } = await sb
         .from("profiles")
