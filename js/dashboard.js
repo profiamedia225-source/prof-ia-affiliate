@@ -118,6 +118,56 @@ console.log(
     accessibleProducts
 );
 
+// ==========================================
+// AFFICHAGE DES PRODUITS ACCESSIBLES
+// ==========================================
+
+const trainingContainer =
+    document.getElementById(
+        "trainingAccessContainer"
+    );
+
+if (!trainingContainer) {
+
+    console.error(
+        "Conteneur des formations introuvable."
+    );
+
+    return;
+}
+
+trainingContainer.innerHTML = "";
+
+accessibleProducts.forEach(product => {
+
+    const card =
+        document.createElement("div");
+
+    card.className = "quick-card";
+
+    card.innerHTML = `
+        <div class="quick-icon">🎓</div>
+
+        <h3>
+            ${product.product_name}
+        </h3>
+
+        <p>
+            🟢 Accès actif
+        </p>
+
+        <button
+            class="btn-primary training-access-btn"
+            data-product-code="${product.product_code}"
+        >
+            Accéder à la formation
+        </button>
+    `;
+
+    trainingContainer.appendChild(card);
+
+});
+
     // Charger le profil
     const { data: profile, error } = await sb
         .from("profiles")
