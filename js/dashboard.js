@@ -66,6 +66,58 @@ console.log(
     accesses
 );
 
+// ==========================================
+// CHARGEMENT DES PRODUITS ACCESSIBLES
+// ==========================================
+
+const productCodes = accesses.map(
+    access => access.product_id
+);
+
+const {
+    data: accessibleProducts,
+    error: productsError
+} = await sb
+    .from("products")
+    .select(`
+        id,
+        product_name,
+        product_code,
+        description,
+        price,
+        currency,
+        commission_rate,
+        systeme_course_url,
+        status
+    `)
+    .in(
+        "product_code",
+        productCodes
+    )
+    .eq(
+        "status",
+        true
+    );
+
+if (productsError) {
+
+    console.error(
+        "Erreur chargement produits :",
+        productsError
+    );
+
+    alert(
+        "Impossible de charger vos produits."
+    );
+
+    return;
+}
+
+console.log(
+    "✅ Produits accessibles :",
+    accessibleProducts
+);
+
     // Charger le profil
     const { data: profile, error } = await sb
         .from("profiles")
