@@ -180,20 +180,20 @@ document
             "click",
             async () => {
 
-                // Empêcher plusieurs clics pendant la synchronisation
                 if (button.disabled) return;
 
                 const originalText =
                     button.textContent;
 
                 button.disabled = true;
+
                 button.textContent =
                     "Préparation de votre accès...";
 
                 try {
 
                     // ======================================
-                    // 1. RÉCUPÉRER LA SESSION UTILISATEUR
+                    // 1. VÉRIFIER LA SESSION
                     // ======================================
 
                     const {
@@ -209,7 +209,7 @@ document
                     ) {
 
                         console.error(
-                            "Session utilisateur introuvable :",
+                            "Session introuvable :",
                             sessionError
                         );
 
@@ -224,7 +224,7 @@ document
                     }
 
                     // ======================================
-                    // 2. IDENTIFIER LE PRODUIT
+                    // 2. RÉCUPÉRER LE PRODUIT
                     // ======================================
 
                     const productCode =
@@ -247,7 +247,7 @@ document
                     }
 
                     // ======================================
-                    // 3. VÉRIFIER L'URL SYSTEME.IO
+                    // 3. VÉRIFIER LE LIEN
                     // ======================================
 
                     if (
@@ -264,14 +264,38 @@ document
                         return;
                     }
 
+                    // ======================================
+                    // 4. INFORMER L'UTILISATEUR
+                    // ======================================
+
+                    const continueAccess =
+                        confirm(
+                            "✅ Votre accès à la formation est actif.\n\n" +
+                            "Lors de votre première connexion à Systeme.io, " +
+                            "utilisez l'adresse e-mail associée à votre compte " +
+                            "PROF IA PARTNERS.\n\n" +
+                            "Si vous êtes déjà connecté à Systeme.io, " +
+                            "vous serez directement dirigé vers votre formation.\n\n" +
+                            "Cliquez sur OK pour continuer."
+                        );
+
+                    if (!continueAccess) {
+
+                        return;
+
+                    }
+
+                    // ======================================
+                    // 5. SYNCHRONISER L'ACCÈS SYSTEME.IO
+                    // ======================================
+
+                    button.textContent =
+                        "Vérification de votre accès...";
+
                     console.log(
                         "Synchronisation Systeme.io pour :",
                         product.product_code
                     );
-
-                    // ======================================
-                    // 4. SYNCHRONISATION SYSTEME.IO
-                    // ======================================
 
                     const {
                         data: syncResult,
@@ -290,10 +314,6 @@ document
                         }
                     );
 
-                    // ======================================
-                    // 5. TRAITEMENT DE L'ERREUR
-                    // ======================================
-
                     if (syncError) {
 
                         console.error(
@@ -309,12 +329,12 @@ document
                     }
 
                     console.log(
-                        "Réponse synchronisation Systeme.io :",
+                        "Réponse Systeme.io :",
                         syncResult
                     );
 
                     // ======================================
-                    // 6. VÉRIFICATION DE LA SYNCHRONISATION
+                    // 6. VÉRIFIER LE RÉSULTAT
                     // ======================================
 
                     if (
@@ -336,26 +356,15 @@ document
                     }
 
                     // ======================================
-                    // 7. SYNCHRONISATION RÉUSSIE
+                    // 7. REDIRECTION
                     // ======================================
 
-                    console.log(
-                        "✅ Accès Systeme.io synchronisé."
-                    );
+                    button.textContent =
+                        "Ouverture de la formation...";
 
                     console.log(
-                        "Contact Systeme.io :",
-                        syncResult.contactId
+                        "✅ Accès Systeme.io validé."
                     );
-
-                    console.log(
-                        "Formation Systeme.io :",
-                        syncResult.courseId
-                    );
-
-                    // ======================================
-                    // 8. REDIRECTION VERS LA FORMATION
-                    // ======================================
 
                     window.location.href =
                         product.systeme_course_url;
@@ -374,6 +383,7 @@ document
                 } finally {
 
                     button.disabled = false;
+
                     button.textContent =
                         originalText;
 
