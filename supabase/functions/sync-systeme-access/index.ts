@@ -714,9 +714,17 @@ serve(async (req) => {
     // ========================================
 
     if (
-      enrollmentResponse.status ===
-      409
-    ) {
+  enrollmentResponse.status === 409 ||
+  enrollmentResult?.detail?.includes(
+    "L'inscription à une formation avec ces paramètres existe déjà"
+  ) ||
+  enrollmentResult?.violations?.some(
+    (violation: any) =>
+      violation?.message?.includes(
+        "L'inscription à une formation avec ces paramètres existe déjà"
+      )
+  )
+) {
 
       console.log(
         "SYSTEME.IO - Contact déjà inscrit.",
