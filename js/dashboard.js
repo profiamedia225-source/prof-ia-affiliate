@@ -178,43 +178,207 @@ document
 
         button.addEventListener(
             "click",
-            () => {
+            async () => {
 
-                const productCode =
-                    button.dataset.productCode;
+                // Empêcher plusieurs clics pendant la synchronisation
+                if (button.disabled) return;
 
-                const product =
-                    accessibleProducts.find(
-                        item =>
-                            item.product_code ===
-                            productCode
+                const originalText =
+                    button.textContent;
+
+                button.disabled = true;
+                button.textContent =
+                    "Préparation de votre accès...";
+
+                try {
+
+                    // ======================================
+                    // 1. RÉCUPÉRER LA SESSION UTILISATEUR
+                    // ======================================
+
+                    const {
+                        data: {
+                            session
+                        },
+                        error: sessionError
+                    } = await sb.auth.getSession();
+
+                    if (
+                        sessionError ||
+                        !session
+                    ) {
+
+                        console.error(
+                            "Session utilisateur introuvable :",
+                            sessionError
+                        );
+
+                        alert(
+                            "Votre session a expiré. Veuillez vous reconnecter."
+                        );
+
+                        window.location.href =
+                            "login.html";
+
+                        return;
+                    }
+
+                    // ======================================
+                    // 2. IDENTIFIER LE PRODUIT
+                    // ======================================
+
+                    const productCode =
+                        button.dataset.productCode;
+
+                    const product =
+                        accessibleProducts.find(
+                            item =>
+                                item.product_code ===
+                                productCode
+                        );
+
+                    if (!product) {
+
+                        alert(
+                            "Accès au produit impossible."
+                        );
+
+                        return;
+                    }
+
+                    // ======================================
+                    // 3. VÉRIFIER L'URL SYSTEME.IO
+                    // ======================================
+
+                    if (
+                        !product.systeme_course_url ||
+                        product.systeme_course_url.includes(
+                            "TON-LIEN-SYSTEME.IO"
+                        )
+                    ) {
+
+                        alert(
+                            "Le lien de cette formation n'est pas encore configuré."
+                        );
+
+                        return;
+                    }
+
+                    console.log(
+                        "Synchronisation Systeme.io pour :",
+                        product.product_code
                     );
 
-                if (!product) {
+                    // ======================================
+                    // 4. SYNCHRONISATION SYSTEME.IO
+                    // ======================================
+
+                    const {
+                        data: syncResult,
+                        error: syncError
+                    } = await sb.functions.invoke(
+                        "sync-systeme-access",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                Authorization:
+                                    `Bearer ${session.access_token}`
+                            },
+
+                            body: {}
+                        }
+                    );
+
+                    // ======================================
+                    // 5. TRAITEMENT DE L'ERREUR
+                    // ======================================
+
+                    if (syncError) {
+
+                        console.error(
+                            "Erreur synchronisation Systeme.io :",
+                            syncError
+                        );
+
+                        alert(
+                            "Impossible de préparer votre accès à la formation. Veuillez réessayer."
+                        );
+
+                        return;
+                    }
+
+                    console.log(
+                        "Réponse synchronisation Systeme.io :",
+                        syncResult
+                    );
+
+                    // ======================================
+                    // 6. VÉRIFICATION DE LA SYNCHRONISATION
+                    // ======================================
+
+                    if (
+                        !syncResult ||
+                        syncResult.success !== true
+                    ) {
+
+                        console.error(
+                            "Synchronisation refusée :",
+                            syncResult
+                        );
+
+                        alert(
+                            syncResult?.error ||
+                            "Votre accès à la formation n'a pas pu être préparé."
+                        );
+
+                        return;
+                    }
+
+                    // ======================================
+                    // 7. SYNCHRONISATION RÉUSSIE
+                    // ======================================
+
+                    console.log(
+                        "✅ Accès Systeme.io synchronisé."
+                    );
+
+                    console.log(
+                        "Contact Systeme.io :",
+                        syncResult.contactId
+                    );
+
+                    console.log(
+                        "Formation Systeme.io :",
+                        syncResult.courseId
+                    );
+
+                    // ======================================
+                    // 8. REDIRECTION VERS LA FORMATION
+                    // ======================================
+
+                    window.location.href =
+                        product.systeme_course_url;
+
+                } catch (error) {
+
+                    console.error(
+                        "Erreur accès formation :",
+                        error
+                    );
 
                     alert(
-                        "Accès au produit impossible."
+                        "Une erreur est survenue lors de la préparation de votre accès."
                     );
 
-                    return;
+                } finally {
+
+                    button.disabled = false;
+                    button.textContent =
+                        originalText;
+
                 }
 
-                if (
-                    !product.systeme_course_url ||
-                    product.systeme_course_url.includes(
-                        "TON-LIEN-SYSTEME.IO"
-                    )
-                ) {
-
-                    alert(
-                        "Le lien de cette formation n'est pas encore configuré."
-                    );
-
-                    return;
-                }
-
-                window.location.href =
-                    product.systeme_course_url;
             }
         );
 

@@ -269,6 +269,26 @@ const { error: accessError } = await supabase
     },
   );
 
+  // ==========================================
+// SYNCHRONISATION SYSTEME.IO
+// ==========================================
+
+const systemeEmail = order.customer_email;
+
+console.log("SYSTEME.IO - Email client :", systemeEmail);
+console.log("SYSTEME.IO - Produit :", order.product_id);
+
+// Vérification des informations nécessaires
+if (!systemeEmail) {
+  console.error(
+    "SYSTEME.IO : email client manquant."
+  );
+} else {
+  console.log(
+    "SYSTEME.IO : prêt pour l'inscription du client."
+  );
+}
+
 if (accessError) {
 
   console.error(
