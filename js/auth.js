@@ -155,7 +155,25 @@ async function registerUser(e) {
 
     }
 
-   window.location.href = "payment.html";
+       // Conserver le produit sélectionné pendant l'inscription
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const product = params.get("product");
+
+    if (product) {
+
+        window.location.href =
+            "payment.html?product=" +
+            encodeURIComponent(product);
+
+    } else {
+
+        window.location.href =
+            "payment.html";
+
+    }
 
 }
 
