@@ -218,7 +218,26 @@ const order = orders?.length ? orders[0] : null;
     } else {
 
         // Paiement non effectué
-        window.location.href = "payment.html";
+        const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const product =
+    params.get("product");
+
+if (product) {
+
+    window.location.href =
+        "payment.html?product=" +
+        encodeURIComponent(product);
+
+} else {
+
+    window.location.href =
+        "payment.html";
+
+}
 
     }
 
