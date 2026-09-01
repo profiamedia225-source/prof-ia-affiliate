@@ -472,6 +472,7 @@ document.getElementById("todayDate").textContent =
 new Date().toLocaleDateString("fr-FR", options);
 
 loadDashboardStats();
+loadOtherProducts();
 }
 async function loadDashboardStats() {
 
@@ -512,5 +513,307 @@ document.getElementById("pendingWithdrawalAmount").textContent =
     // En attendant la gestion des retraits
     document.getElementById("withdrawAmount").textContent =
     Number(data.totalWithdrawals).toLocaleString("fr-FR") + " FCFA";
+
+}
+
+// ==========================================
+// AUTRES FORMATIONS
+// ==========================================
+
+async function loadOtherProducts() {
+
+    const container =
+        document.getElementById("otherProductsContainer");
+
+    if (!container) {
+        console.error(
+            "Conteneur Autres formations introuvable."
+        );
+        return;
+    }
+
+    container.innerHTML = `
+        <p>Chargement des formations...</p>
+    `;
+
+    try {
+
+        // ======================================
+        // 1. SESSION UTILISATEUR
+        // ======================================
+
+        const {
+            data: { session },
+            error: sessionError
+        } = await sb.auth.getSession();
+
+        if (sessionError || !session) {
+
+            console.error(
+                "Session introuvable :",
+                sessionError
+            );
+
+            return;
+        }
+
+        const user = session.user;
+
+        // ======================================
+        // 2. RÉCUPÉRER LES ACCÈS DU CLIENT
+        // ======================================
+
+        const {
+            data: accesses,
+            error: accessError
+        } = await sb
+            .from("product_access")
+            .select("product_id, status")
+            .eq("user_id", user.id)
+            .eq("status", "active");
+
+        if (accessError) {
+
+            console.error(
+                "Erreur récupération des accès :",
+                accessError
+            );
+
+            container.innerHTML = `
+                <p>
+                    Impossible de charger les formations.
+                </p>
+            `;
+
+            return;
+        }
+
+        // Codes des produits déjà achetés
+        const ownedProducts =
+            (accesses || []).map(
+                access => access.product_id
+            );
+
+        console.log(
+            "✅ Produits déjà possédés :",
+            ownedProducts
+        );
+
+        // ======================================
+        // 3. RÉCUPÉRER TOUS LES PRODUITS ACTIFS
+        // ======================================
+
+        const {
+            data: products,
+            error: productsError
+        } = await sb
+            .from("products")
+            .select(`
+                id,
+                product_name,
+                product_code,
+                description,
+                price,
+                currency,
+                commission_rate,
+                status
+            `)
+            .eq("status", true)
+            .order("id", {
+                ascending: true
+            });
+
+        if (productsError) {
+
+            console.error(
+                "Erreur récupération des produits :",
+                productsError
+            );
+
+            container.innerHTML = `
+                <p>
+                    Impossible de charger les formations.
+                </p>
+            `;
+
+            return;
+        }
+
+        console.log(
+            "✅ Produits actifs :",
+            products
+        );
+
+        // ======================================
+        // 4. RETIRER LES PRODUITS DÉJÀ ACHETÉS
+        // ======================================
+
+        const otherProducts =
+            (products || []).filter(
+                product =>
+                    !ownedProducts.includes(
+                        product.product_code
+                    )
+            );
+
+        console.log(
+            "🛒 Autres formations :",
+            otherProducts
+        );
+
+        // ======================================
+        // 5. AUCUNE AUTRE FORMATION
+        // ======================================
+
+        if (otherProducts.length === 0) {
+
+            container.innerHTML = `
+                <div style="
+                    padding: 20px;
+                    text-align: center;
+                    border-radius: 12px;
+                    background: #f5f5f5;
+                ">
+                    <p>
+                        🎉 Vous avez accès à toutes nos formations disponibles.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        // ======================================
+        // 6. AFFICHER LES AUTRES FORMATIONS
+        // ======================================
+
+        container.innerHTML = "";
+
+        otherProducts.forEach(product => {
+
+            const card =
+                document.createElement("div");
+
+            card.style.marginBottom = "15px";
+            card.style.padding = "20px";
+            card.style.borderRadius = "12px";
+            card.style.background = "#f8f8f8";
+            card.style.border = "1px solid #e5e5e5";
+
+            const price =
+                Number(product.price || 0)
+                    .toLocaleString("fr-FR");
+
+            const currency =
+                product.currency || "XOF";
+
+            card.innerHTML = `
+
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                ">
+
+                    <div style="flex: 1;">
+
+                        <div style="
+                            font-size: 30px;
+                            margin-bottom: 5px;
+                        ">
+                            🎓
+                        </div>
+
+                        <h3 style="
+                            margin: 0 0 8px 0;
+                        ">
+                            ${product.product_name}
+                        </h3>
+
+                        <p style="
+                            margin: 0 0 8px 0;
+                        ">
+                            ${
+                                product.description ||
+                                "Formation professionnelle disponible."
+                            }
+                        </p>
+
+                        <strong>
+                            ${price} ${currency}
+                        </strong>
+
+                    </div>
+
+                    <button
+                        class="btn-primary other-product-buy-btn"
+                        data-product-code="${product.product_code}"
+                    >
+                        Acheter
+                    </button>
+
+                </div>
+            `;
+
+            container.appendChild(card);
+
+        });
+
+        // ======================================
+        // 7. BOUTONS ACHETER
+        // ======================================
+
+        document
+            .querySelectorAll(".other-product-buy-btn")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const productCode =
+                            button.dataset.productCode;
+
+                        if (!productCode) {
+
+                            alert(
+                                "Produit non spécifié."
+                            );
+
+                            return;
+                        }
+
+                        console.log(
+                            "🛒 Achat du produit :",
+                            productCode
+                        );
+
+                        window.location.href =
+                            "payment.html?product=" +
+                            encodeURIComponent(
+                                productCode
+                            );
+
+                    }
+                );
+
+            });
+
+    } catch (error) {
+
+        console.error(
+            "Erreur Autres formations :",
+            error
+        );
+
+        container.innerHTML = `
+            <p>
+                Impossible de charger les formations.
+            </p>
+        `;
+
+    }
 
 }

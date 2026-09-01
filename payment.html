@@ -5,13 +5,17 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Paiement | PROF IA MEDIA PARTNERS</title>
 
-    <link rel="stylesheet"
-          href="css/payment.css">
+    <link
+        rel="stylesheet"
+        href="css/payment.css"
+    >
 
 </head>
 
@@ -21,107 +25,138 @@
 
     <div class="card">
 
+        <!-- ======================================
+             LOGO
+        ======================================= -->
+
         <div class="logo">
-
             🎓
-
         </div>
 
-       <h1>
 
-    PROF IA MEDIA PARTNERS
+        <!-- ======================================
+             INFORMATIONS DU PRODUIT
+        ======================================= -->
 
-</h1>
+        <h1>
+            PROF IA MEDIA PARTNERS
+        </h1>
 
-<h2 id="productName">
-
-    Formation Complète
-
-</h2>
-
-<h3>
-
-    Créateur de Contenu IA de A à Z
-
-</h3>
-
-<div id="productPrice" class="price">
-
-    10 000 FCFA
-
-</div>
-
-<div class="subtitle">
-
-    Paiement unique • Accès immédiat
-
-</div>
-
-        <hr>
-
-        <h2>
-
-            🚀 Ce que vous obtenez
-
+        <h2 id="productName">
+            Chargement de la formation...
         </h2>
 
-        <ul>
+        <h3 id="productSubtitle">
+            Chargement des informations...
+        </h3>
 
-            <li>🎥 Formation complète en vidéos explicatives.</li>
+        <div
+            id="productPrice"
+            class="price"
+        >
+            --
+        </div>
 
-            <li>🧠 Apprentissage étape par étape de la création de contenu avec l'IA.</li>
+        <div class="subtitle">
+            Paiement unique • Accès immédiat
+        </div>
 
-            <li>📘 Guide PDF complet offert.</li>
-
-            <li>🔄 Mises à jour gratuites.</li>
-
-            <li>🤝 Accompagnement pour réussir vos premiers contenus.</li>
-
-        </ul>
 
         <hr>
 
-        <h2>
 
+        <!-- ======================================
+             DESCRIPTION DU PRODUIT
+        ======================================= -->
+
+        <section id="productDescriptionSection">
+
+            <h2>
+                🚀 À propos de cette formation
+            </h2>
+
+            <div
+                id="productDescription"
+                class="product-description"
+            >
+                Chargement des informations...
+            </div>
+
+        </section>
+
+
+        <hr>
+
+
+        <!-- ======================================
+             BONUS
+        ======================================= -->
+
+        <h2>
             🎁 Bonus Exclusif
-
         </h2>
 
         <ul>
 
-            <li>💼 Accès au Programme d’Affiliation PROF IA MEDIA PARTNERS.</li>
+            <li>
+                💼 Accès au Programme d’Affiliation PROF IA MEDIA PARTNERS.
+            </li>
 
-            <li>🔗 Votre lien d'affiliation personnel.</li>
+            <li>
+                🔗 Votre lien d'affiliation personnel.
+            </li>
 
-            <li>📊 Tableau de bord professionnel.</li>
+            <li>
+                📊 Tableau de bord professionnel.
+            </li>
 
-            <li>💰 Commissions automatiques sur chaque vente.</li>
+            <li>
+                💰 Commissions automatiques sur les ventes éligibles.
+            </li>
 
-            <li>📈 Opportunité de développer une véritable source de revenus.</li>
+            <li>
+                📈 Opportunité de développer une véritable source de revenus.
+            </li>
 
         </ul>
 
+
         <hr>
+
+
+        <!-- ======================================
+             PAIEMENT SÉCURISÉ
+        ======================================= -->
 
         <div class="secure">
-
             🔒 Paiement 100 % sécurisé avec Paystack
-
         </div>
 
-       <button id="payButton" onclick="preparePayment()">
 
-    PAYER MAINTENANT
+        <!-- ======================================
+             BOUTON PAIEMENT
+        ======================================= -->
 
-</button>
+        <button
+            id="payButton"
+            type="button"
+            onclick="preparePayment()"
+        >
+            PAYER MAINTENANT
+        </button>
+
+
+        <!-- ======================================
+             INFORMATIONS FINALES
+        ======================================= -->
 
         <p class="footer">
 
             Après validation du paiement,
             votre compte sera automatiquement activé
             et vous aurez immédiatement accès
-            à votre espace membre ainsi qu'au
-            Programme d'Affiliation.
+            à votre espace membre ainsi qu'à la
+            formation achetée.
 
         </p>
 
@@ -129,11 +164,267 @@
 
 </div>
 
+
+<!-- ==========================================
+     SUPABASE
+========================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<!-- ==========================================
+     CONFIGURATION
+========================================== -->
 
 <script src="js/config.js"></script>
 
+
+<!-- ==========================================
+     SCRIPT DE PAIEMENT
+========================================== -->
+
 <script src="js/payment.js"></script>
+
+
+<!-- ==========================================
+     CHARGEMENT DES INFORMATIONS DU PRODUIT
+========================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        try {
+
+            // ======================================
+            // RÉCUPÉRER LE CODE PRODUIT
+            // ======================================
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            const productCode =
+                params.get("product");
+
+
+            // ======================================
+            // VÉRIFICATION
+            // ======================================
+
+            if (!productCode) {
+
+                console.error(
+                    "Aucun produit spécifié dans l'URL."
+                );
+
+                document.getElementById(
+                    "productName"
+                ).textContent =
+                    "Produit non spécifié";
+
+                document.getElementById(
+                    "productSubtitle"
+                ).textContent =
+                    "Impossible de déterminer le produit.";
+
+                document.getElementById(
+                    "productDescription"
+                ).textContent =
+                    "Veuillez revenir au tableau de bord et sélectionner une formation.";
+
+                return;
+
+            }
+
+
+            console.log(
+                "🔎 Produit demandé :",
+                productCode
+            );
+
+
+            // ======================================
+            // RÉCUPÉRATION DU PRODUIT
+            // ======================================
+
+            const {
+                data: product,
+                error
+            } = await sb
+
+                .from("products")
+
+                .select(`
+                    id,
+                    product_name,
+                    product_code,
+                    description,
+                    price,
+                    currency,
+                    status
+                `)
+
+                .eq(
+                    "product_code",
+                    productCode
+                )
+
+                .eq(
+                    "status",
+                    true
+                )
+
+                .maybeSingle();
+
+
+            // ======================================
+            // ERREUR SUPABASE
+            // ======================================
+
+            if (error) {
+
+                console.error(
+                    "Erreur chargement produit :",
+                    error
+                );
+
+                document.getElementById(
+                    "productName"
+                ).textContent =
+                    "Erreur de chargement";
+
+                document.getElementById(
+                    "productSubtitle"
+                ).textContent =
+                    "Impossible de charger cette formation.";
+
+                document.getElementById(
+                    "productDescription"
+                ).textContent =
+                    "Veuillez réessayer.";
+
+                return;
+
+            }
+
+
+            // ======================================
+            // PRODUIT INTROUVABLE
+            // ======================================
+
+            if (!product) {
+
+                console.error(
+                    "Produit introuvable :",
+                    productCode
+                );
+
+                document.getElementById(
+                    "productName"
+                ).textContent =
+                    "Formation introuvable";
+
+                document.getElementById(
+                    "productSubtitle"
+                ).textContent =
+                    "Ce produit n'est pas disponible.";
+
+                document.getElementById(
+                    "productDescription"
+                ).textContent =
+                    "Veuillez revenir au tableau de bord.";
+
+                return;
+
+            }
+
+
+            // ======================================
+            // AFFICHAGE DU NOM
+            // ======================================
+
+            document.getElementById(
+                "productName"
+            ).textContent =
+                product.product_name;
+
+
+            // ======================================
+            // SOUS-TITRE
+            // ======================================
+
+            document.getElementById(
+                "productSubtitle"
+            ).textContent =
+                "Formation professionnelle";
+
+
+            // ======================================
+            // AFFICHAGE DU PRIX
+            // ======================================
+
+            const price =
+                Number(
+                    product.price
+                ).toLocaleString(
+                    "fr-FR"
+                );
+
+            const currency =
+                product.currency ||
+                "XOF";
+
+            document.getElementById(
+                "productPrice"
+            ).textContent =
+                price +
+                " " +
+                currency;
+
+
+            // ======================================
+            // DESCRIPTION
+            // ======================================
+
+            document.getElementById(
+                "productDescription"
+            ).textContent =
+                product.description ||
+                "Découvrez cette formation professionnelle et développez vos compétences.";
+
+
+            // ======================================
+            // TITRE DE LA PAGE
+            // ======================================
+
+            document.title =
+                product.product_name +
+                " | PROF IA MEDIA PARTNERS";
+
+
+            console.log(
+                "✅ Produit chargé pour paiement :",
+                product
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Erreur générale :",
+                error
+            );
+
+        }
+
+    }
+
+);
+
+</script>
 
 </body>
 
