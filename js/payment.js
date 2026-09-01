@@ -211,7 +211,11 @@ async function createOrder() {
 
         customer_email: currentUser.email,
 
-        affiliate_id: currentProfile.affiliate_id ?? null
+        affiliate_id:
+    currentProfile.referred_by &&
+    currentProfile.referred_by !== user.id
+        ? currentProfile.referred_by
+        : null,
 
     };
 
