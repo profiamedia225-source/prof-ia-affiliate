@@ -171,53 +171,122 @@ PARTIE 2/3
 Création de la commande
 ==========================================================
 */
-
 /**
  * Crée une nouvelle commande dans Supabase.
  */
 async function createOrder() {
 
+    // ==========================================
+    // VÉRIFICATIONS
+    // ==========================================
+
     if (!currentUser) {
+
         stop("Utilisateur introuvable.");
+
     }
 
     if (!currentProfile) {
+
         stop("Profil introuvable.");
+
     }
 
     if (!currentProduct) {
+
         stop("Produit introuvable.");
+
     }
 
-    const orderReference = generateReference();
+
+    // ==========================================
+    // RÉFÉRENCE DE COMMANDE
+    // ==========================================
+
+    const orderReference =
+        generateReference();
+
+
+    // ==========================================
+    // PARRAIN
+    // ==========================================
+
+    const affiliateId =
+        currentProfile.referred_by &&
+        currentProfile.referred_by !== currentUser.id
+            ? currentProfile.referred_by
+            : null;
+
+
+    console.log(
+        "👤 Utilisateur :",
+        currentUser.id
+    );
+
+    console.log(
+        "👤 Email :",
+        currentUser.email
+    );
+
+    console.log(
+        "🤝 Parrain :",
+        affiliateId
+    );
+
+    console.log(
+        "🎓 Produit :",
+        currentProduct.product_code
+    );
+
+
+    // ==========================================
+    // OBJET COMMANDE
+    // ==========================================
 
     const order = {
 
-        user_id: currentUser.id,
+        user_id:
+            currentUser.id,
 
-        order_reference: orderReference,
+        order_reference:
+            orderReference,
 
-        product_id: currentProduct.product_code,
+        product_id:
+            currentProduct.product_code,
 
-        product_name: currentProduct.product_name,
+        product_name:
+            currentProduct.product_name,
 
-        amount: currentProduct.price,
+        amount:
+            currentProduct.price,
 
-        currency: currentProduct.currency,
+        currency:
+            currentProduct.currency,
 
-        payment_provider: "paystack",
+        payment_provider:
+            "paystack",
 
-        status: "pending",
+        status:
+            "pending",
 
-        customer_email: currentUser.email,
+        customer_email:
+            currentUser.email,
 
         affiliate_id:
-    currentProfile.referred_by &&
-    currentProfile.referred_by !== user.id
-        ? currentProfile.referred_by
-        : null,
+            affiliateId
 
     };
+
+
+    console.log(
+        "📦 Commande à créer :",
+        order
+    );
+
+
+    // ==========================================
+    // INSERTION
+    // ==========================================
 
     const {
 
@@ -235,13 +304,34 @@ async function createOrder() {
 
         .single();
 
+
+    // ==========================================
+    // ERREUR
+    // ==========================================
+
     if (error || !data) {
 
-        console.error(error);
+        console.error(
+            "❌ Erreur création commande :",
+            error
+        );
 
-        stop("Impossible de créer la commande.");
+        stop(
+            "Impossible de créer la commande."
+        );
 
     }
+
+
+    // ==========================================
+    // SUCCÈS
+    // ==========================================
+
+    console.log(
+        "✅ Commande créée :",
+        data
+    );
+
 
     return data;
 
