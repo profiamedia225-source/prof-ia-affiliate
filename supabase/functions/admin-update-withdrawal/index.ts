@@ -9,6 +9,7 @@ const corsHeaders = {
 
 const ALLOWED_STATUS = [
   "En attente",
+  "En traitement",
   "paid",
   "Refusé",
 ];

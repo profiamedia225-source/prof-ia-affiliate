@@ -1,11 +1,18 @@
 console.log("admin-withdrawals.js chargé");
+
 let allWithdrawals = [];
 let currentStatusFilter = "Tous";
 let currentSearch = "";
 let currentPage = 1;
 let rowsPerPage = 10;
 let filteredWithdrawals = [];
+
 document.addEventListener("DOMContentLoaded", loadWithdrawals);
+
+
+// ==========================================
+// CHARGEMENT DES RETRAITS
+// ==========================================
 
 async function loadWithdrawals() {
 
@@ -25,479 +32,1218 @@ async function loadWithdrawals() {
 
     }
 
-    console.log("Utilisateur connecté :", session.user.id);
-
-    const { data, error } = await sb.functions.invoke(
-        "admin-withdrawals",
-        {
-            headers: {
-                Authorization: `Bearer ${session.access_token}`
-            }
-        }
+    console.log(
+        "Utilisateur connecté :",
+        session.user.id
     );
 
-console.log("Erreur :", error);
-console.log("Données :", data);
-    
+    const { data, error } =
+        await sb.functions.invoke(
+            "admin-withdrawals",
+            {
+                headers: {
+                    Authorization:
+                        `Bearer ${session.access_token}`
+                }
+            }
+        );
+
+    console.log("Erreur :", error);
+    console.log("Données :", data);
+
     if (error) {
+
         console.error(error);
-        alert("Impossible de charger les retraits.");
+
+        alert(
+            "Impossible de charger les retraits."
+        );
+
         return;
+
     }
 
-    console.log("Retraits :", data);
+    console.log(
+        "Retraits :",
+        data
+    );
 
-allWithdrawals = data ?? [];
+    allWithdrawals = data ?? [];
 
-displayWithdrawals(allWithdrawals);
-updateStats(allWithdrawals);
-return;
+    filteredWithdrawals =
+        [...allWithdrawals];
+
+    displayWithdrawals(
+        allWithdrawals
+    );
+
+    updateStats(
+        allWithdrawals
+    );
+
+    updatePagination(
+        allWithdrawals.length
+    );
 
 }
 
-function displayWithdrawals(withdrawals) {
 
-    const tbody = document.getElementById("withdrawalsTable");
+// ==========================================
+// AFFICHAGE DES RETRAITS
+// ==========================================
 
-document
-.querySelectorAll(".action-dropdown")
-.forEach(menu=>{
+function displayWithdrawals(
+    withdrawals
+) {
 
-menu.style.display="none";
+    const tbody =
+        document.getElementById(
+            "withdrawalsTable"
+        );
 
-});
+    if (!tbody) return;
 
     tbody.innerHTML = "";
 
-    document.getElementById("totalWithdrawals").textContent =
+    document.getElementById(
+        "totalWithdrawals"
+    ).textContent =
         `Total : ${withdrawals.length} demande(s)`;
 
-        const start = (currentPage - 1) * rowsPerPage;
-const end = start + rowsPerPage;
+    const start =
+        (currentPage - 1) *
+        rowsPerPage;
 
-const paginatedWithdrawals = withdrawals.slice(start, end);
-    paginatedWithdrawals.forEach((withdrawal) => {
+    const end =
+        start + rowsPerPage;
 
-        const tr = document.createElement("tr");
+    const paginatedWithdrawals =
+        withdrawals.slice(
+            start,
+            end
+        );
 
-        tr.innerHTML = `
-            <td>
+    if (
+        paginatedWithdrawals.length === 0
+    ) {
 
-    <strong>${withdrawal.profiles?.fullname ?? "-"}</strong>
+        tbody.innerHTML = `
 
-    <br>
+            <tr>
 
-    <small style="color:#64748B;">
+                <td
+                    colspan="8"
+                    style="
+                        text-align:center;
+                        padding:40px;
+                    "
+                >
 
-        💰 Solde :
-        ${Number(withdrawal.stats.availableBalance)
-            .toLocaleString("fr-FR")} FCFA
+                    Aucun retrait trouvé.
 
-    </small>
+                </td>
 
-    <br>
+            </tr>
 
-    <small style="color:#64748B;">
-
-        📈 Commissions :
-        ${Number(withdrawal.stats.totalCommissions)
-            .toLocaleString("fr-FR")} FCFA
-
-    </small>
-
-</td>
-            <td>${withdrawal.profiles?.country ?? "-"}</td>
-            <td>
-
-    <strong>
-
-        ${Number(withdrawal.amount)
-            .toLocaleString("fr-FR")} FCFA
-
-    </strong>
-
-    <br>
-
-    <small style="color:#64748B;">
-
-        📊 Ventes :
-        ${withdrawal.stats.sales}
-
-    </small>
-
-</td>
-            <td>${withdrawal.payment_method}</td>
-            <td>
-
-    <div class="payment-number">
-
-        <span>${withdrawal.payment_details}</span>
-
-        <button
-            class="copy-btn"
-            onclick="copyPaymentNumber('${withdrawal.payment_details}')">
-
-            📋
-
-        </button>
-
-    </div>
-
-</td>
-            <td>${new Date(withdrawal.created_at).toLocaleDateString("fr-FR")}</td>
-           <td>
-
-<span class="${
-    withdrawal.status === "En attente"
-        ? "status-pending"
-        : withdrawal.status === "paid"
-        ? "status-active"
-        : "status-inactive"
-}">
-
-${
-    withdrawal.status === "En attente"
-        ? "🟡 En attente"
-        : withdrawal.status === "paid"
-        ? "🟢 Payé"
-        : "🔴 Refusé"
-}
-
-</span>
-
-</td>
-           <td>
-
-<div class="action-menu">
-
-<button
-class="action-toggle"
-onclick="toggleActionMenu('${withdrawal.id}')">
-
-⋮
-
-</button>
-
-<div
-id="menu-${withdrawal.id}"
-class="action-dropdown">
-
-<button
-onclick="openAffiliateCRM('${withdrawal.affiliate_id}')">
-
-👁 Voir le CRM
-
-</button>
-
-<button
-onclick="updateWithdrawal('${withdrawal.id}','paid')">
-
-💳 Valider
-
-</button>
-
-<button
-onclick="updateWithdrawal('${withdrawal.id}','Refusé')">
-
-❌ Refuser
-
-</button>
-
-<button
-onclick="copyPaymentNumber('${withdrawal.payment_details}')">
-
-📋 Copier le numéro
-
-</button>
-
-</div>
-
-</div>
-
-</td>
         `;
 
-        tbody.appendChild(tr);
+        return;
 
-    });
-
-}
-
-function updateStats(withdrawals) {
-
-    let pendingCount = 0;
-    let paidCount = 0;
-    let rejectedCount = 0;
-    let pendingAmount = 0;
-
-    withdrawals.forEach((withdrawal) => {
-
-        const amount = Number(withdrawal.amount) || 0;
-
-        switch (withdrawal.status) {
-
-            case "En attente":
-                pendingCount++;
-                pendingAmount += amount;
-                break;
-
-            case "paid":
-                paidCount++;
-                break;
-
-            case "Refusé":
-                rejectedCount++;
-                break;
-
-        }
-
-    });
-
-    document.getElementById("pendingCount").textContent = pendingCount;
-    document.getElementById("paidCount").textContent = paidCount;
-    document.getElementById("rejectedCount").textContent = rejectedCount;
-
-    document.getElementById("pendingAmount").textContent =
-        pendingAmount.toLocaleString("fr-FR") + " FCFA";
-
-}
-
-function updatePagination(totalItems) {
-
-    const totalPages = Math.max(1, Math.ceil(totalItems / rowsPerPage));
-
-    if (currentPage > totalPages) {
-        currentPage = totalPages;
     }
 
-    document.getElementById("pageInfo").textContent =
-        `Page ${currentPage} sur ${totalPages}`;
 
-    document.getElementById("prevPage").disabled =
-        currentPage === 1;
+    paginatedWithdrawals.forEach(
+        (withdrawal) => {
 
-    document.getElementById("nextPage").disabled =
-        currentPage === totalPages;
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+            // ==================================
+            // STATUT
+            // ==================================
+
+            let statusClass =
+                "status-inactive";
+
+            let statusLabel =
+                withdrawal.status;
+
+            if (
+                withdrawal.status ===
+                "En attente"
+            ) {
+
+                statusClass =
+                    "status-pending";
+
+                statusLabel =
+                    "🟡 En attente";
+
+            }
+
+            else if (
+                withdrawal.status ===
+                "En traitement"
+            ) {
+
+                statusClass =
+                    "status-processing";
+
+                statusLabel =
+                    "🔵 En traitement";
+
+            }
+
+            else if (
+                withdrawal.status ===
+                "paid"
+            ) {
+
+                statusClass =
+                    "status-active";
+
+                statusLabel =
+                    "🟢 Payé";
+
+            }
+
+            else if (
+                withdrawal.status ===
+                "Refusé"
+            ) {
+
+                statusClass =
+                    "status-inactive";
+
+                statusLabel =
+                    "🔴 Refusé";
+
+            }
+
+
+            // ==================================
+            // ACTIONS
+            // ==================================
+
+            let actionButtons = `
+
+                <button
+                    onclick="openAffiliateCRM(
+                        '${withdrawal.affiliate_id}'
+                    )"
+                >
+
+                    👁 Voir le CRM
+
+                </button>
+
+                <button
+                    onclick="copyPaymentNumber(
+                        '${withdrawal.payment_details}'
+                    )"
+                >
+
+                    📋 Copier le numéro
+
+                </button>
+
+            `;
+
+
+            // ==================================
+            // RETRAIT EN ATTENTE
+            // ==================================
+
+            if (
+                withdrawal.status ===
+                "En attente"
+            ) {
+
+                actionButtons += `
+
+                    <button
+                        onclick="updateWithdrawal(
+                            '${withdrawal.id}',
+                            'En traitement'
+                        )"
+                    >
+
+                        🔵 Mettre en traitement
+
+                    </button>
+
+                    <button
+                        onclick="updateWithdrawal(
+                            '${withdrawal.id}',
+                            'paid'
+                        )"
+                    >
+
+                        💳 Valider
+
+                    </button>
+
+                    <button
+                        onclick="updateWithdrawal(
+                            '${withdrawal.id}',
+                            'Refusé'
+                        )"
+                    >
+
+                        ❌ Refuser
+
+                    </button>
+
+                `;
+
+            }
+
+
+            // ==================================
+            // RETRAIT EN TRAITEMENT
+            // ==================================
+
+            else if (
+                withdrawal.status ===
+                "En traitement"
+            ) {
+
+                actionButtons += `
+
+                    <button
+                        onclick="updateWithdrawal(
+                            '${withdrawal.id}',
+                            'paid'
+                        )"
+                    >
+
+                        💳 Marquer comme payé
+
+                    </button>
+
+                    <button
+                        onclick="updateWithdrawal(
+                            '${withdrawal.id}',
+                            'Refusé'
+                        )"
+                    >
+
+                        ❌ Refuser
+
+                    </button>
+
+                `;
+
+            }
+
+
+            tr.innerHTML = `
+
+                <td>
+
+                    <strong>
+
+                        ${
+                            withdrawal
+                                .profiles
+                                ?.fullname ??
+                            "-"
+                        }
+
+                    </strong>
+
+                    <br>
+
+                    <small
+                        style="
+                            color:#64748B;
+                        "
+                    >
+
+                        💰 Solde :
+                        ${
+                            Number(
+                                withdrawal
+                                    .stats
+                                    ?.availableBalance ??
+                                0
+                            )
+                            .toLocaleString(
+                                "fr-FR"
+                            )
+                        }
+                        FCFA
+
+                    </small>
+
+                    <br>
+
+                    <small
+                        style="
+                            color:#64748B;
+                        "
+                    >
+
+                        📈 Commissions :
+                        ${
+                            Number(
+                                withdrawal
+                                    .stats
+                                    ?.totalCommissions ??
+                                0
+                            )
+                            .toLocaleString(
+                                "fr-FR"
+                            )
+                        }
+                        FCFA
+
+                    </small>
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        withdrawal
+                            .profiles
+                            ?.country ??
+                        "-"
+                    }
+
+                </td>
+
+
+                <td>
+
+                    <strong>
+
+                        ${
+                            Number(
+                                withdrawal.amount
+                            )
+                            .toLocaleString(
+                                "fr-FR"
+                            )
+                        }
+                        FCFA
+
+                    </strong>
+
+                    <br>
+
+                    <small
+                        style="
+                            color:#64748B;
+                        "
+                    >
+
+                        📊 Ventes :
+                        ${
+                            withdrawal
+                                .stats
+                                ?.sales ??
+                            0
+                        }
+
+                    </small>
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        withdrawal
+                            .payment_method ??
+                        "-"
+                    }
+
+                </td>
+
+
+                <td>
+
+                    <div
+                        class="payment-number"
+                    >
+
+                        <span>
+
+                            ${
+                                withdrawal
+                                    .payment_details ??
+                                "-"
+                            }
+
+                        </span>
+
+                        <button
+                            class="copy-btn"
+
+                            onclick="copyPaymentNumber(
+                                '${withdrawal.payment_details}'
+                            )"
+                        >
+
+                            📋
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        new Date(
+                            withdrawal.created_at
+                        )
+                        .toLocaleDateString(
+                            "fr-FR"
+                        )
+                    }
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="${statusClass}"
+                    >
+
+                        ${statusLabel}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <div
+                        class="action-menu"
+                    >
+
+                        <button
+                            class="action-toggle"
+
+                            onclick="toggleActionMenu(
+                                '${withdrawal.id}'
+                            )"
+                        >
+
+                            ⋮
+
+                        </button>
+
+
+                        <div
+                            id="menu-${withdrawal.id}"
+                            class="action-dropdown"
+                        >
+
+                            ${actionButtons}
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+            `;
+
+            tbody.appendChild(tr);
+
+        }
+    );
 
 }
+
+
+// ==========================================
+// STATISTIQUES
+// ==========================================
+
+function updateStats(
+    withdrawals
+) {
+
+    let pendingCount = 0;
+
+    let processingCount = 0;
+
+    let paidCount = 0;
+
+    let rejectedCount = 0;
+
+    let pendingAmount = 0;
+
+
+    withdrawals.forEach(
+        (withdrawal) => {
+
+            const amount =
+                Number(
+                    withdrawal.amount
+                ) || 0;
+
+
+            switch (
+                withdrawal.status
+            ) {
+
+                case "En attente":
+
+                    pendingCount++;
+
+                    pendingAmount +=
+                        amount;
+
+                    break;
+
+
+                case "En traitement":
+
+                    processingCount++;
+
+                    break;
+
+
+                case "paid":
+
+                    paidCount++;
+
+                    break;
+
+
+                case "Refusé":
+
+                    rejectedCount++;
+
+                    break;
+
+            }
+
+        }
+    );
+
+
+    const pendingElement =
+        document.getElementById(
+            "pendingCount"
+        );
+
+    const paidElement =
+        document.getElementById(
+            "paidCount"
+        );
+
+    const rejectedElement =
+        document.getElementById(
+            "rejectedCount"
+        );
+
+    const pendingAmountElement =
+        document.getElementById(
+            "pendingAmount"
+        );
+
+
+    if (pendingElement) {
+
+        pendingElement.textContent =
+            pendingCount;
+
+    }
+
+
+    if (paidElement) {
+
+        paidElement.textContent =
+            paidCount;
+
+    }
+
+
+    if (rejectedElement) {
+
+        rejectedElement.textContent =
+            rejectedCount;
+
+    }
+
+
+    if (pendingAmountElement) {
+
+        pendingAmountElement.textContent =
+            pendingAmount
+                .toLocaleString(
+                    "fr-FR"
+                ) +
+            " FCFA";
+
+    }
+
+
+    console.log(
+        "Retraits en attente :",
+        pendingCount
+    );
+
+    console.log(
+        "Retraits en traitement :",
+        processingCount
+    );
+
+}
+
+
+// ==========================================
+// PAGINATION
+// ==========================================
+
+function updatePagination(
+    totalItems
+) {
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                totalItems /
+                rowsPerPage
+            )
+        );
+
+
+    if (
+        currentPage >
+        totalPages
+    ) {
+
+        currentPage =
+            totalPages;
+
+    }
+
+
+    const pageInfo =
+        document.getElementById(
+            "pageInfo"
+        );
+
+    const prevPage =
+        document.getElementById(
+            "prevPage"
+        );
+
+    const nextPage =
+        document.getElementById(
+            "nextPage"
+        );
+
+
+    if (pageInfo) {
+
+        pageInfo.textContent =
+            `Page ${currentPage} sur ${totalPages}`;
+
+    }
+
+
+    if (prevPage) {
+
+        prevPage.disabled =
+            currentPage === 1;
+
+    }
+
+
+    if (nextPage) {
+
+        nextPage.disabled =
+            currentPage ===
+            totalPages;
+
+    }
+
+}
+
+
+// ==========================================
+// FILTRES + RECHERCHE
+// ==========================================
 
 function applyFilters() {
 
-    let filtered = [...allWithdrawals];
+    let filtered =
+        [...allWithdrawals];
 
-    // Filtre par statut
-    if (currentStatusFilter !== "Tous") {
 
-        filtered = filtered.filter(
-            withdrawal => withdrawal.status === currentStatusFilter
-        );
+    // ======================================
+    // FILTRE PAR STATUT
+    // ======================================
 
-    }
+    if (
+        currentStatusFilter !==
+        "Tous"
+    ) {
 
-    // Recherche
-    if (currentSearch.trim() !== "") {
-
-        const search = currentSearch.toLowerCase();
-
-        filtered = filtered.filter((withdrawal) => {
-
-            const fullname =
-                (withdrawal.profiles?.fullname ?? "").toLowerCase();
-
-            const country =
-                (withdrawal.profiles?.country ?? "").toLowerCase();
-
-            const payment =
-                (withdrawal.payment_method ?? "").toLowerCase();
-
-            return (
-                fullname.includes(search) ||
-                country.includes(search) ||
-                payment.includes(search)
+        filtered =
+            filtered.filter(
+                (withdrawal) =>
+                    withdrawal.status ===
+                    currentStatusFilter
             );
 
-        });
+    }
+
+
+    // ======================================
+    // RECHERCHE
+    // ======================================
+
+    if (
+        currentSearch.trim() !==
+        ""
+    ) {
+
+        const search =
+            currentSearch
+                .toLowerCase();
+
+
+        filtered =
+            filtered.filter(
+                (withdrawal) => {
+
+                    const fullname =
+                        (
+                            withdrawal
+                                .profiles
+                                ?.fullname ??
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    const country =
+                        (
+                            withdrawal
+                                .profiles
+                                ?.country ??
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    const payment =
+                        (
+                            withdrawal
+                                .payment_method ??
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    const paymentDetails =
+                        (
+                            withdrawal
+                                .payment_details ??
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                    return (
+
+                        fullname.includes(
+                            search
+                        )
+
+                        ||
+
+                        country.includes(
+                            search
+                        )
+
+                        ||
+
+                        payment.includes(
+                            search
+                        )
+
+                        ||
+
+                        paymentDetails.includes(
+                            search
+                        )
+
+                    );
+
+                }
+            );
 
     }
-currentPage = 1;
-   filteredWithdrawals = filtered;
 
-displayWithdrawals(filteredWithdrawals);
-updateStats(filteredWithdrawals);
-updatePagination(filteredWithdrawals.length);
+
+    currentPage = 1;
+
+    filteredWithdrawals =
+        filtered;
+
+
+    displayWithdrawals(
+        filteredWithdrawals
+    );
+
+    updateStats(
+        filteredWithdrawals
+    );
+
+    updatePagination(
+        filteredWithdrawals.length
+    );
 
 }
 
-async function updateWithdrawal(withdrawalId, status) {
+
+// ==========================================
+// MISE À JOUR D'UN RETRAIT
+// ==========================================
+
+async function updateWithdrawal(
+    withdrawalId,
+    status
+) {
+
+    console.log(
+        "Mise à jour retrait :",
+        withdrawalId,
+        status
+    );
+
+
+    // ======================================
+    // CONFIRMATION
+    // ======================================
+
+    let confirmationMessage =
+        "";
+
+
+    if (
+        status ===
+        "En traitement"
+    ) {
+
+        confirmationMessage =
+            "Voulez-vous mettre ce retrait en traitement ?\n\n" +
+            "Aucun paiement SebPay ne sera effectué à cette étape.";
+
+    }
+
+    else if (
+        status ===
+        "paid"
+    ) {
+
+        confirmationMessage =
+            "Voulez-vous marquer ce retrait comme payé ?";
+
+    }
+
+    else if (
+        status ===
+        "Refusé"
+    ) {
+
+        confirmationMessage =
+            "Voulez-vous vraiment refuser ce retrait ?";
+
+    }
+
+
+    if (
+        confirmationMessage &&
+        !confirm(
+            confirmationMessage
+        )
+    ) {
+
+        return;
+
+    }
+
 
     const {
         data: { session }
     } = await sb.auth.getSession();
 
-    const { data, error } = await sb.functions.invoke(
-        "admin-update-withdrawal",
-        {
-            body: {
-                withdrawalId,
-                status
-            },
-            headers: {
-                Authorization: `Bearer ${session.access_token}`
+
+    if (!session) {
+
+        alert(
+            "Votre session a expiré. Veuillez vous reconnecter."
+        );
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await sb.functions.invoke(
+            "admin-update-withdrawal",
+            {
+
+                body: {
+
+                    withdrawalId,
+
+                    status
+
+                },
+
+                headers: {
+
+                    Authorization:
+                        `Bearer ${session.access_token}`
+
+                }
+
             }
-        }
-    );
+        );
+
 
     if (error) {
-        alert("Erreur lors de la mise à jour.");
-        console.error(error);
+
+        alert(
+            "Erreur lors de la mise à jour."
+        );
+
+        console.error(
+            "Erreur updateWithdrawal :",
+            error
+        );
+
         return;
+
     }
+
+
+    console.log(
+        "Réponse mise à jour :",
+        data
+    );
+
+
+    if (
+        data &&
+        data.success === false
+    ) {
+
+        alert(
+            data.error ||
+            "La mise à jour a échoué."
+        );
+
+        return;
+
+    }
+
 
     await loadWithdrawals();
 
-applyFilters();
+    applyFilters();
+
 }
 
-// ================================
-// Gestion des filtres et de la recherche
-// ================================
 
-document.addEventListener("DOMContentLoaded", () => {
+// ==========================================
+// GESTION DES FILTRES
+// ==========================================
 
-    const statusFilter = document.getElementById("statusFilter");
-    const searchInput = document.getElementById("searchWithdrawal");
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    if (statusFilter) {
+        const statusFilter =
+            document.getElementById(
+                "statusFilter"
+            );
 
-        statusFilter.addEventListener("change", () => {
 
-            currentStatusFilter = statusFilter.value;
-            applyFilters();
+        const searchInput =
+            document.getElementById(
+                "searchWithdrawal"
+            );
 
-        });
+
+        if (statusFilter) {
+
+            statusFilter.addEventListener(
+                "change",
+                () => {
+
+                    currentStatusFilter =
+                        statusFilter.value;
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                () => {
+
+                    currentSearch =
+                        searchInput.value;
+
+                    applyFilters();
+
+                }
+            );
+
+        }
 
     }
+);
 
-    if (searchInput) {
 
-        searchInput.addEventListener("input", () => {
+// ==========================================
+// PAGINATION : PRÉCÉDENT
+// ==========================================
 
-            currentSearch = searchInput.value;
-            applyFilters();
+const prevPage =
+    document.getElementById(
+        "prevPage"
+    );
 
-        });
-
-    }
-
-});
-const prevPage = document.getElementById("prevPage");
-const nextPage = document.getElementById("nextPage");
-const rowsSelect = document.getElementById("rowsPerPage");
 
 if (prevPage) {
 
-    prevPage.addEventListener("click", () => {
+    prevPage.addEventListener(
+        "click",
+        () => {
 
-        if (currentPage > 1) {
+            if (
+                currentPage >
+                1
+            ) {
 
-            currentPage--;
-            displayWithdrawals(filteredWithdrawals);
-            updatePagination(filteredWithdrawals.length);
+                currentPage--;
+
+                displayWithdrawals(
+                    filteredWithdrawals
+                );
+
+                updatePagination(
+                    filteredWithdrawals.length
+                );
+
+            }
 
         }
-
-    });
+    );
 
 }
+
+
+// ==========================================
+// PAGINATION : SUIVANT
+// ==========================================
+
+const nextPage =
+    document.getElementById(
+        "nextPage"
+    );
+
 
 if (nextPage) {
 
-    nextPage.addEventListener("click", () => {
+    nextPage.addEventListener(
+        "click",
+        () => {
 
-        const totalPages = Math.ceil(filteredWithdrawals.length / rowsPerPage);
+            const totalPages =
+                Math.ceil(
+                    filteredWithdrawals.length /
+                    rowsPerPage
+                );
 
-        if (currentPage < totalPages) {
 
-            currentPage++;
-            displayWithdrawals(filteredWithdrawals);
-            updatePagination(filteredWithdrawals.length);
+            if (
+                currentPage <
+                totalPages
+            ) {
+
+                currentPage++;
+
+                displayWithdrawals(
+                    filteredWithdrawals
+                );
+
+                updatePagination(
+                    filteredWithdrawals.length
+                );
+
+            }
 
         }
-
-    });
+    );
 
 }
+
+
+// ==========================================
+// NOMBRE DE LIGNES PAR PAGE
+// ==========================================
+
+const rowsSelect =
+    document.getElementById(
+        "rowsPerPage"
+    );
+
 
 if (rowsSelect) {
 
-    rowsSelect.addEventListener("change", () => {
+    rowsSelect.addEventListener(
+        "change",
+        () => {
 
-        rowsPerPage = Number(rowsSelect.value);
+            rowsPerPage =
+                Number(
+                    rowsSelect.value
+                );
 
-        currentPage = 1;
+            currentPage = 1;
 
-        displayWithdrawals(filteredWithdrawals);
-        updatePagination(filteredWithdrawals.length);
+            displayWithdrawals(
+                filteredWithdrawals
+            );
 
-    });
+            updatePagination(
+                filteredWithdrawals.length
+            );
 
-}
-function copyPaymentNumber(number) {
-
-    navigator.clipboard.writeText(number);
-
-    alert("Numéro copié : " + number);
-
-}
-function toggleActionMenu(id){
-
-const menu=document.getElementById(`menu-${id}`);
-
-document
-.querySelectorAll(".action-dropdown")
-.forEach(m=>{
-
-if(m!==menu){
-
-m.style.display="none";
-
-}
-
-});
-
-menu.style.display=
-menu.style.display==="block"
-?"none"
-:"block";
-
-}
-
-document.addEventListener("click",(e)=>{
-
-if(!e.target.closest(".action-menu")){
-
-document
-.querySelectorAll(".action-dropdown")
-.forEach(menu=>{
-
-menu.style.display="none";
-
-});
-
-}
-
-});
-async function openAffiliateCRM(affiliateId) {
-
-    const modal = document.getElementById("affiliateModal");
-
-    if (!modal) {
-
-        window.location.href = `admin-affiliates.html?id=${affiliateId}`;
-        return;
-
-    }
-
-    openAffiliateModal(affiliateId);
+        }
+    );
 
 }
