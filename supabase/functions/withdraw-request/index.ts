@@ -5,25 +5,43 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Methods":
+    "POST, OPTIONS",
 };
 
 serve(async (req) => {
 
+  // ==========================================
+  // CORS
+  // ==========================================
+
   if (req.method === "OPTIONS") {
+
     return new Response("ok", {
       headers: corsHeaders,
     });
+
   }
 
   try {
+
+    // ==========================================
+    // CLIENT SUPABASE SERVICE ROLE
+    // ==========================================
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const authHeader = req.headers.get("Authorization");
+
+    // ==========================================
+    // AUTHENTIFICATION
+    // ==========================================
+
+    const authHeader =
+      req.headers.get("Authorization");
+
 
     if (!authHeader) {
 
@@ -42,14 +60,25 @@ serve(async (req) => {
 
     }
 
-    const jwt = authHeader.replace("Bearer ", "");
+
+    const jwt =
+      authHeader.replace(
+        "Bearer ",
+        "",
+      );
+
 
     const {
       data: authUser,
       error: authError,
-    } = await supabase.auth.getUser(jwt);
+    } =
+      await supabase.auth.getUser(jwt);
 
-    if (authError || !authUser.user) {
+
+    if (
+      authError ||
+      !authUser.user
+    ) {
 
       return new Response(
         JSON.stringify({
@@ -66,9 +95,20 @@ serve(async (req) => {
 
     }
 
-    const userId = authUser.user.id;
 
-    console.log("Utilisateur :", userId);
+    const userId =
+      authUser.user.id;
+
+
+    console.log(
+      "Utilisateur :",
+      userId,
+    );
+
+
+    // ==========================================
+    // RÉCUPÉRATION DES PARAMÈTRES
+    // ==========================================
 
     const {
       amount,
@@ -76,7 +116,14 @@ serve(async (req) => {
       paymentDetails,
     } = await req.json();
 
-    const requestedAmount = Number(amount);
+
+    const requestedAmount =
+      Number(amount);
+
+
+    // ==========================================
+    // VALIDATION DU MONTANT
+    // ==========================================
 
     if (
       !requestedAmount ||
@@ -98,85 +145,51 @@ serve(async (req) => {
 
     }
 
-    // ==========================================
-    // Récupération des commissions
-    // ==========================================
-
-    const {
-      data: commissions,
-      error: commissionError,
-    } = await supabase
-      .from("commissions")
-      .select("amount,status")
-      .eq("affiliate_id", userId);
-
-    if (commissionError) {
-      throw commissionError;
-    }
 
     // ==========================================
-    // Récupération des retraits
+    // RÉCUPÉRATION DU PROFIL
+    // ==========================================
+    //
+    // Nous récupérons les informations du
+    // bénéficiaire pour préparer le futur
+    // paiement SebPay :
+    //
+    // - fullname
+    // - phone
+    // - country
+    //
     // ==========================================
 
     const {
-      data: withdrawals,
-      error: withdrawalError,
-    } = await supabase
-      .from("withdrawals")
-      .select("amount,status")
-      .eq("affiliate_id", userId);
+      data: profile,
+      error: profileError,
+    } =
+      await supabase
+        .from("profiles")
+        .select(
+          "fullname, phone, country",
+        )
+        .eq(
+          "id",
+          userId,
+        )
+        .single();
 
-    if (withdrawalError) {
-      throw withdrawalError;
-    }
 
-    // ==========================================
-    // Calcul du solde disponible
-    // ==========================================
+    if (
+      profileError ||
+      !profile
+    ) {
 
-    let totalCommissions = 0;
-    let totalWithdrawals = 0;
-
-    for (const commission of commissions ?? []) {
-
-      if (commission.status === "available") {
-        totalCommissions += Number(commission.amount);
-      }
-
-    }
-
-    for (const withdrawal of withdrawals ?? []) {
-
-      if (
-        withdrawal.status === "En attente" ||
-        withdrawal.status === "paid"
-      ) {
-
-        totalWithdrawals += Number(withdrawal.amount);
-
-      }
-
-    }
-
-    const availableBalance = Math.max(
-      0,
-      totalCommissions - totalWithdrawals,
-    );
-        // ==========================================
-    // Vérification du solde disponible
-    // ==========================================
-
-    console.log("Commissions disponibles :", totalCommissions);
-    console.log("Retraits :", totalWithdrawals);
-    console.log("Solde disponible :", availableBalance);
-    console.log("Montant demandé :", requestedAmount);
-
-    if (requestedAmount > availableBalance) {
+      console.error(
+        "Erreur récupération profil :",
+        profileError,
+      );
 
       return new Response(
         JSON.stringify({
           error:
-            `Solde insuffisant. Votre solde disponible est de ${availableBalance} FCFA.`,
+            "Impossible de récupérer les informations de votre profil.",
         }),
         {
           status: 400,
@@ -189,28 +202,45 @@ serve(async (req) => {
 
     }
 
+
     // ==========================================
-    // Enregistrement de la demande de retrait
+    // INFORMATIONS BÉNÉFICIAIRE
     // ==========================================
 
-    const { error: insertError } = await supabase
-      .from("withdrawals")
-      .insert({
-        affiliate_id: userId,
-        amount: requestedAmount,
-        payment_method: paymentMethod,
-        payment_details: paymentDetails,
-        status: "En attente",
-      });
+    const recipientName =
+      String(
+        profile.fullname ??
+        "",
+      ).trim();
 
-    if (insertError) {
+
+    const phone =
+      String(
+        profile.phone ??
+        "",
+      ).trim();
+
+
+    const country =
+      String(
+        profile.country ??
+        "",
+      ).trim();
+
+
+    // ==========================================
+    // VALIDATION DU NOM
+    // ==========================================
+
+    if (!recipientName) {
 
       return new Response(
         JSON.stringify({
-          error: insertError.message,
+          error:
+            "Votre nom complet est obligatoire pour effectuer un retrait.",
         }),
         {
-          status: 500,
+          status: 400,
           headers: {
             ...corsHeaders,
             "Content-Type": "application/json",
@@ -220,42 +250,385 @@ serve(async (req) => {
 
     }
 
-    const newBalance =
-      availableBalance - requestedAmount;
 
-    console.log("Nouveau solde :", newBalance);
+    // ==========================================
+    // VALIDATION DU TÉLÉPHONE
+    // ==========================================
+
+    if (!phone) {
+
+      return new Response(
+        JSON.stringify({
+          error:
+            "Votre numéro de téléphone est obligatoire pour effectuer un retrait.",
+        }),
+        {
+          status: 400,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+    }
+
+
+    // ==========================================
+    // VALIDATION DU PAYS
+    // ==========================================
+
+    if (!country) {
+
+      return new Response(
+        JSON.stringify({
+          error:
+            "Votre pays est obligatoire pour effectuer un retrait.",
+        }),
+        {
+          status: 400,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+    }
+
+
+    console.log(
+      "Bénéficiaire :",
+      recipientName,
+    );
+
+    console.log(
+      "Téléphone :",
+      phone,
+    );
+
+    console.log(
+      "Pays :",
+      country,
+    );
+
+
+    // ==========================================
+    // RÉCUPÉRATION DES COMMISSIONS
+    // ==========================================
+
+    const {
+      data: commissions,
+      error: commissionError,
+    } =
+      await supabase
+        .from("commissions")
+        .select(
+          "amount,status",
+        )
+        .eq(
+          "affiliate_id",
+          userId,
+        );
+
+
+    if (commissionError) {
+
+      throw commissionError;
+
+    }
+
+
+    // ==========================================
+    // RÉCUPÉRATION DES RETRAITS
+    // ==========================================
+
+    const {
+      data: withdrawals,
+      error: withdrawalError,
+    } =
+      await supabase
+        .from("withdrawals")
+        .select(
+          "amount,status",
+        )
+        .eq(
+          "affiliate_id",
+          userId,
+        );
+
+
+    if (withdrawalError) {
+
+      throw withdrawalError;
+
+    }
+
+
+    // ==========================================
+    // CALCUL DU SOLDE DISPONIBLE
+    // ==========================================
+
+    let totalCommissions = 0;
+
+    let totalWithdrawals = 0;
+
+
+    for (
+      const commission
+      of commissions ?? []
+    ) {
+
+      if (
+        commission.status ===
+        "available"
+      ) {
+
+        totalCommissions +=
+          Number(
+            commission.amount,
+          );
+
+      }
+
+    }
+
+
+    for (
+      const withdrawal
+      of withdrawals ?? []
+    ) {
+
+      if (
+        withdrawal.status ===
+          "En attente" ||
+        withdrawal.status ===
+          "paid"
+      ) {
+
+        totalWithdrawals +=
+          Number(
+            withdrawal.amount,
+          );
+
+      }
+
+    }
+
+
+    const availableBalance =
+      Math.max(
+        0,
+        totalCommissions -
+          totalWithdrawals,
+      );
+
+
+    // ==========================================
+    // VÉRIFICATION DU SOLDE
+    // ==========================================
+
+    console.log(
+      "Commissions disponibles :",
+      totalCommissions,
+    );
+
+    console.log(
+      "Retraits :",
+      totalWithdrawals,
+    );
+
+    console.log(
+      "Solde disponible :",
+      availableBalance,
+    );
+
+    console.log(
+      "Montant demandé :",
+      requestedAmount,
+    );
+
+
+    if (
+      requestedAmount >
+      availableBalance
+    ) {
+
+      return new Response(
+        JSON.stringify({
+          error:
+            `Solde insuffisant. Votre solde disponible est de ${availableBalance} FCFA.`,
+        }),
+        {
+          status: 400,
+          headers: {
+            ...corsHeaders,
+            "Content-Type":
+              "application/json",
+          },
+        },
+      );
+
+    }
+
+
+    // ==========================================
+    // ENREGISTREMENT DE LA DEMANDE
+    // ==========================================
+    //
+    // Les nouvelles informations sont maintenant
+    // enregistrées directement dans withdrawals :
+    //
+    // recipient_name
+    // phone
+    // country
+    //
+    // Aucun paiement SebPay n'est déclenché.
+    //
+    // ==========================================
+
+    const {
+      data: newWithdrawal,
+      error: insertError,
+    } =
+      await supabase
+        .from("withdrawals")
+        .insert({
+          affiliate_id:
+            userId,
+
+          amount:
+            requestedAmount,
+
+          payment_method:
+            paymentMethod,
+
+          payment_details:
+            paymentDetails,
+
+          recipient_name:
+            recipientName,
+
+          phone:
+            phone,
+
+          country:
+            country,
+
+          status:
+            "En attente",
+        })
+        .select(
+          `
+            id,
+            affiliate_id,
+            amount,
+            payment_method,
+            payment_details,
+            recipient_name,
+            phone,
+            country,
+            status,
+            created_at
+          `,
+        )
+        .single();
+
+
+    if (insertError) {
+
+      console.error(
+        "Erreur création retrait :",
+        insertError,
+      );
+
+      return new Response(
+        JSON.stringify({
+          error:
+            insertError.message,
+        }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type":
+              "application/json",
+          },
+        },
+      );
+
+    }
+
+
+    // ==========================================
+    // NOUVEAU SOLDE
+    // ==========================================
+
+    const newBalance =
+      availableBalance -
+      requestedAmount;
+
+
+    console.log(
+      "Nouveau solde :",
+      newBalance,
+    );
+
+
+    // ==========================================
+    // RÉPONSE
+    // ==========================================
 
     return new Response(
       JSON.stringify({
-        success: true,
-        message: "Demande de retrait enregistrée avec succès.",
-        availableBalance: newBalance,
+
+        success:
+          true,
+
+        message:
+          "Demande de retrait enregistrée avec succès.",
+
+        availableBalance:
+          newBalance,
+
+        withdrawal:
+          newWithdrawal,
+
       }),
       {
         status: 200,
         headers: {
           ...corsHeaders,
-          "Content-Type": "application/json",
+          "Content-Type":
+            "application/json",
         },
       },
     );
 
+
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Erreur withdraw-request :",
+      error,
+    );
+
 
     return new Response(
       JSON.stringify({
+
         error:
           error instanceof Error
             ? error.message
             : "Erreur interne",
+
       }),
       {
         status: 500,
         headers: {
           ...corsHeaders,
-          "Content-Type": "application/json",
+          "Content-Type":
+            "application/json",
         },
       },
     );
