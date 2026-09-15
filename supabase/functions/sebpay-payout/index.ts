@@ -9,67 +9,57 @@ const corsHeaders = {
 };
 
 // ======================================================
-// PROTECTION SEBPAY
-// ======================================================
-//
-// SEBPAY_LIVE_ENABLED doit être "true" pour autoriser
-// ultérieurement les paiements réels.
-//
-// Pour l'instant, le secret est volontairement :
-//
-// SEBPAY_LIVE_ENABLED=false
-//
-// Donc AUCUN paiement réel ne peut être effectué.
-//
+// CONFIGURATION
 // ======================================================
 
 const LIVE_ENABLED =
   Deno.env.get("SEBPAY_LIVE_ENABLED") === "true";
 
-// ======================================================
-// MODE SIMULATION
-// ======================================================
-//
-// Cette version reste en simulation.
-//
-// Même si LIVE_ENABLED était accidentellement activé,
-// aucun appel réel SebPay ne sera effectué tant que
-// nous n'avons pas explicitement remplacé cette logique.
-//
-// ======================================================
+const SEBPAY_PROXY_URL =
+  Deno.env.get("SEBPAY_PROXY_URL")?.replace(/\/+$/, "");
 
-const SIMULATION_MODE = true;
-
-// ======================================================
-// STATUT ATTENDU
-// ======================================================
+const PROXY_SHARED_SECRET =
+  Deno.env.get("PROXY_SHARED_SECRET");
 
 const REQUIRED_WITHDRAWAL_STATUS =
   "En traitement";
 
+const ALLOWED_CURRENCY =
+  "XOF";
+
 // ======================================================
-// OPERATEURS ACTUELLEMENT PRIS EN COMPTE
+// OPERATEURS
 // ======================================================
 //
-// Cette liste sert uniquement à préparer les données.
-// Le futur payout réel utilisera les slugs officiels
-// récupérés depuis SebPay.
+// Les utilisateurs peuvent avoir enregistré le nom
+// commercial dans withdrawals.operator/payment_method.
 //
-// ======================================================
+// SebPay attend le slug opérateur.
+// Les slugs utilisés ici correspondent aux opérateurs
+// CI précédemment récupérés depuis SebPay.
+//
 
-const ALLOWED_OPERATORS = [
-  "Wave",
-  "Orange Money",
-  "MTN Money",
-  "Moov Money",
-];
+const OPERATOR_MAP: Record<string, string> = {
+  "Wave": "wave-ci",
+  "Wave Money": "wave-ci",
+  "wave": "wave-ci",
+  "wave-ci": "wave-ci",
 
-// ======================================================
-// DEVISE
-// ======================================================
+  "Orange Money": "orange-ci",
+  "Orange": "orange-ci",
+  "orange": "orange-ci",
+  "orange-ci": "orange-ci",
 
-const ALLOWED_CURRENCY = "XOF";
+  "MTN Money": "mtn-ci",
+  "MTN": "mtn-ci",
+  "mtn": "mtn-ci",
+  "mtn-ci": "mtn-ci",
 
+  "Moov Money": "moov-ci",
+  "Moov": "moov-ci",
+  "moov": "moov-ci",
+  "moov-ci": "moov-ci",
+};
 
 // ======================================================
 // REPONSE JSON
@@ -79,21 +69,17 @@ function jsonResponse(
   body: unknown,
   status = 200,
 ) {
-
   return new Response(
     JSON.stringify(body),
     {
       status,
       headers: {
         ...corsHeaders,
-        "Content-Type":
-          "application/json",
+        "Content-Type": "application/json",
       },
     },
   );
-
 }
-
 
 // ======================================================
 // EDGE FUNCTION
@@ -106,23 +92,19 @@ Deno.serve(async (req) => {
   // ====================================================
 
   if (req.method === "OPTIONS") {
-
     return new Response(
       "ok",
       {
         headers: corsHeaders,
       },
     );
-
   }
-
 
   // ====================================================
   // METHOD
   // ====================================================
 
   if (req.method !== "POST") {
-
     return jsonResponse(
       {
         success: false,
@@ -131,11 +113,43 @@ Deno.serve(async (req) => {
       },
       405,
     );
-
   }
 
-
   try {
+
+    // ==================================================
+    // VERIFICATION CONFIGURATION PROXY
+    // ==================================================
+
+    if (!SEBPAY_PROXY_URL) {
+      console.error(
+        "SEBPAY_PROXY_URL n'est pas configuré.",
+      );
+
+      return jsonResponse(
+        {
+          success: false,
+          error:
+            "Le proxy SebPay n'est pas configuré.",
+        },
+        500,
+      );
+    }
+
+    if (!PROXY_SHARED_SECRET) {
+      console.error(
+        "PROXY_SHARED_SECRET n'est pas configuré.",
+      );
+
+      return jsonResponse(
+        {
+          success: false,
+          error:
+            "Le secret de communication avec le proxy n'est pas configuré.",
+        },
+        500,
+      );
+    }
 
     // ==================================================
     // CLIENT SUPABASE SERVICE ROLE
@@ -143,27 +157,18 @@ Deno.serve(async (req) => {
 
     const supabase =
       createClient(
-        Deno.env.get(
-          "SUPABASE_URL",
-        )!,
-        Deno.env.get(
-          "SUPABASE_SERVICE_ROLE_KEY",
-        )!,
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       );
-
 
     // ==================================================
     // AUTHENTIFICATION
     // ==================================================
 
     const authHeader =
-      req.headers.get(
-        "Authorization",
-      );
-
+      req.headers.get("Authorization");
 
     if (!authHeader) {
-
       return jsonResponse(
         {
           success: false,
@@ -172,16 +177,13 @@ Deno.serve(async (req) => {
         },
         401,
       );
-
     }
-
 
     const token =
       authHeader.replace(
         "Bearer ",
         "",
       );
-
 
     const {
       data: {
@@ -193,12 +195,10 @@ Deno.serve(async (req) => {
         token,
       );
 
-
     if (
       authError ||
       !user
     ) {
-
       return jsonResponse(
         {
           success: false,
@@ -207,9 +207,7 @@ Deno.serve(async (req) => {
         },
         401,
       );
-
     }
-
 
     // ==================================================
     // VERIFICATION SUPER ADMIN
@@ -228,12 +226,10 @@ Deno.serve(async (req) => {
         )
         .single();
 
-
     if (
       profileError ||
       !profile
     ) {
-
       console.error(
         "Profil introuvable :",
         profileError,
@@ -247,15 +243,12 @@ Deno.serve(async (req) => {
         },
         403,
       );
-
     }
-
 
     if (
       profile.role !==
       "super_admin"
     ) {
-
       console.warn(
         "Accès refusé à sebpay-payout.",
         {
@@ -274,9 +267,7 @@ Deno.serve(async (req) => {
         },
         403,
       );
-
     }
-
 
     // ==================================================
     // LECTURE DU BODY
@@ -285,12 +276,9 @@ Deno.serve(async (req) => {
     let body: any;
 
     try {
-
       body =
         await req.json();
-
     } catch {
-
       return jsonResponse(
         {
           success: false,
@@ -299,22 +287,12 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     const withdrawalId =
       body?.withdrawalId;
 
-
-    // ==================================================
-    // VERIFICATION WITHDRAWAL ID
-    // ==================================================
-
-    if (
-      !withdrawalId
-    ) {
-
+    if (!withdrawalId) {
       return jsonResponse(
         {
           success: false,
@@ -323,9 +301,7 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     // ==================================================
     // RECUPERATION DU RETRAIT
@@ -364,12 +340,10 @@ Deno.serve(async (req) => {
         )
         .single();
 
-
     if (
       withdrawalError ||
       !withdrawal
     ) {
-
       console.error(
         "Retrait introuvable :",
         withdrawalError,
@@ -383,9 +357,7 @@ Deno.serve(async (req) => {
         },
         404,
       );
-
     }
-
 
     // ==================================================
     // VERIFICATION DU STATUT
@@ -395,7 +367,6 @@ Deno.serve(async (req) => {
       withdrawal.status !==
       REQUIRED_WITHDRAWAL_STATUS
     ) {
-
       return jsonResponse(
         {
           success: false,
@@ -406,9 +377,7 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     // ==================================================
     // VERIFICATION DU MONTANT
@@ -419,14 +388,10 @@ Deno.serve(async (req) => {
         withdrawal.amount,
       );
 
-
     if (
-      !Number.isFinite(
-        amount,
-      ) ||
+      !Number.isFinite(amount) ||
       amount <= 0
     ) {
-
       return jsonResponse(
         {
           success: false,
@@ -435,9 +400,7 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     // ==================================================
     // VERIFICATION DU MODE DE PAIEMENT
@@ -445,15 +408,10 @@ Deno.serve(async (req) => {
 
     const paymentMethod =
       String(
-        withdrawal.payment_method ??
-        "",
+        withdrawal.payment_method ?? "",
       ).trim();
 
-
-    if (
-      !paymentMethod
-    ) {
-
+    if (!paymentMethod) {
       return jsonResponse(
         {
           success: false,
@@ -462,70 +420,44 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
 
-
     // ==================================================
-    // VERIFICATION OPERATEUR
+    // OPERATEUR
     // ==================================================
 
-    let operator =
+    let operatorInput =
       String(
-        withdrawal.operator ??
-        "",
+        withdrawal.operator ?? "",
       ).trim();
 
-
-    if (
-      !operator &&
-      ALLOWED_OPERATORS.includes(
-        paymentMethod,
-      )
-    ) {
-
-      operator =
+    if (!operatorInput) {
+      operatorInput =
         paymentMethod;
-
     }
 
+    const operator =
+      OPERATOR_MAP[operatorInput];
 
-    if (
-      !operator
-    ) {
-
+    if (!operator) {
       return jsonResponse(
         {
           success: false,
           error:
-            "Opérateur Mobile Money manquant.",
+            `Opérateur Mobile Money non pris en charge : ${operatorInput}`,
+          supportedOperators: [
+            "Wave",
+            "Orange Money",
+            "MTN Money",
+            "Moov Money",
+          ],
         },
         400,
       );
-
     }
-
-
-    if (
-      !ALLOWED_OPERATORS.includes(
-        operator,
-      )
-    ) {
-
-      return jsonResponse(
-        {
-          success: false,
-          error:
-            `Opérateur non pris en charge : ${operator}`,
-        },
-        400,
-      );
-
-    }
-
 
     // ==================================================
-    // VERIFICATION TELEPHONE
+    // TELEPHONE
     // ==================================================
 
     const phone =
@@ -535,11 +467,7 @@ Deno.serve(async (req) => {
         "",
       ).trim();
 
-
-    if (
-      !phone
-    ) {
-
+    if (!phone) {
       return jsonResponse(
         {
           success: false,
@@ -548,26 +476,20 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
 
-
     // ==================================================
-    // VERIFICATION PAYS
+    // PAYS
     // ==================================================
 
     const country =
       String(
-        withdrawal.country ??
-        "",
-      ).trim()
-      .toUpperCase();
+        withdrawal.country ?? "",
+      )
+        .trim()
+        .toUpperCase();
 
-
-    if (
-      !country
-    ) {
-
+    if (!country) {
       return jsonResponse(
         {
           success: false,
@@ -576,9 +498,7 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     // ==================================================
     // NOM BENEFICIAIRE
@@ -586,14 +506,10 @@ Deno.serve(async (req) => {
 
     let recipientName =
       String(
-        withdrawal.recipient_name ??
-        "",
+        withdrawal.recipient_name ?? "",
       ).trim();
 
-
-    if (
-      !recipientName
-    ) {
+    if (!recipientName) {
 
       const {
         data:
@@ -603,46 +519,30 @@ Deno.serve(async (req) => {
       } =
         await supabase
           .from("profiles")
-          .select(
-            "fullname",
-          )
+          .select("fullname")
           .eq(
             "id",
             withdrawal.affiliate_id,
           )
           .maybeSingle();
 
-
-      if (
-        affiliateProfileError
-      ) {
-
+      if (affiliateProfileError) {
         console.error(
           "Erreur profil affilié :",
           affiliateProfileError,
         );
-
       }
-
 
       recipientName =
         String(
-          affiliateProfile?.fullname ??
-          "",
+          affiliateProfile?.fullname ?? "",
         ).trim();
-
     }
 
-
-    if (
-      !recipientName
-    ) {
-
+    if (!recipientName) {
       recipientName =
         "Bénéficiaire";
-
     }
-
 
     // ==================================================
     // REFERENCE EXTERNE
@@ -651,9 +551,8 @@ Deno.serve(async (req) => {
     const externalReference =
       `PAYOUT-${withdrawal.id}`;
 
-
     // ==================================================
-    // VERIFICATION REFERENCE EXISTANTE
+    // PROTECTION REFERENCE
     // ==================================================
 
     if (
@@ -661,7 +560,6 @@ Deno.serve(async (req) => {
       withdrawal.provider_reference !==
         externalReference
     ) {
-
       return jsonResponse(
         {
           success: false,
@@ -672,71 +570,201 @@ Deno.serve(async (req) => {
         },
         409,
       );
-
     }
 
+    // ==================================================
+    // DONNEES ENVOYEES AU PROXY AWS
+    // ==================================================
+
+    const payoutPayload = {
+      withdrawal_id:
+        withdrawal.id,
+
+      recipient_name:
+        recipientName,
+
+      phone,
+
+      operator,
+
+      country,
+
+      amount,
+
+      currency:
+        ALLOWED_CURRENCY,
+
+      external_reference:
+        externalReference,
+    };
+
+    console.log(
+      "==========================================",
+    );
+
+    console.log(
+      "SEBPAY PAYOUT → PROXY AWS",
+    );
+
+    console.log(
+      "LIVE_ENABLED :",
+      LIVE_ENABLED,
+    );
+
+    console.log(
+      "Proxy URL :",
+      SEBPAY_PROXY_URL,
+    );
+
+    console.log(
+      {
+        withdrawalId:
+          withdrawal.id,
+        recipientName,
+        phone,
+        operator,
+        country,
+        amount,
+        currency:
+          ALLOWED_CURRENCY,
+        externalReference,
+      },
+    );
+
+    console.log(
+      "==========================================",
+    );
 
     // ==================================================
-    // MODE SIMULATION
+    // APPEL AWS
+    // ==================================================
+
+    let proxyResponse: Response;
+
+    try {
+
+      proxyResponse =
+        await fetch(
+          `${SEBPAY_PROXY_URL}/payout`,
+          {
+            method:
+              "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "x-proxy-secret":
+                PROXY_SHARED_SECRET,
+            },
+
+            body:
+              JSON.stringify(
+                payoutPayload,
+              ),
+          },
+        );
+
+    } catch (proxyError) {
+
+      console.error(
+        "Erreur connexion proxy AWS :",
+        proxyError,
+      );
+
+      return jsonResponse(
+        {
+          success: false,
+          error:
+            "Impossible de contacter le proxy AWS SebPay.",
+        },
+        502,
+      );
+    }
+
+    // ==================================================
+    // LECTURE REPONSE AWS
+    // ==================================================
+
+    let proxyData: any;
+
+    try {
+
+      proxyData =
+        await proxyResponse.json();
+
+    } catch {
+
+      console.error(
+        "Réponse AWS non JSON.",
+      );
+
+      return jsonResponse(
+        {
+          success: false,
+          error:
+            "Le proxy AWS a retourné une réponse invalide.",
+          proxyStatus:
+            proxyResponse.status,
+        },
+        502,
+      );
+    }
+
+    console.log(
+      "Réponse proxy AWS :",
+      proxyData,
+    );
+
+    // ==================================================
+    // ECHEC AWS / SEBPAY
     // ==================================================
 
     if (
-      SIMULATION_MODE
+      !proxyResponse.ok ||
+      proxyData?.success !== true
     ) {
 
-      console.log(
-        "==========================================",
-      );
-
-      console.log(
-        "SEBPAY PAYOUT - MODE SIMULATION",
-      );
-
-      console.log(
-        "AUCUN PAIEMENT REEL",
-      );
-
-      console.log(
-        "LIVE_ENABLED :",
-        LIVE_ENABLED,
-      );
-
-      console.log(
-        "==========================================",
-      );
-
-      console.log(
+      console.error(
+        "Payout refusé par le proxy :",
         {
-          withdrawalId:
-            withdrawal.id,
-
-          affiliateId:
-            withdrawal.affiliate_id,
-
-          recipientName,
-
-          phone,
-
-          country,
-
-          operator,
-
-          amount,
-
-          currency:
-            ALLOWED_CURRENCY,
-
-          externalReference,
-
-          paymentMethod,
-
+          status:
+            proxyResponse.status,
+          response:
+            proxyData,
         },
       );
 
+      return jsonResponse(
+        {
+          success: false,
 
-      // ==================================================
-      // ENREGISTREMENT DES DONNEES PREPAREES
-      // ==================================================
+          error:
+            proxyData?.error ??
+            proxyData?.message ??
+            "Le proxy AWS a refusé le payout.",
+
+          proxyStatus:
+            proxyResponse.status,
+
+          proxyResponse:
+            proxyData,
+        },
+        502,
+      );
+    }
+
+    // ==================================================
+    // RESULTAT SIMULATION
+    // ==================================================
+
+    if (
+      proxyData?.simulation === true
+    ) {
+
+      const transactionId =
+        proxyData?.payout?.transaction_id ??
+        null;
 
       const {
         data:
@@ -747,12 +775,14 @@ Deno.serve(async (req) => {
         await supabase
           .from("withdrawals")
           .update({
-
             provider:
               "sebpay",
 
             provider_reference:
               externalReference,
+
+            provider_transaction_id:
+              transactionId,
 
             operator,
 
@@ -765,14 +795,11 @@ Deno.serve(async (req) => {
 
             fee:
               Number(
-                withdrawal.fee ??
-                0,
+                withdrawal.fee ?? 0,
               ),
 
             updated_at:
-              new Date()
-                .toISOString(),
-
+              new Date().toISOString(),
           })
           .eq(
             "id",
@@ -801,13 +828,10 @@ Deno.serve(async (req) => {
           `)
           .single();
 
-
-      if (
-        updateError
-      ) {
+      if (updateError) {
 
         console.error(
-          "Erreur enregistrement préparation payout :",
+          "Erreur mise à jour retrait :",
           updateError,
         );
 
@@ -815,19 +839,13 @@ Deno.serve(async (req) => {
           {
             success: false,
             error:
-              "Impossible d'enregistrer les données de préparation du paiement.",
+              "Le payout a été simulé, mais l'enregistrement du retrait a échoué.",
             details:
               updateError.message,
           },
           500,
         );
-
       }
-
-
-      // ==================================================
-      // REPONSE SIMULATION
-      // ==================================================
 
       return jsonResponse(
         {
@@ -840,106 +858,117 @@ Deno.serve(async (req) => {
             LIVE_ENABLED,
 
           message:
-            "Simulation SebPay réussie. Aucun paiement réel n'a été effectué.",
+            "Connexion Supabase → AWS → SebPay réussie en simulation. Aucun paiement réel n'a été effectué.",
 
-          payout: {
-
-            withdrawalId:
-              withdrawal.id,
-
-            provider:
-              "sebpay",
-
-            status:
-              "pending",
-
-            recipientName,
-
-            phone,
-
-            country,
-
-            operator,
-
-            amount,
-
-            currency:
-              ALLOWED_CURRENCY,
-
-            externalReference,
-
-            fee:
-              Number(
-                withdrawal.fee ??
-                0,
-              ),
-
-          },
+          payout:
+            proxyData.payout,
 
           withdrawal:
             updatedWithdrawal,
-
         },
         200,
       );
-
     }
 
-
     // ==================================================
-    // VERROU DE SECURITE AVANT PAIEMENT REEL
+    // RESULTAT PAYOUT REEL
     // ==================================================
     //
-    // Cette protection restera active tant que :
+    // Le proxy SebPay retourne normalement "pending".
+    // Le statut final sera traité par le webhook SebPay.
     //
-    // SEBPAY_LIVE_ENABLED=false
+    // IMPORTANT :
+    // Nous ne marquons PAS le retrait "paid" ici.
     //
-    // ==================================================
 
-    if (
-      !LIVE_ENABLED
-    ) {
+    const transactionId =
+      proxyData?.payout?.transaction_id ??
+      null;
 
-      console.warn(
-        "Paiement SebPay réel bloqué par SEBPAY_LIVE_ENABLED=false.",
+    const {
+      data:
+        updatedWithdrawal,
+      error:
+        updateError,
+    } =
+      await supabase
+        .from("withdrawals")
+        .update({
+          provider:
+            "sebpay",
+
+          provider_reference:
+            externalReference,
+
+          provider_transaction_id:
+            transactionId,
+
+          operator,
+
+          phone,
+
+          recipient_name:
+            recipientName,
+
+          country,
+
+          fee:
+            Number(
+              withdrawal.fee ?? 0,
+            ),
+
+          updated_at:
+            new Date().toISOString(),
+        })
+        .eq(
+          "id",
+          withdrawal.id,
+        )
+        .select(`
+          id,
+          affiliate_id,
+          amount,
+          status,
+          payment_method,
+          payment_details,
+          provider,
+          provider_reference,
+          provider_transaction_id,
+          operator,
+          phone,
+          recipient_name,
+          country,
+          fee,
+          failure_reason,
+          created_at,
+          requested_at,
+          processed_at,
+          updated_at
+        `)
+        .single();
+
+    if (updateError) {
+
+      console.error(
+        "Erreur mise à jour retrait après payout :",
+        updateError,
       );
 
       return jsonResponse(
         {
           success: false,
-
-          simulation:
-            false,
-
-          liveEnabled:
-            false,
-
           error:
-            "Les paiements SebPay réels sont actuellement désactivés.",
-
+            "Le payout a été envoyé mais l'enregistrement du retrait a échoué.",
+          details:
+            updateError.message,
         },
-        503,
+        500,
       );
-
     }
-
-
-    // ==================================================
-    // PAIEMENT REEL SEBPAY
-    // ==================================================
-    //
-    // IMPORTANT :
-    // Cette section restera volontairement désactivée
-    // dans cette version.
-    //
-    // Nous l'implémenterons après validation complète
-    // de la structure API SebPay et du webhook.
-    //
-    // ==================================================
 
     return jsonResponse(
       {
-        success: false,
+        success: true,
 
         simulation:
           false,
@@ -947,13 +976,17 @@ Deno.serve(async (req) => {
         liveEnabled:
           LIVE_ENABLED,
 
-        error:
-          "Le paiement réel SebPay n'est pas encore implémenté.",
+        message:
+          "Payout SebPay envoyé. Le statut final sera confirmé par le webhook SebPay.",
 
+        payout:
+          proxyData.payout,
+
+        withdrawal:
+          updatedWithdrawal,
       },
-      503,
+      200,
     );
-
 
   } catch (error) {
 
@@ -962,20 +995,15 @@ Deno.serve(async (req) => {
       error,
     );
 
-
     return jsonResponse(
       {
         success: false,
-
         error:
           error instanceof Error
             ? error.message
             : "Erreur interne du serveur.",
-
       },
       500,
     );
-
   }
-
 });
