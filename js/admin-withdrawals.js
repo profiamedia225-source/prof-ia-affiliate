@@ -305,38 +305,37 @@ function displayWithdrawals(
             // RETRAIT EN TRAITEMENT
             // ==================================
 
-            else if (
-                withdrawal.status ===
-                "En traitement"
-            ) {
+else if (
+    withdrawal.status ===
+    "En traitement"
+) {
 
-                actionButtons += `
+    actionButtons += `
 
-                    <button
-                        onclick="updateWithdrawal(
-                            '${withdrawal.id}',
-                            'paid'
-                        )"
-                    >
+        <button
+            onclick="payWithdrawalWithSebPay(
+                '${withdrawal.id}'
+            )"
+        >
 
-                        💳 Marquer comme payé
+            💸 Payer avec SebPay
 
-                    </button>
+        </button>
 
-                    <button
-                        onclick="updateWithdrawal(
-                            '${withdrawal.id}',
-                            'Refusé'
-                        )"
-                    >
+        <button
+            onclick="updateWithdrawal(
+                '${withdrawal.id}',
+                'Refusé'
+            )"
+        >
 
-                        ❌ Refuser
+            ❌ Refuser
 
-                    </button>
+        </button>
 
-                `;
+    `;
 
-            }
+}
 
 
             tr.innerHTML = `
@@ -1069,6 +1068,301 @@ async function updateWithdrawal(
 
 }
 
+// ==========================================
+// PAIEMENT SEBPAY
+// ==========================================
+
+async function payWithdrawalWithSebPay(
+    withdrawalId
+) {
+
+    console.log(
+        "Demande de paiement SebPay :",
+        withdrawalId
+    );
+
+
+    // ======================================
+    // RETROUVER LE RETRAIT
+    // ======================================
+
+    const withdrawal =
+        allWithdrawals.find(
+            (item) =>
+                String(item.id) ===
+                String(withdrawalId)
+        );
+
+
+    if (!withdrawal) {
+
+        alert(
+            "Retrait introuvable."
+        );
+
+        return;
+
+    }
+
+
+    // ======================================
+    // VERIFICATION DU STATUT
+    // ======================================
+
+    if (
+        withdrawal.status !==
+        "En traitement"
+    ) {
+
+        alert(
+            "Ce retrait doit être en traitement avant de lancer le paiement SebPay."
+        );
+
+        return;
+
+    }
+
+
+    // ======================================
+    // CONFIRMATION
+    // ======================================
+
+    const amount =
+        Number(
+            withdrawal.amount
+        ) || 0;
+
+
+    const recipientName =
+        withdrawal.recipient_name ??
+        withdrawal.profiles?.fullname ??
+        "Bénéficiaire";
+
+
+    const operator =
+        withdrawal.operator ??
+        withdrawal.payment_method ??
+        "-";
+
+
+    const phone =
+        withdrawal.phone ??
+        withdrawal.payment_details ??
+        "-";
+
+
+    const confirmationMessage =
+        "Confirmer le lancement du paiement SebPay ?\n\n" +
+
+        `Bénéficiaire : ${recipientName}\n` +
+
+        `Montant : ${amount.toLocaleString("fr-FR")} FCFA\n` +
+
+        `Opérateur : ${operator}\n` +
+
+        `Téléphone : ${phone}\n\n` +
+
+        "Le statut final sera confirmé par SebPay.\n\n" +
+
+        "En mode actuel, aucun paiement réel ne sera effectué.";
+
+
+    if (
+        !confirm(
+            confirmationMessage
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    // ======================================
+    // SESSION ADMIN
+    // ======================================
+
+    const {
+        data: {
+            session
+        }
+    } =
+        await sb.auth.getSession();
+
+
+    if (!session) {
+
+        alert(
+            "Votre session a expiré. Veuillez vous reconnecter."
+        );
+
+        return;
+
+    }
+
+
+    // ======================================
+    // APPEL EDGE FUNCTION
+    // ======================================
+
+    console.log(
+        "Appel sebpay-payout..."
+    );
+
+
+    let data;
+    let error;
+
+
+    try {
+
+        ({
+            data,
+            error
+        } =
+            await sb.functions.invoke(
+                "sebpay-payout",
+                {
+
+                    body: {
+
+                        withdrawalId:
+                            withdrawalId
+
+                    },
+
+                    headers: {
+
+                        Authorization:
+                            `Bearer ${session.access_token}`
+
+                    }
+
+                }
+            )
+        );
+
+    }
+
+    catch (invokeError) {
+
+        console.error(
+            "Erreur appel sebpay-payout :",
+            invokeError
+        );
+
+        alert(
+            "Une erreur est survenue lors de la communication avec SebPay."
+        );
+
+        return;
+
+    }
+
+
+    // ======================================
+    // ERREUR EDGE FUNCTION
+    // ======================================
+
+    if (error) {
+
+        console.error(
+            "Erreur sebpay-payout :",
+            error
+        );
+
+        alert(
+            "Le paiement SebPay n'a pas pu être lancé.\n\n" +
+            "Consultez la console pour plus de détails."
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "Réponse sebpay-payout :",
+        data
+    );
+
+
+    // ======================================
+    // ERREUR METIER
+    // ======================================
+
+    if (
+        data &&
+        data.success === false
+    ) {
+
+        alert(
+            data.error ??
+            "Le paiement SebPay a échoué."
+        );
+
+        return;
+
+    }
+
+
+    // ======================================
+    // SIMULATION REUSSIE
+    // ======================================
+
+    if (
+        data?.simulation === true
+    ) {
+
+        const payout =
+            data.payout ?? {};
+
+
+        alert(
+            "✅ Paiement SebPay simulé avec succès.\n\n" +
+
+            `Retrait : #${withdrawalId}\n` +
+
+            `Montant : ${Number(
+                payout.amount ??
+                amount
+            ).toLocaleString("fr-FR")} FCFA\n` +
+
+            `Opérateur : ${payout.operator ?? operator}\n` +
+
+            `Statut : ${payout.status ?? "pending"}\n\n` +
+
+            "Aucun paiement réel n'a été effectué."
+        );
+
+
+        // Recharger les retraits
+        await loadWithdrawals();
+
+        applyFilters();
+
+        return;
+
+    }
+
+
+    // ======================================
+    // PAYOUT REEL ACCEPTE
+    // ======================================
+
+    alert(
+        "✅ Demande de paiement SebPay envoyée.\n\n" +
+
+        "Le statut final sera confirmé par le webhook SebPay."
+    );
+
+
+    // Recharger les retraits
+    await loadWithdrawals();
+
+    applyFilters();
+
+}
 
 // ==========================================
 // GESTION DES FILTRES
