@@ -379,6 +379,73 @@ Deno.serve(async (req) => {
       );
     }
 
+// ==================================================
+// PROTECTION CONTRE LES DOUBLES APPELS
+// ==================================================
+//
+// On vérifie directement dans Supabase que le retrait
+// est toujours "En traitement" avant de poursuivre.
+//
+// Cela empêche un ancien écran ou un double clic de
+// lancer le paiement si le retrait a déjà changé d'état.
+//
+
+const {
+  data: withdrawalLockCheck,
+  error: withdrawalLockError,
+} = await supabase
+  .from("withdrawals")
+  .select("id, status, provider_reference, provider_transaction_id")
+  .eq("id", withdrawal.id)
+  .eq("status", REQUIRED_WITHDRAWAL_STATUS)
+  .maybeSingle();
+
+if (withdrawalLockError) {
+  console.error(
+    "Erreur vérification sécurité du retrait :",
+    withdrawalLockError,
+  );
+
+  return jsonResponse(
+    {
+      success: false,
+      error:
+        "Impossible de vérifier l'état actuel du retrait.",
+    },
+    500,
+  );
+}
+
+if (!withdrawalLockCheck) {
+  return jsonResponse(
+    {
+      success: false,
+      error:
+        "Le retrait n'est plus disponible pour un nouveau paiement.",
+    },
+    409,
+  );
+}
+
+// ==================================================
+// PROTECTION CONTRE UNE REFERENCE DEJA TRAITEE
+// ==================================================
+
+if (
+  withdrawalLockCheck.provider_transaction_id
+) {
+  return jsonResponse(
+    {
+      success: false,
+      error:
+        "Ce retrait possède déjà une transaction SebPay.",
+      transactionId:
+        withdrawalLockCheck.provider_transaction_id,
+    },
+    409,
+  );
+}
+
     // ==================================================
     // VERIFICATION DU MONTANT
     // ==================================================

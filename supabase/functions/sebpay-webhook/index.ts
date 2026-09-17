@@ -1,5 +1,9 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+// ======================================================
+// CORS
+// ======================================================
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -7,14 +11,6 @@ const corsHeaders = {
   "Access-Control-Allow-Methods":
     "POST, OPTIONS",
 };
-
-
-// ======================================================
-// CONFIGURATION
-// ======================================================
-
-const WEBHOOK_TEST_MODE = true;
-
 
 // ======================================================
 // REPONSE JSON
@@ -24,21 +20,17 @@ function jsonResponse(
   body: unknown,
   status = 200,
 ) {
-
   return new Response(
     JSON.stringify(body),
     {
       status,
       headers: {
         ...corsHeaders,
-        "Content-Type":
-          "application/json",
+        "Content-Type": "application/json",
       },
     },
   );
-
 }
-
 
 // ======================================================
 // HMAC SHA-256
@@ -48,16 +40,10 @@ async function generateHmacSha256(
   secret: string,
   body: string,
 ): Promise<string> {
+  const encoder = new TextEncoder();
 
-  const encoder =
-    new TextEncoder();
-
-  const keyData =
-    encoder.encode(secret);
-
-  const messageData =
-    encoder.encode(body);
-
+  const keyData = encoder.encode(secret);
+  const messageData = encoder.encode(body);
 
   const cryptoKey =
     await crypto.subtle.importKey(
@@ -71,7 +57,6 @@ async function generateHmacSha256(
       ["sign"],
     );
 
-
   const signature =
     await crypto.subtle.sign(
       "HMAC",
@@ -79,25 +64,17 @@ async function generateHmacSha256(
       messageData,
     );
 
-
-  const bytes =
-    new Uint8Array(
-      signature,
-    );
-
+  const bytes = new Uint8Array(signature);
 
   return Array
     .from(bytes)
-    .map(
-      (byte) =>
-        byte
-          .toString(16)
-          .padStart(2, "0"),
+    .map((byte) =>
+      byte
+        .toString(16)
+        .padStart(2, "0")
     )
     .join("");
-
 }
-
 
 // ======================================================
 // COMPARAISON CONSTANT-TIME
@@ -107,37 +84,24 @@ function safeEqual(
   a: string,
   b: string,
 ): boolean {
-
-  if (
-    a.length !==
-    b.length
-  ) {
-
+  if (a.length !== b.length) {
     return false;
-
   }
 
-
   let result = 0;
-
 
   for (
     let i = 0;
     i < a.length;
     i++
   ) {
-
     result |=
       a.charCodeAt(i) ^
       b.charCodeAt(i);
-
   }
 
-
   return result === 0;
-
 }
-
 
 // ======================================================
 // EDGE FUNCTION
@@ -149,31 +113,20 @@ Deno.serve(async (req) => {
   // CORS
   // ====================================================
 
-  if (
-    req.method ===
-    "OPTIONS"
-  ) {
-
+  if (req.method === "OPTIONS") {
     return new Response(
       "ok",
       {
-        headers:
-          corsHeaders,
+        headers: corsHeaders,
       },
     );
-
   }
-
 
   // ====================================================
   // METHOD
   // ====================================================
 
-  if (
-    req.method !==
-    "POST"
-  ) {
-
+  if (req.method !== "POST") {
     return jsonResponse(
       {
         success: false,
@@ -182,9 +135,7 @@ Deno.serve(async (req) => {
       },
       405,
     );
-
   }
-
 
   try {
 
@@ -197,11 +148,7 @@ Deno.serve(async (req) => {
         "SEBPAY_SECRET_KEY",
       );
 
-
-    if (
-      !secretKey
-    ) {
-
+    if (!secretKey) {
       console.error(
         "SEBPAY_SECRET_KEY absent.",
       );
@@ -214,12 +161,10 @@ Deno.serve(async (req) => {
         },
         500,
       );
-
     }
 
-
     // ==================================================
-    // SIGNATURE
+    // SIGNATURE SEBPAY
     // ==================================================
 
     const receivedSignature =
@@ -227,11 +172,7 @@ Deno.serve(async (req) => {
         "X-SebPay-Signature",
       );
 
-
-    if (
-      !receivedSignature
-    ) {
-
+    if (!receivedSignature) {
       console.warn(
         "Webhook SebPay reçu sans signature.",
       );
@@ -244,30 +185,22 @@ Deno.serve(async (req) => {
         },
         401,
       );
-
     }
 
-
     // ==================================================
-    // LECTURE DU BODY BRUT
+    // BODY BRUT
     // ==================================================
     //
     // IMPORTANT :
-    // La signature HMAC doit être calculée sur
-    // le body JSON brut reçu.
-    //
-    // Ne pas faire req.json() avant cette étape.
+    // La signature doit être calculée sur le body
+    // JSON brut exactement comme reçu.
     //
     // ==================================================
 
     const rawBody =
       await req.text();
 
-
-    if (
-      !rawBody
-    ) {
-
+    if (!rawBody) {
       return jsonResponse(
         {
           success: false,
@@ -276,9 +209,7 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     // ==================================================
     // CALCUL SIGNATURE
@@ -289,7 +220,6 @@ Deno.serve(async (req) => {
         secretKey,
         rawBody,
       );
-
 
     // ==================================================
     // VERIFICATION SIGNATURE
@@ -306,7 +236,6 @@ Deno.serve(async (req) => {
           .toLowerCase(),
       )
     ) {
-
       console.warn(
         "Signature SebPay invalide.",
       );
@@ -319,14 +248,11 @@ Deno.serve(async (req) => {
         },
         401,
       );
-
     }
-
 
     console.log(
       "Signature SebPay valide.",
     );
-
 
     // ==================================================
     // PARSING JSON
@@ -335,14 +261,9 @@ Deno.serve(async (req) => {
     let payload: any;
 
     try {
-
       payload =
-        JSON.parse(
-          rawBody,
-        );
-
+        JSON.parse(rawBody);
     } catch {
-
       return jsonResponse(
         {
           success: false,
@@ -351,9 +272,7 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     // ==================================================
     // DONNEES WEBHOOK
@@ -361,55 +280,43 @@ Deno.serve(async (req) => {
 
     const transactionId =
       String(
-        payload?.transaction_id ??
-        "",
+        payload?.transaction_id ?? "",
       ).trim();
-
 
     const externalReference =
       String(
-        payload?.external_reference ??
-        "",
+        payload?.external_reference ?? "",
       ).trim();
-
 
     const status =
       String(
-        payload?.status ??
-        "",
-      ).trim()
-      .toLowerCase();
-
+        payload?.status ?? "",
+      )
+        .trim()
+        .toLowerCase();
 
     const amount =
       Number(
         payload?.amount,
       );
 
-
     const currency =
       String(
-        payload?.currency ??
-        "",
-      ).trim();
-
+        payload?.currency ?? "",
+      )
+        .trim()
+        .toUpperCase();
 
     const customerPhone =
       String(
-        payload?.customer_phone ??
-        "",
+        payload?.customer_phone ?? "",
       ).trim();
 
-
     const createdAt =
-      payload?.created_at ??
-      null;
-
+      payload?.created_at ?? null;
 
     const updatedAt =
-      payload?.updated_at ??
-      null;
-
+      payload?.updated_at ?? null;
 
     console.log(
       "Webhook SebPay reçu :",
@@ -425,15 +332,11 @@ Deno.serve(async (req) => {
       },
     );
 
-
     // ==================================================
     // VALIDATION TRANSACTION ID
     // ==================================================
 
-    if (
-      !transactionId
-    ) {
-
+    if (!transactionId) {
       return jsonResponse(
         {
           success: false,
@@ -442,18 +345,13 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     // ==================================================
     // VALIDATION EXTERNAL REFERENCE
     // ==================================================
 
-    if (
-      !externalReference
-    ) {
-
+    if (!externalReference) {
       return jsonResponse(
         {
           success: false,
@@ -462,9 +360,7 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
-
 
     // ==================================================
     // VALIDATION STATUT
@@ -476,13 +372,11 @@ Deno.serve(async (req) => {
       "rejected",
     ];
 
-
     if (
       !allowedStatuses.includes(
         status,
       )
     ) {
-
       return jsonResponse(
         {
           success: false,
@@ -491,9 +385,40 @@ Deno.serve(async (req) => {
         },
         400,
       );
-
     }
 
+    // ==================================================
+    // VALIDATION MONTANT
+    // ==================================================
+
+    if (
+      !Number.isFinite(amount) ||
+      amount <= 0
+    ) {
+      return jsonResponse(
+        {
+          success: false,
+          error:
+            "Montant SebPay invalide.",
+        },
+        400,
+      );
+    }
+
+    // ==================================================
+    // VALIDATION DEVISE
+    // ==================================================
+
+    if (currency !== "XOF") {
+      return jsonResponse(
+        {
+          success: false,
+          error:
+            `Devise SebPay non autorisée : ${currency}`,
+        },
+        400,
+      );
+    }
 
     // ==================================================
     // CLIENT SUPABASE SERVICE ROLE
@@ -508,7 +433,6 @@ Deno.serve(async (req) => {
           "SUPABASE_SERVICE_ROLE_KEY",
         )!,
       );
-
 
     // ==================================================
     // RECHERCHE DU RETRAIT
@@ -540,11 +464,7 @@ Deno.serve(async (req) => {
         )
         .maybeSingle();
 
-
-    if (
-      withdrawalError
-    ) {
-
+    if (withdrawalError) {
       console.error(
         "Erreur recherche retrait :",
         withdrawalError,
@@ -558,14 +478,13 @@ Deno.serve(async (req) => {
         },
         500,
       );
-
     }
 
+    // ==================================================
+    // RETRAIT INTROUVABLE
+    // ==================================================
 
-    if (
-      !withdrawal
-    ) {
-
+    if (!withdrawal) {
       console.warn(
         "Retrait introuvable pour :",
         externalReference,
@@ -579,54 +498,16 @@ Deno.serve(async (req) => {
         },
         404,
       );
-
     }
 
-
     // ==================================================
-    // IDEMPOTENCE
-    // ==================================================
-    //
-    // Si le même transaction_id a déjà été enregistré,
-    // le webhook est probablement un retry.
-    //
-    // Nous ne retraitons donc pas l'événement.
-    //
-    // ==================================================
-
-    if (
-      withdrawal.provider_transaction_id ===
-      transactionId
-    ) {
-
-      console.log(
-        "Webhook déjà traité :",
-        transactionId,
-      );
-
-      return jsonResponse(
-        {
-          success: true,
-          duplicate: true,
-          message:
-            "Webhook déjà traité.",
-        },
-        200,
-      );
-
-    }
-
-
-    // ==================================================
-    // VERIFICATION DE COHERENCE
+    // VERIFICATION PROVIDER
     // ==================================================
 
     if (
       withdrawal.provider &&
-      withdrawal.provider !==
-        "sebpay"
+      withdrawal.provider !== "sebpay"
     ) {
-
       console.warn(
         "Provider inattendu :",
         withdrawal.provider,
@@ -640,37 +521,143 @@ Deno.serve(async (req) => {
         },
         409,
       );
-
     }
 
+    // ==================================================
+    // VERIFICATION MONTANT RETRAIT
+    // ==================================================
+
+    const withdrawalAmount =
+      Number(
+        withdrawal.amount,
+      );
+
+    if (
+      !Number.isFinite(
+        withdrawalAmount,
+      ) ||
+      withdrawalAmount <= 0
+    ) {
+      console.error(
+        "Montant du retrait invalide :",
+        withdrawalAmount,
+      );
+
+      return jsonResponse(
+        {
+          success: false,
+          error:
+            "Montant du retrait invalide.",
+        },
+        409,
+      );
+    }
 
     // ==================================================
-    // MODE TEST SECURISE
+    // PROTECTION CONTRE UN MONTANT DIFFERENT
+    // ==================================================
+
+    if (
+      withdrawalAmount !== amount
+    ) {
+      console.error(
+        "Incohérence de montant :",
+        {
+          withdrawalAmount,
+          sebpayAmount: amount,
+          withdrawalId:
+            withdrawal.id,
+        },
+      );
+
+      return jsonResponse(
+        {
+          success: false,
+          error:
+            "Le montant SebPay ne correspond pas au montant du retrait.",
+          withdrawal_amount:
+            withdrawalAmount,
+          sebpay_amount:
+            amount,
+        },
+        409,
+      );
+    }
+
+    // ==================================================
+    // IDEMPOTENCE
     // ==================================================
     //
-    // Nous enregistrons la transaction SebPay mais
-    // nous NE changeons PAS encore le statut métier
-    // du retrait.
-    //
-    // Cela nous permet de tester le webhook sans
-    // modifier le solde disponible.
+    // Si cette transaction a déjà été enregistrée,
+    // nous ne retraitons pas l'événement.
     //
     // ==================================================
 
     if (
-      WEBHOOK_TEST_MODE
+      withdrawal.provider_transaction_id ===
+      transactionId
     ) {
+      console.log(
+        "Webhook déjà traité :",
+        transactionId,
+      );
+
+      return jsonResponse(
+        {
+          success: true,
+          duplicate: true,
+          message:
+            "Webhook déjà traité.",
+          withdrawal_id:
+            withdrawal.id,
+          transaction_id:
+            transactionId,
+          status:
+            withdrawal.status,
+        },
+        200,
+      );
+    }
+
+    // ==================================================
+    // VERIFICATION STATUT METIER
+    // ==================================================
+    //
+    // Un callback final ne doit normalement concerner
+    // qu'un retrait actuellement en traitement.
+    //
+    // Cela évite qu'un ancien callback puisse modifier
+    // un retrait déjà payé ou refusé.
+    //
+    // ==================================================
+
+    if (
+      withdrawal.status !==
+      "En traitement"
+    ) {
+      console.warn(
+        "Statut métier inattendu :",
+        {
+          withdrawalId:
+            withdrawal.id,
+          currentStatus:
+            withdrawal.status,
+          sebpayStatus:
+            status,
+        },
+      );
+
+      // On enregistre tout de même la transaction
+      // pour empêcher les retries de provoquer
+      // des traitements multiples.
 
       const {
-        data:
-          updatedWithdrawal,
         error:
-          updateError,
+          safeUpdateError,
       } =
         await supabase
           .from("withdrawals")
           .update({
-
             provider:
               "sebpay",
 
@@ -683,11 +670,80 @@ Deno.serve(async (req) => {
             updated_at:
               new Date()
                 .toISOString(),
-
           })
           .eq(
             "id",
             withdrawal.id,
+          )
+          .eq(
+            "provider_transaction_id",
+            withdrawal.provider_transaction_id ??
+              "",
+          );
+
+      if (safeUpdateError) {
+        console.error(
+          "Erreur enregistrement callback inattendu :",
+          safeUpdateError,
+        );
+      }
+
+      return jsonResponse(
+        {
+          success: true,
+          ignored: true,
+          message:
+            "Webhook reçu mais retrait déjà traité ou dans un état incompatible.",
+          withdrawal_id:
+            withdrawal.id,
+          current_status:
+            withdrawal.status,
+        },
+        200,
+      );
+    }
+
+    // ==================================================
+    // TRAITEMENT PENDING
+    // ==================================================
+    //
+    // pending = paiement SebPay encore en cours.
+    //
+    // Le retrait reste donc :
+    //
+    // En traitement
+    //
+    // ==================================================
+
+    if (status === "pending") {
+
+      const {
+        data: updatedWithdrawal,
+        error: updateError,
+      } =
+        await supabase
+          .from("withdrawals")
+          .update({
+            provider:
+              "sebpay",
+
+            provider_reference:
+              externalReference,
+
+            provider_transaction_id:
+              transactionId,
+
+            updated_at:
+              new Date()
+                .toISOString(),
+          })
+          .eq(
+            "id",
+            withdrawal.id,
+          )
+          .eq(
+            "status",
+            "En traitement",
           )
           .select(`
             id,
@@ -703,15 +759,11 @@ Deno.serve(async (req) => {
             country,
             updated_at
           `)
-          .single();
+          .maybeSingle();
 
-
-      if (
-        updateError
-      ) {
-
+      if (updateError) {
         console.error(
-          "Erreur enregistrement webhook :",
+          "Erreur traitement pending :",
           updateError,
         );
 
@@ -719,130 +771,282 @@ Deno.serve(async (req) => {
           {
             success: false,
             error:
-              "Impossible d'enregistrer le webhook.",
+              "Impossible d'enregistrer le webhook pending.",
           },
           500,
         );
-
       }
 
-
-      console.log(
-        "Webhook enregistré en mode test.",
-      );
-
-
       return jsonResponse(
         {
           success: true,
-
-          testMode:
-            true,
-
           message:
-            "Webhook SebPay reçu et signature vérifiée. Aucun statut métier n'a été modifié.",
-
-          event: {
-
-            transactionId,
-
-            externalReference,
-
-            status,
-
-            amount,
-
-            currency,
-
-            customerPhone,
-
-          },
-
+            "Webhook pending enregistré. Le retrait reste En traitement.",
           withdrawal:
             updatedWithdrawal,
-
         },
         200,
       );
-
     }
 
-
     // ==================================================
-    // TRAITEMENT FINAL
+    // TRAITEMENT APPROVED
     // ==================================================
     //
-    // Cette partie sera activée après validation
-    // complète du mode test.
+    // approved = SebPay confirme le paiement.
+    //
+    // En traitement → paid
     //
     // ==================================================
 
-    if (
-      status ===
-      "pending"
-    ) {
+    if (status === "approved") {
+
+      const {
+        data: updatedWithdrawal,
+        error: updateError,
+      } =
+        await supabase
+          .from("withdrawals")
+          .update({
+            status:
+              "paid",
+
+            provider:
+              "sebpay",
+
+            provider_reference:
+              externalReference,
+
+            provider_transaction_id:
+              transactionId,
+
+            failure_reason:
+              null,
+
+            processed_at:
+              new Date()
+                .toISOString(),
+
+            updated_at:
+              new Date()
+                .toISOString(),
+          })
+          .eq(
+            "id",
+            withdrawal.id,
+          )
+          .eq(
+            "status",
+            "En traitement",
+          )
+          .select(`
+            id,
+            affiliate_id,
+            amount,
+            status,
+            provider,
+            provider_reference,
+            provider_transaction_id,
+            fee,
+            failure_reason,
+            phone,
+            country,
+            processed_at,
+            updated_at
+          `)
+          .maybeSingle();
+
+      if (updateError) {
+        console.error(
+          "Erreur traitement approved :",
+          updateError,
+        );
+
+        return jsonResponse(
+          {
+            success: false,
+            error:
+              "Impossible de valider le paiement SebPay.",
+          },
+          500,
+        );
+      }
+
+      if (!updatedWithdrawal) {
+        return jsonResponse(
+          {
+            success: false,
+            error:
+              "Le retrait n'est plus disponible pour validation.",
+          },
+          409,
+        );
+      }
+
+      console.log(
+        "Paiement SebPay approuvé :",
+        {
+          withdrawalId:
+            withdrawal.id,
+          transactionId,
+          amount,
+        },
+      );
 
       return jsonResponse(
         {
           success: true,
           message:
-            "Webhook pending reçu.",
+            "Paiement SebPay approuvé. Retrait marqué comme paid.",
+          withdrawal:
+            updatedWithdrawal,
         },
         200,
       );
-
     }
 
+    // ==================================================
+    // TRAITEMENT REJECTED
+    // ==================================================
+    //
+    // rejected = SebPay refuse le paiement.
+    //
+    // En traitement → Refusé
+    //
+    // Le montant redevient donc disponible dans
+    // le calcul du solde, conformément à la logique
+    // des retraits refusés.
+    //
+    // ==================================================
 
-    if (
-      status ===
-      "approved"
-    ) {
+    if (status === "rejected") {
 
-      // Le statut "paid" sera activé après validation
-      // du webhook en mode test.
+      const rejectionReason =
+        String(
+          payload?.failure_reason ??
+          payload?.reason ??
+          payload?.message ??
+          "Paiement SebPay rejeté.",
+        ).trim();
+
+      const {
+        data: updatedWithdrawal,
+        error: updateError,
+      } =
+        await supabase
+          .from("withdrawals")
+          .update({
+            status:
+              "Refusé",
+
+            provider:
+              "sebpay",
+
+            provider_reference:
+              externalReference,
+
+            provider_transaction_id:
+              transactionId,
+
+            failure_reason:
+              rejectionReason,
+
+            processed_at:
+              new Date()
+                .toISOString(),
+
+            updated_at:
+              new Date()
+                .toISOString(),
+          })
+          .eq(
+            "id",
+            withdrawal.id,
+          )
+          .eq(
+            "status",
+            "En traitement",
+          )
+          .select(`
+            id,
+            affiliate_id,
+            amount,
+            status,
+            provider,
+            provider_reference,
+            provider_transaction_id,
+            fee,
+            failure_reason,
+            phone,
+            country,
+            processed_at,
+            updated_at
+          `)
+          .maybeSingle();
+
+      if (updateError) {
+        console.error(
+          "Erreur traitement rejected :",
+          updateError,
+        );
+
+        return jsonResponse(
+          {
+            success: false,
+            error:
+              "Impossible d'enregistrer le rejet SebPay.",
+          },
+          500,
+        );
+      }
+
+      if (!updatedWithdrawal) {
+        return jsonResponse(
+          {
+            success: false,
+            error:
+              "Le retrait n'est plus disponible pour refus.",
+          },
+          409,
+        );
+      }
+
+      console.log(
+        "Paiement SebPay rejeté :",
+        {
+          withdrawalId:
+            withdrawal.id,
+          transactionId,
+          amount,
+          reason:
+            rejectionReason,
+        },
+      );
 
       return jsonResponse(
         {
           success: true,
           message:
-            "Webhook approved reçu. Traitement final non encore activé.",
+            "Paiement SebPay rejeté. Retrait marqué comme Refusé.",
+          withdrawal:
+            updatedWithdrawal,
         },
         200,
       );
-
     }
 
-
-    if (
-      status ===
-      "rejected"
-    ) {
-
-      // Le statut "Échec" sera activé après validation
-      // du webhook en mode test.
-
-      return jsonResponse(
-        {
-          success: true,
-          message:
-            "Webhook rejected reçu. Traitement final non encore activé.",
-        },
-        200,
-      );
-
-    }
-
+    // ==================================================
+    // FALLBACK
+    // ==================================================
 
     return jsonResponse(
       {
         success: true,
         message:
-          "Webhook reçu.",
+          "Webhook SebPay reçu.",
       },
       200,
     );
-
 
   } catch (error) {
 
@@ -850,7 +1054,6 @@ Deno.serve(async (req) => {
       "Erreur sebpay-webhook :",
       error,
     );
-
 
     return jsonResponse(
       {
@@ -862,7 +1065,5 @@ Deno.serve(async (req) => {
       },
       500,
     );
-
   }
-
 });
