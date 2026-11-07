@@ -168,231 +168,42 @@ accessibleProducts.forEach(product => {
 
 });
 
+
 // ==========================================
-// ACCÈS AUX FORMATIONS
+// ACCÈS AUX FORMATIONS PROF IA MEDIA
 // ==========================================
 
 document
     .querySelectorAll(".training-access-btn")
     .forEach(button => {
 
-        button.addEventListener(
-            "click",
-            async () => {
+        button.addEventListener("click", () => {
 
-                if (button.disabled) return;
+            const productCode = button.dataset.productCode;
 
-                const originalText =
-                    button.textContent;
-
-                button.disabled = true;
-
-                button.textContent =
-                    "Préparation de votre accès...";
-
-                try {
-
-                    // ======================================
-                    // 1. VÉRIFIER LA SESSION
-                    // ======================================
-
-                    const {
-                        data: {
-                            session
-                        },
-                        error: sessionError
-                    } = await sb.auth.getSession();
-
-                    if (
-                        sessionError ||
-                        !session
-                    ) {
-
-                        console.error(
-                            "Session introuvable :",
-                            sessionError
-                        );
-
-                        alert(
-                            "Votre session a expiré. Veuillez vous reconnecter."
-                        );
-
-                        window.location.href =
-                            "login.html";
-
-                        return;
-                    }
-
-                    // ======================================
-                    // 2. RÉCUPÉRER LE PRODUIT
-                    // ======================================
-
-                    const productCode =
-                        button.dataset.productCode;
-
-                    const product =
-                        accessibleProducts.find(
-                            item =>
-                                item.product_code ===
-                                productCode
-                        );
-
-                    if (!product) {
-
-                        alert(
-                            "Accès au produit impossible."
-                        );
-
-                        return;
-                    }
-
-                    // ======================================
-                    // 3. VÉRIFIER LE LIEN
-                    // ======================================
-
-                    if (
-                        !product.systeme_course_url ||
-                        product.systeme_course_url.includes(
-                            "TON-LIEN-SYSTEME.IO"
-                        )
-                    ) {
-
-                        alert(
-                            "Le lien de cette formation n'est pas encore configuré."
-                        );
-
-                        return;
-                    }
-
-                    // ======================================
-                    // 4. INFORMER L'UTILISATEUR
-                    // ======================================
-
-                    const continueAccess =
-                        confirm(
-                            "✅ Votre accès à la formation est actif.\n\n" +
-                            "Lors de votre première connexion à Systeme.io, " +
-                            "utilisez l'adresse e-mail associée à votre compte " +
-                            "PROF IA PARTNERS.\n\n" +
-                            "Si vous êtes déjà connecté à Systeme.io, " +
-                            "vous serez directement dirigé vers votre formation.\n\n" +
-                            "Cliquez sur OK pour continuer."
-                        );
-
-                    if (!continueAccess) {
-
-                        return;
-
-                    }
-
-                    // ======================================
-                    // 5. SYNCHRONISER L'ACCÈS SYSTEME.IO
-                    // ======================================
-
-                    button.textContent =
-                        "Vérification de votre accès...";
-
-                    console.log(
-                        "Synchronisation Systeme.io pour :",
-                        product.product_code
-                    );
-
-                    const {
-                        data: syncResult,
-                        error: syncError
-                    } = await sb.functions.invoke(
-                        "sync-systeme-access",
-                        {
-                            method: "POST",
-
-                            headers: {
-                                Authorization:
-                                    `Bearer ${session.access_token}`
-                            },
-
-                            body: {}
-                        }
-                    );
-
-                    if (syncError) {
-
-                        console.error(
-                            "Erreur synchronisation Systeme.io :",
-                            syncError
-                        );
-
-                        alert(
-                            "Impossible de préparer votre accès à la formation. Veuillez réessayer."
-                        );
-
-                        return;
-                    }
-
-                    console.log(
-                        "Réponse Systeme.io :",
-                        syncResult
-                    );
-
-                    // ======================================
-                    // 6. VÉRIFIER LE RÉSULTAT
-                    // ======================================
-
-                    if (
-                        !syncResult ||
-                        syncResult.success !== true
-                    ) {
-
-                        console.error(
-                            "Synchronisation refusée :",
-                            syncResult
-                        );
-
-                        alert(
-                            syncResult?.error ||
-                            "Votre accès à la formation n'a pas pu être préparé."
-                        );
-
-                        return;
-                    }
-
-                    // ======================================
-                    // 7. REDIRECTION
-                    // ======================================
-
-                    button.textContent =
-                        "Ouverture de la formation...";
-
-                    console.log(
-                        "✅ Accès Systeme.io validé."
-                    );
-
-                    window.location.href =
-                        product.systeme_course_url;
-
-                } catch (error) {
-
-                    console.error(
-                        "Erreur accès formation :",
-                        error
-                    );
-
-                    alert(
-                        "Une erreur est survenue lors de la préparation de votre accès."
-                    );
-
-                } finally {
-
-                    button.disabled = false;
-
-                    button.textContent =
-                        originalText;
-
-                }
-
+            if (!productCode) {
+                alert("Formation non identifiée.");
+                return;
             }
-        );
+
+            const product = accessibleProducts.find(
+                item => item.product_code === productCode
+            );
+
+            if (!product) {
+                alert("Vous ne possédez pas cette formation.");
+                return;
+            }
+
+            // Ouverture de notre espace de formation
+            window.location.href =
+                "formation.html?product=" +
+                encodeURIComponent(product.product_code);
+
+        });
 
     });
+
 
     // Charger le profil
     const { data: profile, error } = await sb

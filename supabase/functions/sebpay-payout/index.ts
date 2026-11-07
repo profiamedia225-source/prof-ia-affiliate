@@ -27,6 +27,9 @@ const REQUIRED_WITHDRAWAL_STATUS =
 const ALLOWED_CURRENCY =
   "XOF";
 
+const SEBPAY_WEBHOOK_URL =
+  "https://cfikzkivgimvvswyqpfq.supabase.co/functions/v1/sebpay-webhook";
+
 // ======================================================
 // OPERATEURS
 // ======================================================
@@ -644,26 +647,29 @@ if (
     // ==================================================
 
     const payoutPayload = {
-      withdrawal_id:
-        withdrawal.id,
+  withdrawal_id:
+    withdrawal.id,
 
-      recipient_name:
-        recipientName,
+  recipient_name:
+    recipientName,
 
-      phone,
+  phone,
 
-      operator,
+  operator,
 
-      country,
+  country,
 
-      amount,
+  amount,
 
-      currency:
-        ALLOWED_CURRENCY,
+  currency:
+    ALLOWED_CURRENCY,
 
-      external_reference:
-        externalReference,
-    };
+  external_reference:
+    externalReference,
+
+  callback_url:
+    SEBPAY_WEBHOOK_URL,
+};
 
     console.log(
       "==========================================",

@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ma formation - PROF IA MEDIA</title>
+
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/theme.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        .course-content {
+            padding: 30px;
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .course-header {
+            padding: 30px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #101c3a, #263e73);
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .course-header h1 {
+            margin-bottom: 12px;
+            font-size: 28px;
+        }
+
+        .course-header p {
+            opacity: .85;
+        }
+
+        .course-progress {
+            margin-top: 22px;
+        }
+
+        .progress-track {
+            height: 9px;
+            background: rgba(255,255,255,.2);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #21c77a;
+            transition: width .3s;
+        }
+
+        .course-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+        }
+
+        .modules-panel,
+        .lesson-panel {
+            background: var(--card-bg, #fff);
+            border-radius: 15px;
+            padding: 22px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .module-item {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            margin-top: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: transparent;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        .module-item.active {
+            border-color: #3157b7;
+            background: rgba(49,87,183,.08);
+        }
+
+        .module-item.completed {
+            border-color: #21a66b;
+        }
+
+        .lesson-video {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #111;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .lesson-video iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .lesson-resources {
+            margin-top: 25px;
+        }
+
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            margin: 8px 8px 8px 0;
+            background: #eef3ff;
+            color: #244a9b;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .complete-button {
+            margin-top: 25px;
+            padding: 14px 22px;
+            background: #168b58;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .complete-button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        #courseLoading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        @media(max-width: 850px) {
+            .course-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .course-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div id="sidebar-container"></div>
+
+    <main class="content">
+
+        <div class="course-content">
+
+            <div id="courseLoading">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p>Vérification de votre accès à la formation...</p>
+            </div>
+
+            <div id="courseApplication" hidden>
+
+                <header class="course-header">
+
+                    <h1 id="courseTitle">
+                        Ma formation
+                    </h1>
+
+                    <p id="courseDescription">
+                        Bienvenue dans votre espace de formation.
+                    </p>
+
+                    <div class="course-progress">
+
+                        <strong>
+                            Votre progression :
+                            <span id="progressPercentage">0</span> %
+                        </strong>
+
+                        <div class="progress-track">
+                            <div
+                                class="progress-bar"
+                                id="progressBar">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </header>
+
+                <div class="course-layout">
+
+                    <aside class="modules-panel">
+
+                        <h2>
+                            <i class="fas fa-book-open"></i>
+                            Programme
+                        </h2>
+
+                        <div id="modulesContainer">
+                            Chargement des modules...
+                        </div>
+
+                    </aside>
+
+                    <section class="lesson-panel">
+
+                        <div id="lessonContainer">
+
+                            <h2>Bienvenue dans votre formation</h2>
+
+                            <p>
+                                Sélectionnez un module pour commencer
+                                votre apprentissage.
+                            </p>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/formation.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+
+/*
+==========================================
+PROF IA MEDIA PARTNERS
+Fichier : formation.js
+Rôle : Gestion de l'espace apprenant
+==========================================
+*/
+
+document.addEventListener("DOMContentLoaded", initFormation);
+
+// ==========================================
+// PROGRAMMES DES FORMATIONS
+// ==========================================
+
+
+const COURSE_PROGRAMS = {
+
+    formation_complete: {
+
+        title: "Créateur de contenu IA de A à Z",
+
+        description:
+            "Bienvenue dans votre formation complète. Développez vos compétences en création de contenu avec l'intelligence artificielle.",
+
+        modules: [
+
+            {
+                id: "welcome",
+                title: "Bienvenue dans la formation",
+                videoId: "bHDkshtqk3g",
+                resources: []
+            },
+
+            {
+                id: "module-1",
+                title: "Comprendre l'écosystème du contenu",
+                videoId: "Qm9cBqZu4fI",
+                resources: []
+            },
+
+            {
+                id: "module-2",
+                title: "Trouver des idées de contenu",
+                videoId: "K8JMaHL8Xtg",
+                resources: []
+            },
+
+            {
+                id: "module-3",
+                title: "Écriture et storytelling pour les vidéos courtes IA",
+                videoId: "hC1EOZk4PZA",
+                resources: []
+            },
+
+            {
+                id: "module-4",
+                title: "Création visuelle avec l'intelligence artificielle",
+                videoId: "F5gW6yBvcdw",
+                resources: []
+            }
+
+        ]
+
+    }
+
+};
+
+
+// ==========================================
+// INITIALISATION
+// ==========================================
+
+async function initFormation() {
+
+    const loading = document.getElementById("courseLoading");
+    const application = document.getElementById("courseApplication");
+
+    try {
+
+        // 1. Vérifier la connexion
+
+        const {
+            data: { session },
+            error: sessionError
+        } = await sb.auth.getSession();
+
+        if (sessionError || !session) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        const user = session.user;
+
+        // 2. Récupérer le code produit
+
+        const params = new URLSearchParams(window.location.search);
+        const productCode = params.get("product");
+
+        if (!productCode) {
+            throw new Error("Aucune formation n'a été spécifiée.");
+        }
+
+        // 3. Vérifier les droits d'accès dans Supabase
+
+        const {
+            data: access,
+            error: accessError
+        } = await sb
+            .from("product_access")
+            .select("id, product_id, status")
+            .eq("user_id", user.id)
+            .eq("product_id", productCode)
+            .eq("status", "active")
+            .maybeSingle();
+
+        if (accessError) {
+            throw accessError;
+        }
+
+        if (!access) {
+            alert("Vous ne possédez pas cette formation.");
+            window.location.href = "dashboard.html";
+            return;
+        }
+
+        // 4. Récupérer les informations du produit
+
+        const {
+            data: product,
+            error: productError
+        } = await sb
+            .from("products")
+            .select("product_name, product_code, description, status")
+            .eq("product_code", productCode)
+            .eq("status", true)
+            .maybeSingle();
+
+        if (productError) {
+            throw productError;
+        }
+
+        if (!product) {
+            throw new Error("Cette formation n'est pas disponible.");
+        }
+
+        // 5. Charger le programme correspondant
+
+        const course = COURSE_PROGRAMS[productCode];
+
+        if (!course) {
+            throw new Error(
+                "Le programme de cette formation n'est pas encore configuré."
+            );
+        }
+
+        // 6. Afficher la formation
+
+        document.getElementById("courseTitle").textContent =
+            product.product_name || course.title;
+
+        document.getElementById("courseDescription").textContent =
+            product.description || course.description;
+
+        renderModules(course.modules);
+
+        loading.hidden = true;
+        application.hidden = false;
+
+    } catch (error) {
+
+        console.error("Erreur espace formation :", error);
+
+        loading.innerHTML = `
+            <h2>Impossible de charger la formation</h2>
+            <p>${escapeCourseText(error.message || "Une erreur est survenue.")}</p>
+            <a href="dashboard.html">Retour au Dashboard</a>
+        `;
+
+    }
+
+}
+
+// ==========================================
+// AFFICHAGE DES MODULES
+// ==========================================
+
+function renderModules(modules) {
+
+    const container = document.getElementById("modulesContainer");
+
+    container.innerHTML = "";
+
+    modules.forEach((module, index) => {
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "module-item";
+
+        button.innerHTML = `
+            <strong>Module ${index + 1}</strong>
+            <br>
+            <span>${escapeCourseText(module.title)}</span>
+        `;
+
+        button.addEventListener("click", () => {
+
+            document
+                .querySelectorAll(".module-item")
+                .forEach(item => item.classList.remove("active"));
+
+            button.classList.add("active");
+
+            renderLesson(module, index);
+
+        });
+
+        container.appendChild(button);
+
+    });
+
+    // Afficher automatiquement le premier module
+
+    if (modules.length > 0) {
+        container.querySelector(".module-item").click();
+    }
+
+}
+
+// ==========================================
+// AFFICHAGE DU CONTENU DU MODULE
+// ==========================================
+
+function renderLesson(module, index) {
+
+    const container = document.getElementById("lessonContainer");
+
+    let videoContent = `
+        <div style="
+            background:#f2f3f5;
+            padding:35px;
+            border-radius:12px;
+            text-align:center;
+            margin:20px 0;
+        ">
+            <i class="fas fa-video fa-2x"></i>
+            <p>La vidéo de ce module sera bientôt disponible.</p>
+        </div>
+    `;
+
+    if (module.videoId) {
+
+        videoContent = `
+            <div class="lesson-video">
+                <iframe
+                    src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(module.videoId)}"
+                    title="${escapeCourseText(module.title)}"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        `;
+
+    }
+
+    let resourcesContent = "";
+
+    if (module.resources && module.resources.length > 0) {
+
+        resourcesContent = `
+            <div class="lesson-resources">
+                <h3>📥 Documents du module</h3>
+                ${module.resources.map(resource => `
+                    <a
+                        class="resource-link"
+                        href="${escapeCourseText(resource.url)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <i class="fas fa-file-download"></i>
+                        ${escapeCourseText(resource.title)}
+                    </a>
+                `).join("")}
+            </div>
+        `;
+
+    } else {
+
+        resourcesContent = `
+            <div class="lesson-resources">
+                <p>Les supports de ce module seront bientôt disponibles.</p>
+            </div>
+        `;
+
+    }
+
+    container.innerHTML = `
+        <span style="color:#3157b7;font-weight:600;">
+            MODULE ${index + 1}
+        </span>
+
+        <h2>${escapeCourseText(module.title)}</h2>
+
+        ${videoContent}
+
+        ${resourcesContent}
+
+    `;
+
+}
+
+// ==========================================
+// PROTECTION DU TEXTE AFFICHÉ
+// ==========================================
+
+function escapeCourseText(value) {
+
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+
+}
