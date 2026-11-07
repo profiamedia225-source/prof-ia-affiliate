@@ -185,54 +185,79 @@ async function initFormation() {
 // AFFICHAGE DES MODULES
 // ==========================================
 
+
 function renderModules(modules) {
 
     const container = document.getElementById("modulesContainer");
 
+    // Imposer un affichage vertical dans l'ordre du tableau
+    container.style.setProperty("display", "flex", "important");
+    container.style.setProperty("flex-direction", "column", "important");
+    container.style.setProperty("align-items", "stretch", "important");
+
     container.innerHTML = "";
 
-    modules.forEach((module, index) => {
+    // Trier explicitement : bienvenue, puis modules 1, 2, 3...
+    const orderedModules = [...modules].sort((a, b) => {
+
+        if (a.id === "welcome") return -1;
+        if (b.id === "welcome") return 1;
+
+        const numberA = Number(a.id.match(/\d+/)?.[0] || 0);
+        const numberB = Number(b.id.match(/\d+/)?.[0] || 0);
+
+        return numberA - numberB;
+    });
+
+    orderedModules.forEach((module, index) => {
 
         const button = document.createElement("button");
 
         button.type = "button";
         button.className = "module-item";
 
+        // Imposer l'ordre même si une règle CSS externe intervient
+        button.style.setProperty("order", String(index), "important");
+        button.style.setProperty("display", "block", "important");
+        button.style.setProperty("width", "100%", "important");
+
+        const isWelcome = module.id === "welcome";
+
         button.innerHTML = `
-            <strong>Module ${index + 1}</strong>
+            <strong>
+                ${isWelcome ? "🎬 VIDÉO DE BIENVENUE" : `MODULE ${module.id.match(/\d+/)?.[0]}`}
+            </strong>
             <br>
             <span>${escapeCourseText(module.title)}</span>
         `;
 
         button.addEventListener("click", () => {
 
-            document
+            container
                 .querySelectorAll(".module-item")
                 .forEach(item => item.classList.remove("active"));
 
             button.classList.add("active");
 
-            renderLesson(module, index);
-
+            renderLesson(module);
         });
 
         container.appendChild(button);
 
     });
 
-    // Afficher automatiquement le premier module
-
-    if (modules.length > 0) {
+    // Ouvrir automatiquement la vidéo de bienvenue
+    if (orderedModules.length > 0) {
         container.querySelector(".module-item").click();
     }
-
 }
+
 
 // ==========================================
 // AFFICHAGE DU CONTENU DU MODULE
 // ==========================================
 
-function renderLesson(module, index) {
+function renderLesson(module) {
 
     const container = document.getElementById("lessonContainer");
 
@@ -297,9 +322,15 @@ function renderLesson(module, index) {
     }
 
     container.innerHTML = `
-        <span style="color:#3157b7;font-weight:600;">
-            MODULE ${index + 1}
-        </span>
+        ${module.id === "welcome" ? `
+    <span style="color:#3157b7;font-weight:600;">
+        VIDÉO DE BIENVENUE
+    </span>
+` : `
+    <span style="color:#3157b7;font-weight:600;">
+        MODULE ${module.id.match(/\d+/)?.[0]}
+    </span>
+`}
 
         <h2>${escapeCourseText(module.title)}</h2>
 
