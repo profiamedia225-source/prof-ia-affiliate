@@ -9,6 +9,12 @@ Rôle : Gestion de l'espace apprenant
 
 document.addEventListener("DOMContentLoaded", initFormation);
 
+// État de la progression de l'apprenant
+let currentUserId = null;
+let currentProductCode = null;
+let completedModules = new Set();
+let courseModules = [];
+
 // ==========================================
 // PROGRAMMES DES FORMATIONS
 // ==========================================
@@ -90,6 +96,7 @@ async function initFormation() {
         }
 
         const user = session.user;
+        currentUserId = user.id;
 
         // 2. Récupérer le code produit
 
@@ -153,13 +160,41 @@ async function initFormation() {
             );
         }
 
-        // 6. Afficher la formation
+        // 6. Charger la progression déjà enregistrée
+
+        currentProductCode = productCode;
+
+        courseModules = course.modules.filter(
+            module => module.id !== "welcome"
+        );
+
+        const {
+            data: progressRows,
+            error: progressError
+        } = await sb
+            .from("course_progress")
+            .select("module_id, completed")
+            .eq("user_id", currentUserId)
+            .eq("product_id", currentProductCode)
+            .eq("completed", true);
+
+        if (progressError) {
+            throw progressError;
+        }
+
+        completedModules = new Set(
+            (progressRows || []).map(row => row.module_id)
+        );
+
+        // 7. Afficher la formation
 
         document.getElementById("courseTitle").textContent =
             product.product_name || course.title;
 
         document.getElementById("courseDescription").textContent =
             product.description || course.description;
+
+        updateProgressDisplay();
 
         renderModules(course.modules);
 
@@ -218,6 +253,10 @@ function renderModules(modules) {
         button.type = "button";
         button.className = "module-item";
 
+        if (completedModules.has(module.id)) {
+            button.classList.add("completed");
+        }
+
         button.style.setProperty("order", String(index), "important");
         button.style.setProperty("display", "block", "important");
         button.style.setProperty("width", "100%", "important");
@@ -232,6 +271,9 @@ function renderModules(modules) {
             </strong>
             <br>
             <span>${escapeCourseText(module.title)}</span>
+            ${completedModules.has(module.id)
+                ? '<br><small style="color:#168b58;font-weight:600;">✓ Terminé</small>'
+                : ""}
         `;
 
         button.addEventListener("click", () => {
@@ -347,7 +389,199 @@ function renderLesson(module) {
 
         ${resourcesContent}
 
+        ${module.id !== "welcome" ? `
+            <button
+                type="button"
+                id="completeModuleButton"
+                class="complete-button"
+                ${completedModules.has(module.id) ? "disabled" : ""}
+            >
+                ${completedModules.has(module.id)
+                    ? "✓ Module terminé"
+                    : "Marquer ce module comme terminé"}
+            </button>
+        ` : ""}
+
     `;
+
+    if (module.id !== "welcome") {
+
+        const completeButton =
+            document.getElementById("completeModuleButton");
+
+        if (completeButton) {
+
+            if (completedModules.has(module.id)) {
+
+                completeButton.style.background = "#168b58";
+                completeButton.style.color = "#ffffff";
+
+            } else {
+
+                completeButton.addEventListener("click", () => {
+                    markModuleCompleted(module, completeButton);
+                });
+
+            }
+
+        }
+
+    }
+
+}
+
+
+// ==========================================
+// AFFICHAGE DE LA PROGRESSION
+// ==========================================
+
+function updateProgressDisplay() {
+
+    const totalModules = courseModules.length;
+
+    const completedCount = courseModules.filter(module =>
+        completedModules.has(module.id)
+    ).length;
+
+    const percentage = totalModules > 0
+        ? Math.round((completedCount / totalModules) * 100)
+        : 0;
+
+    const percentageElement =
+        document.getElementById("progressPercentage");
+
+    const progressBar =
+        document.getElementById("progressBar");
+
+    if (percentageElement) {
+        percentageElement.textContent = String(percentage);
+    }
+
+    if (progressBar) {
+        progressBar.style.width = `${percentage}%`;
+    }
+
+    let countElement = document.getElementById("progressCount");
+
+    if (!countElement) {
+
+        const progressContainer =
+            document.querySelector(".course-progress");
+
+        if (progressContainer) {
+
+            countElement = document.createElement("p");
+            countElement.id = "progressCount";
+            countElement.style.marginTop = "8px";
+            countElement.style.fontSize = "13px";
+
+            progressContainer.appendChild(countElement);
+
+        }
+
+    }
+
+    if (countElement) {
+
+        countElement.textContent =
+            `${completedCount} module(s) terminé(s) sur ${totalModules}`;
+
+    }
+
+    // Actualiser les indicateurs dans la liste des modules
+
+    document
+        .querySelectorAll("#modulesContainer .module-item")
+        .forEach(button => {
+
+            const title = button.querySelector("span");
+
+            if (!title) return;
+
+            const module = courseModules.find(item =>
+                item.title === title.textContent
+            );
+
+            if (module && completedModules.has(module.id)) {
+
+                button.classList.add("completed");
+
+                if (!button.querySelector(".completion-status")) {
+
+                    const status = document.createElement("small");
+
+                    status.className = "completion-status";
+                    status.textContent = "✓ Terminé";
+
+                    status.style.cssText =
+                        "display:block;color:#168b58;font-weight:600;margin-top:5px;";
+
+                    button.appendChild(status);
+
+                }
+
+            }
+
+        });
+
+}
+
+
+// ==========================================
+// ENREGISTRER UN MODULE TERMINÉ
+// ==========================================
+
+async function markModuleCompleted(module, button) {
+
+    if (!currentUserId || !currentProductCode || module.id === "welcome") {
+        return;
+    }
+
+    if (completedModules.has(module.id)) {
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Enregistrement en cours...";
+
+    const { error } = await sb
+        .from("course_progress")
+        .upsert({
+
+            user_id: currentUserId,
+            product_id: currentProductCode,
+            module_id: module.id,
+            completed: true,
+            completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+
+        }, {
+
+            onConflict: "user_id,product_id,module_id"
+
+        });
+
+    if (error) {
+
+        console.error("Erreur enregistrement progression :", error);
+
+        alert("Impossible d'enregistrer votre progression. Veuillez réessayer.");
+
+        button.disabled = false;
+        button.textContent = "Marquer ce module comme terminé";
+
+        return;
+
+    }
+
+    completedModules.add(module.id);
+
+    updateProgressDisplay();
+
+    button.disabled = true;
+    button.textContent = "✓ Module terminé";
+    button.style.background = "#168b58";
+    button.style.color = "#ffffff";
 
 }
 
