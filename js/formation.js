@@ -41,28 +41,52 @@ const COURSE_PROGRAMS = {
                 id: "module-1",
                 title: "Comprendre l'écosystème du contenu",
                 videoId: "F5gW6yBvcdw",
-                resources: []
+                resources: [
+                    {
+                        title: "Support de cours - Module 1.pdf",
+                        path: "formation_complete/module-1.pdf",
+                        fileName: "support-module-1.pdf"
+                    }
+                ]
             },
 
             {
                 id: "module-2",
                 title: "Trouver des idées de contenu",
                 videoId: "hC1EOZk4PZA",
-                resources: []
+                resources: [
+                    {
+                        title: "Support de cours - Module 2.pdf",
+                        path: "formation_complete/module-2.pdf",
+                        fileName: "support-module-2.pdf"
+                    }
+                ]
             },
 
             {
                 id: "module-3",
                 title: "Écriture et storytelling pour les vidéos courtes IA",
                 videoId: "K8JMaHL8Xtg",
-                resources: []
+                resources: [
+                    {
+                        title: "Support de cours - Module 3.pdf",
+                        path: "formation_complete/module-3.pdf",
+                        fileName: "support-module-3.pdf"
+                    }
+                ]
             },
 
             {
                 id: "module-4",
                 title: "Création visuelle avec l'intelligence artificielle",
                 videoId: "Qm9cBqZu4fI",
-                resources: []
+                resources: [
+                    {
+                        title: "Support de cours - Module 4.pdf",
+                        path: "formation_complete/module-4.pdf",
+                        fileName: "support-module-4.pdf"
+                    }
+                ]
             }
 
         ]
@@ -224,15 +248,11 @@ function renderModules(modules) {
 
     const container = document.getElementById("modulesContainer");
 
-    // Forcer l'affichage vertical
-
     container.style.setProperty("display", "flex", "important");
     container.style.setProperty("flex-direction", "column", "important");
     container.style.setProperty("align-items", "stretch", "important");
 
     container.innerHTML = "";
-
-    // Trier les modules dans le bon ordre
 
     const orderedModules = [...modules].sort((a, b) => {
 
@@ -293,8 +313,6 @@ function renderModules(modules) {
 
     });
 
-    // Ouvrir automatiquement la vidéo de bienvenue
-
     if (orderedModules.length > 0) {
         container.querySelector(".module-item").click();
     }
@@ -305,7 +323,6 @@ function renderModules(modules) {
 // ==========================================
 // AFFICHAGE DU CONTENU DU MODULE
 // ==========================================
-
 
 function renderLesson(module) {
 
@@ -325,6 +342,7 @@ function renderLesson(module) {
     `;
 
     if (module.videoId) {
+
         videoContent = `
             <div class="lesson-video">
                 <iframe
@@ -336,27 +354,72 @@ function renderLesson(module) {
                 </iframe>
             </div>
         `;
+
     }
+
+    // Supports PDF du module
 
     let resourcesContent = "";
 
     if (module.resources && module.resources.length > 0) {
 
         resourcesContent = `
-            <div class="lesson-resources">
-                <h3>📥 Documents du module</h3>
+            <div class="lesson-resources" style="
+                margin-top:20px;
+                padding:18px;
+                border:1px solid #e2e8f0;
+                border-radius:12px;
+                background:#f8fafc;
+            ">
 
-                ${module.resources.map(resource => `
-                    <a
-                        class="resource-link"
-                        href="${escapeCourseText(resource.url)}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <i class="fas fa-file-download"></i>
-                        ${escapeCourseText(resource.title)}
-                    </a>
+                <h3>📥 Supports pédagogiques</h3>
+
+                ${module.resources.map((resource, index) => `
+                    <div style="
+                        display:flex;
+                        align-items:center;
+                        justify-content:space-between;
+                        gap:12px;
+                        flex-wrap:wrap;
+                        margin-top:12px;
+                        padding:12px;
+                        background:#ffffff;
+                        border-radius:8px;
+                    ">
+
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <i class="fas fa-file-pdf"
+                               style="color:#dc2626;font-size:24px;"></i>
+
+                            <span>${escapeCourseText(resource.title)}</span>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="resource-download-button"
+                            data-resource-index="${index}"
+                            style="
+                                background:#3157b7;
+                                color:#ffffff;
+                                border:0;
+                                border-radius:8px;
+                                padding:10px 14px;
+                                cursor:pointer;
+                                font-weight:600;
+                            "
+                        >
+                            <i class="fas fa-download"></i>
+                            Télécharger le PDF
+                        </button>
+
+                    </div>
                 `).join("")}
+
+                <p class="resource-download-status"
+                   aria-live="polite"
+                   style="margin-top:10px;font-size:13px;color:#64748b;">
+                </p>
+
             </div>
         `;
 
@@ -364,7 +427,7 @@ function renderLesson(module) {
 
         resourcesContent = `
             <div class="lesson-resources">
-                <p>Les supports de ce module seront bientôt disponibles.</p>
+                <p>Aucun support PDF n'est disponible pour ce contenu.</p>
             </div>
         `;
 
@@ -403,6 +466,36 @@ function renderLesson(module) {
 
     `;
 
+    // Écouteurs des boutons de téléchargement PDF
+
+    if (module.resources && module.resources.length > 0) {
+
+        container
+            .querySelectorAll(".resource-download-button")
+            .forEach(button => {
+
+                button.addEventListener("click", async () => {
+
+                    const resourceIndex =
+                        Number(button.dataset.resourceIndex);
+
+                    const resource = module.resources[resourceIndex];
+
+                    if (!resource || !resource.path) {
+                        alert("Le chemin du support PDF est introuvable.");
+                        return;
+                    }
+
+                    await downloadCoursePdf(resource, button);
+
+                });
+
+            });
+
+    }
+
+    // Bouton de validation du module
+
     if (module.id !== "welcome") {
 
         const completeButton =
@@ -436,12 +529,121 @@ function renderLesson(module) {
 }
 
 
+// ==========================================
+// TÉLÉCHARGEMENT SÉCURISÉ DES SUPPORTS PDF
+// ==========================================
+
+async function downloadCoursePdf(resource, button) {
+
+    const originalContent = button.innerHTML;
+
+    const statusElement = document.querySelector(
+        "#lessonContainer .resource-download-status"
+    );
+
+    button.disabled = true;
+    button.innerHTML = "Préparation du téléchargement...";
+
+    if (statusElement) {
+        statusElement.textContent = "";
+    }
+
+    try {
+
+        // Vérifier que l'utilisateur est toujours connecté
+
+        const {
+            data: { session },
+            error: sessionError
+        } = await sb.auth.getSession();
+
+        if (sessionError || !session) {
+            throw new Error(
+                "Votre session a expiré. Veuillez vous reconnecter."
+            );
+        }
+
+        // Générer une URL signée valable 5 minutes.
+        // La politique RLS du bucket privé vérifie l'accès actif.
+
+        const {
+            data,
+            error
+        } = await sb.storage
+            .from("supports-formation")
+            .createSignedUrl(
+                resource.path,
+                300,
+                {
+                    download: resource.fileName || true
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || !data.signedUrl) {
+            throw new Error(
+                "Impossible de générer le lien de téléchargement."
+            );
+        }
+
+        // Ouvrir le PDF via son URL signée temporaire
+
+        const link = document.createElement("a");
+
+        link.href = data.signedUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.download = resource.fileName || "";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        if (statusElement) {
+            statusElement.textContent =
+                "Le téléchargement de votre support PDF a été lancé.";
+        }
+
+    } catch (error) {
+
+        console.error("Erreur téléchargement PDF :", error);
+
+        if (statusElement) {
+            statusElement.textContent =
+                error.message ||
+                "Une erreur est survenue pendant le téléchargement.";
+
+            statusElement.style.color = "#dc2626";
+        }
+
+        alert(
+            error.message ||
+            "Impossible de télécharger ce support. Vérifiez votre accès à la formation."
+        );
+
+    } finally {
+
+        button.disabled = false;
+        button.innerHTML = originalContent;
+
+    }
+
+}
+
+
+// ==========================================
+// NAVIGATION ENTRE LES MODULES
+// ==========================================
+
 function addModuleNavigation(module) {
 
     const container = document.getElementById("lessonContainer");
 
-    // Éviter les boutons en double
-    const oldNavigation = container.querySelector(".module-navigation");
+    const oldNavigation =
+        container.querySelector(".module-navigation");
 
     if (oldNavigation) {
         oldNavigation.remove();
@@ -509,6 +711,7 @@ function addModuleNavigation(module) {
             );
 
             if (targetButton) {
+
                 targetButton.click();
 
                 document.getElementById("lessonContainer")
@@ -516,6 +719,7 @@ function addModuleNavigation(module) {
                         behavior: "smooth",
                         block: "start"
                     });
+
             }
 
         });
@@ -528,6 +732,7 @@ function addModuleNavigation(module) {
             <h3 style="color:#168b58;">
                 🎉 Félicitations !
             </h3>
+
             <p>
                 Vous avez terminé tous les modules de cette formation.
                 Continuez à mettre vos connaissances en pratique !
@@ -571,7 +776,8 @@ function updateProgressDisplay() {
         progressBar.style.width = `${percentage}%`;
     }
 
-    let countElement = document.getElementById("progressCount");
+    let countElement =
+        document.getElementById("progressCount");
 
     if (!countElement) {
 
@@ -675,7 +881,9 @@ async function markModuleCompleted(module, button) {
 
         console.error("Erreur enregistrement progression :", error);
 
-        alert("Impossible d'enregistrer votre progression. Veuillez réessayer.");
+        alert(
+            "Impossible d'enregistrer votre progression. Veuillez réessayer."
+        );
 
         button.disabled = false;
         button.textContent = "Marquer ce module comme terminé";
@@ -686,15 +894,14 @@ async function markModuleCompleted(module, button) {
 
     completedModules.add(module.id);
 
-updateProgressDisplay();
+    updateProgressDisplay();
 
-button.disabled = true;
-button.textContent = "✓ Module terminé";
-button.style.background = "#168b58";
-button.style.color = "#ffffff";
+    button.disabled = true;
+    button.textContent = "✓ Module terminé";
+    button.style.background = "#168b58";
+    button.style.color = "#ffffff";
 
-// Afficher le bouton pour passer au module suivant
-addModuleNavigation(module);
+    addModuleNavigation(module);
 
 }
 
