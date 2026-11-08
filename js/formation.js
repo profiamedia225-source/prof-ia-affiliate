@@ -252,6 +252,7 @@ function renderModules(modules) {
 
         button.type = "button";
         button.className = "module-item";
+        button.dataset.moduleId = module.id;
 
         if (completedModules.has(module.id)) {
             button.classList.add("completed");
@@ -305,6 +306,7 @@ function renderModules(modules) {
 // AFFICHAGE DU CONTENU DU MODULE
 // ==========================================
 
+
 function renderLesson(module) {
 
     const container = document.getElementById("lessonContainer");
@@ -323,7 +325,6 @@ function renderLesson(module) {
     `;
 
     if (module.videoId) {
-
         videoContent = `
             <div class="lesson-video">
                 <iframe
@@ -335,7 +336,6 @@ function renderLesson(module) {
                 </iframe>
             </div>
         `;
-
     }
 
     let resourcesContent = "";
@@ -357,7 +357,6 @@ function renderLesson(module) {
                         ${escapeCourseText(resource.title)}
                     </a>
                 `).join("")}
-
             </div>
         `;
 
@@ -409,24 +408,135 @@ function renderLesson(module) {
         const completeButton =
             document.getElementById("completeModuleButton");
 
-        if (completeButton) {
+        if (completedModules.has(module.id)) {
 
-            if (completedModules.has(module.id)) {
+            completeButton.style.background = "#168b58";
+            completeButton.style.color = "#ffffff";
 
-                completeButton.style.background = "#168b58";
-                completeButton.style.color = "#ffffff";
+        } else {
 
-            } else {
-
-                completeButton.addEventListener("click", () => {
-                    markModuleCompleted(module, completeButton);
-                });
-
-            }
+            completeButton.addEventListener("click", () => {
+                markModuleCompleted(module, completeButton);
+            });
 
         }
 
     }
+
+    // Afficher la navigation si le module est terminé
+    // ou s'il s'agit de la vidéo de bienvenue
+
+    if (
+        module.id === "welcome" ||
+        completedModules.has(module.id)
+    ) {
+        addModuleNavigation(module);
+    }
+
+}
+
+
+function addModuleNavigation(module) {
+
+    const container = document.getElementById("lessonContainer");
+
+    // Éviter les boutons en double
+    const oldNavigation = container.querySelector(".module-navigation");
+
+    if (oldNavigation) {
+        oldNavigation.remove();
+    }
+
+    const navigation = document.createElement("div");
+
+    navigation.className = "module-navigation";
+
+    navigation.style.cssText = `
+        margin-top:25px;
+        padding:20px;
+        border-radius:12px;
+        background:#f0f5ff;
+        text-align:center;
+    `;
+
+    let nextModule = null;
+
+    if (module.id === "welcome") {
+
+        nextModule = courseModules[0];
+
+    } else {
+
+        const currentIndex = courseModules.findIndex(
+            item => item.id === module.id
+        );
+
+        nextModule = courseModules[currentIndex + 1] || null;
+
+    }
+
+    if (nextModule) {
+
+        const nextNumber = nextModule.id.match(/\d+/)?.[0];
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "complete-button";
+
+        button.style.cssText = `
+            background:#3157b7;
+            color:white;
+            padding:14px 22px;
+            border:0;
+            border-radius:9px;
+            cursor:pointer;
+            font-weight:600;
+        `;
+
+        button.textContent = module.id === "welcome"
+            ? "Commencer le module 1 →"
+            : `Passer au module ${nextNumber} →`;
+
+        button.addEventListener("click", () => {
+
+            const targetButton = [
+                ...document.querySelectorAll(
+                    "#modulesContainer .module-item"
+                )
+            ].find(button =>
+                button.dataset.moduleId === nextModule.id
+            );
+
+            if (targetButton) {
+                targetButton.click();
+
+                document.getElementById("lessonContainer")
+                    .scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+            }
+
+        });
+
+        navigation.appendChild(button);
+
+    } else {
+
+        navigation.innerHTML = `
+            <h3 style="color:#168b58;">
+                🎉 Félicitations !
+            </h3>
+            <p>
+                Vous avez terminé tous les modules de cette formation.
+                Continuez à mettre vos connaissances en pratique !
+            </p>
+        `;
+
+    }
+
+    container.appendChild(navigation);
 
 }
 
@@ -576,12 +686,15 @@ async function markModuleCompleted(module, button) {
 
     completedModules.add(module.id);
 
-    updateProgressDisplay();
+updateProgressDisplay();
 
-    button.disabled = true;
-    button.textContent = "✓ Module terminé";
-    button.style.background = "#168b58";
-    button.style.color = "#ffffff";
+button.disabled = true;
+button.textContent = "✓ Module terminé";
+button.style.background = "#168b58";
+button.style.color = "#ffffff";
+
+// Afficher le bouton pour passer au module suivant
+addModuleNavigation(module);
 
 }
 
