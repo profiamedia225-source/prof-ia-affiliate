@@ -25,11 +25,8 @@ async function loadWithdrawals() {
     console.log("Session :", session);
 
     if (!session) {
-
         console.log("Aucune session");
-
         return;
-
     }
 
     console.log(
@@ -52,7 +49,6 @@ async function loadWithdrawals() {
     console.log("Données :", data);
 
     if (error) {
-
         console.error(error);
 
         alert(
@@ -60,31 +56,16 @@ async function loadWithdrawals() {
         );
 
         return;
-
     }
 
-    console.log(
-        "Retraits :",
-        data
-    );
+    console.log("Retraits :", data);
 
     allWithdrawals = data ?? [];
+    filteredWithdrawals = [...allWithdrawals];
 
-    filteredWithdrawals =
-        [...allWithdrawals];
-
-    displayWithdrawals(
-        allWithdrawals
-    );
-
-    updateStats(
-        allWithdrawals
-    );
-
-    updatePagination(
-        allWithdrawals.length
-    );
-
+    displayWithdrawals(allWithdrawals);
+    updateStats(allWithdrawals);
+    updatePagination(allWithdrawals.length);
 }
 
 
@@ -92,45 +73,36 @@ async function loadWithdrawals() {
 // AFFICHAGE DES RETRAITS
 // ==========================================
 
-function displayWithdrawals(
-    withdrawals
-) {
+function displayWithdrawals(withdrawals) {
 
     const tbody =
-        document.getElementById(
-            "withdrawalsTable"
-        );
+        document.getElementById("withdrawalsTable");
 
     if (!tbody) return;
 
     tbody.innerHTML = "";
 
-    document.getElementById(
-        "totalWithdrawals"
-    ).textContent =
-        `Total : ${withdrawals.length} demande(s)`;
+    const totalElement =
+        document.getElementById("totalWithdrawals");
+
+    if (totalElement) {
+        totalElement.textContent =
+            `Total : ${withdrawals.length} demande(s)`;
+    }
 
     const start =
-        (currentPage - 1) *
-        rowsPerPage;
+        (currentPage - 1) * rowsPerPage;
 
     const end =
         start + rowsPerPage;
 
     const paginatedWithdrawals =
-        withdrawals.slice(
-            start,
-            end
-        );
+        withdrawals.slice(start, end);
 
-    if (
-        paginatedWithdrawals.length === 0
-    ) {
+    if (paginatedWithdrawals.length === 0) {
 
         tbody.innerHTML = `
-
             <tr>
-
                 <td
                     colspan="8"
                     style="
@@ -138,430 +110,274 @@ function displayWithdrawals(
                         padding:40px;
                     "
                 >
-
                     Aucun retrait trouvé.
-
                 </td>
-
             </tr>
-
         `;
 
         return;
-
     }
 
+    paginatedWithdrawals.forEach((withdrawal) => {
 
-    paginatedWithdrawals.forEach(
-        (withdrawal) => {
+        const tr = document.createElement("tr");
 
-            const tr =
-                document.createElement(
-                    "tr"
-                );
+        // ==================================
+        // STATUT
+        // ==================================
 
-            // ==================================
-            // STATUT
-            // ==================================
+        let statusClass = "status-inactive";
+        let statusLabel = withdrawal.status;
 
-            let statusClass =
-                "status-inactive";
+        if (withdrawal.status === "En attente") {
+            statusClass = "status-pending";
+            statusLabel = "🟡 En attente";
+        }
+        else if (withdrawal.status === "En traitement") {
+            statusClass = "status-processing";
+            statusLabel = "🔵 En traitement";
+        }
+        else if (withdrawal.status === "paid") {
+            statusClass = "status-active";
+            statusLabel = "🟢 Payé";
+        }
+        else if (withdrawal.status === "Refusé") {
+            statusClass = "status-inactive";
+            statusLabel = "🔴 Refusé";
+        }
 
-            let statusLabel =
-                withdrawal.status;
+        // ==================================
+        // ACTIONS
+        // ==================================
 
-            if (
-                withdrawal.status ===
-                "En attente"
-            ) {
+        let actionButtons = `
 
-                statusClass =
-                    "status-pending";
+            <button
+                onclick="openAffiliateCRM(
+                    '${withdrawal.affiliate_id}'
+                )"
+            >
+                👁 Voir le CRM
+            </button>
 
-                statusLabel =
-                    "🟡 En attente";
+            <button
+                onclick="copyPaymentNumber(
+                    '${withdrawal.payment_details}'
+                )"
+            >
+                📋 Copier le numéro
+            </button>
 
-            }
+        `;
 
-            else if (
-                withdrawal.status ===
-                "En traitement"
-            ) {
+        // ==================================
+        // RETRAIT EN ATTENTE
+        // ==================================
 
-                statusClass =
-                    "status-processing";
+        if (withdrawal.status === "En attente") {
 
-                statusLabel =
-                    "🔵 En traitement";
-
-            }
-
-            else if (
-                withdrawal.status ===
-                "paid"
-            ) {
-
-                statusClass =
-                    "status-active";
-
-                statusLabel =
-                    "🟢 Payé";
-
-            }
-
-            else if (
-                withdrawal.status ===
-                "Refusé"
-            ) {
-
-                statusClass =
-                    "status-inactive";
-
-                statusLabel =
-                    "🔴 Refusé";
-
-            }
-
-
-            // ==================================
-            // ACTIONS
-            // ==================================
-
-            let actionButtons = `
+            actionButtons += `
 
                 <button
-                    onclick="openAffiliateCRM(
-                        '${withdrawal.affiliate_id}'
+                    onclick="updateWithdrawal(
+                        '${withdrawal.id}',
+                        'En traitement'
                     )"
                 >
-
-                    👁 Voir le CRM
-
+                    🔵 Mettre en traitement
                 </button>
 
                 <button
-                    onclick="copyPaymentNumber(
-                        '${withdrawal.payment_details}'
+                    onclick="updateWithdrawal(
+                        '${withdrawal.id}',
+                        'paid'
                     )"
                 >
+                    💳 Valider
+                </button>
 
-                    📋 Copier le numéro
-
+                <button
+                    onclick="updateWithdrawal(
+                        '${withdrawal.id}',
+                        'Refusé'
+                    )"
+                >
+                    ❌ Refuser
                 </button>
 
             `;
+        }
 
+        // ==================================
+        // RETRAIT EN TRAITEMENT
+        // ==================================
 
-            // ==================================
-            // RETRAIT EN ATTENTE
-            // ==================================
+        else if (withdrawal.status === "En traitement") {
 
-            if (
-                withdrawal.status ===
-                "En attente"
-            ) {
+            actionButtons += `
 
-                actionButtons += `
+                <button
+                    onclick="payWithdrawalWithJeko(
+                        '${withdrawal.id}'
+                    )"
+                >
+                    💸 Payer avec Jèko
+                </button>
 
-                    <button
-                        onclick="updateWithdrawal(
-                            '${withdrawal.id}',
-                            'En traitement'
-                        )"
-                    >
+                <button
+                    onclick="updateWithdrawal(
+                        '${withdrawal.id}',
+                        'Refusé'
+                    )"
+                >
+                    ❌ Refuser
+                </button>
 
-                        🔵 Mettre en traitement
+            `;
+        }
 
-                    </button>
+        // ==================================
+        // CONSTRUCTION DE LA LIGNE
+        // ==================================
 
-                    <button
-                        onclick="updateWithdrawal(
-                            '${withdrawal.id}',
-                            'paid'
-                        )"
-                    >
+        tr.innerHTML = `
 
-                        💳 Valider
+            <td>
 
-                    </button>
-
-                    <button
-                        onclick="updateWithdrawal(
-                            '${withdrawal.id}',
-                            'Refusé'
-                        )"
-                    >
-
-                        ❌ Refuser
-
-                    </button>
-
-                `;
-
-            }
-
-
-            // ==================================
-            // RETRAIT EN TRAITEMENT
-            // ==================================
-
-else if (
-    withdrawal.status ===
-    "En traitement"
-) {
-
-    actionButtons += `
-
-        <button
-            onclick="payWithdrawalWithSebPay(
-                '${withdrawal.id}'
-            )"
-        >
-
-            💸 Payer avec SebPay
-
-        </button>
-
-        <button
-            onclick="updateWithdrawal(
-                '${withdrawal.id}',
-                'Refusé'
-            )"
-        >
-
-            ❌ Refuser
-
-        </button>
-
-    `;
-
-}
-
-
-            tr.innerHTML = `
-
-                <td>
-
-                    <strong>
-
-                        ${
-                            withdrawal
-                                .profiles
-                                ?.fullname ??
-                            "-"
-                        }
-
-                    </strong>
-
-                    <br>
-
-                    <small
-                        style="
-                            color:#64748B;
-                        "
-                    >
-
-                        💰 Solde :
-                        ${
-                            Number(
-                                withdrawal
-                                    .stats
-                                    ?.availableBalance ??
-                                0
-                            )
-                            .toLocaleString(
-                                "fr-FR"
-                            )
-                        }
-                        FCFA
-
-                    </small>
-
-                    <br>
-
-                    <small
-                        style="
-                            color:#64748B;
-                        "
-                    >
-
-                        📈 Commissions :
-                        ${
-                            Number(
-                                withdrawal
-                                    .stats
-                                    ?.totalCommissions ??
-                                0
-                            )
-                            .toLocaleString(
-                                "fr-FR"
-                            )
-                        }
-                        FCFA
-
-                    </small>
-
-                </td>
-
-
-                <td>
-
+                <strong>
                     ${
-                        withdrawal
-                            .profiles
-                            ?.country ??
+                        withdrawal.profiles?.fullname ??
                         "-"
                     }
+                </strong>
 
-                </td>
+                <br>
 
-
-                <td>
-
-                    <strong>
-
-                        ${
-                            Number(
-                                withdrawal.amount
-                            )
-                            .toLocaleString(
-                                "fr-FR"
-                            )
-                        }
-                        FCFA
-
-                    </strong>
-
-                    <br>
-
-                    <small
-                        style="
-                            color:#64748B;
-                        "
-                    >
-
-                        📊 Ventes :
-                        ${
-                            withdrawal
-                                .stats
-                                ?.sales ??
-                            0
-                        }
-
-                    </small>
-
-                </td>
-
-
-                <td>
-
+                <small style="color:#64748B;">
+                    💰 Solde :
                     ${
-                        withdrawal
-                            .payment_method ??
-                        "-"
+                        Number(
+                            withdrawal.stats?.availableBalance ?? 0
+                        ).toLocaleString("fr-FR")
                     }
+                    FCFA
+                </small>
 
-                </td>
+                <br>
 
-
-                <td>
-
-                    <div
-                        class="payment-number"
-                    >
-
-                        <span>
-
-                            ${
-                                withdrawal
-                                    .payment_details ??
-                                "-"
-                            }
-
-                        </span>
-
-                        <button
-                            class="copy-btn"
-
-                            onclick="copyPaymentNumber(
-                                '${withdrawal.payment_details}'
-                            )"
-                        >
-
-                            📋
-
-                        </button>
-
-                    </div>
-
-                </td>
-
-
-                <td>
-
+                <small style="color:#64748B;">
+                    📈 Commissions :
                     ${
-                        new Date(
-                            withdrawal.created_at
-                        )
-                        .toLocaleDateString(
-                            "fr-FR"
-                        )
+                        Number(
+                            withdrawal.stats?.totalCommissions ?? 0
+                        ).toLocaleString("fr-FR")
                     }
+                    FCFA
+                </small>
 
-                </td>
+            </td>
 
+            <td>
+                ${
+                    withdrawal.profiles?.country ?? "-"
+                }
+            </td>
 
-                <td>
+            <td>
 
-                    <span
-                        class="${statusClass}"
-                    >
+                <strong>
+                    ${
+                        Number(withdrawal.amount)
+                            .toLocaleString("fr-FR")
+                    }
+                    FCFA
+                </strong>
 
-                        ${statusLabel}
+                <br>
 
+                <small style="color:#64748B;">
+                    📊 Ventes :
+                    ${
+                        withdrawal.stats?.sales ?? 0
+                    }
+                </small>
+
+            </td>
+
+            <td>
+                ${
+                    withdrawal.payment_method ?? "-"
+                }
+            </td>
+
+            <td>
+
+                <div class="payment-number">
+
+                    <span>
+                        ${
+                            withdrawal.payment_details ?? "-"
+                        }
                     </span>
 
-                </td>
+                    <button
+                        class="copy-btn"
+                        onclick="copyPaymentNumber(
+                            '${withdrawal.payment_details}'
+                        )"
+                    >
+                        📋
+                    </button>
 
+                </div>
 
-                <td>
+            </td>
+
+            <td>
+                ${
+                    new Date(
+                        withdrawal.created_at
+                    ).toLocaleDateString("fr-FR")
+                }
+            </td>
+
+            <td>
+
+                <span class="${statusClass}">
+                    ${statusLabel}
+                </span>
+
+            </td>
+
+            <td>
+
+                <div class="action-menu">
+
+                    <button
+                        class="action-toggle"
+                        onclick="toggleActionMenu(
+                            '${withdrawal.id}'
+                        )"
+                    >
+                        ⋮
+                    </button>
 
                     <div
-                        class="action-menu"
+                        id="menu-${withdrawal.id}"
+                        class="action-dropdown"
                     >
-
-                        <button
-                            class="action-toggle"
-
-                            onclick="toggleActionMenu(
-                                '${withdrawal.id}'
-                            )"
-                        >
-
-                            ⋮
-
-                        </button>
-
-
-                        <div
-                            id="menu-${withdrawal.id}"
-                            class="action-dropdown"
-                        >
-
-                            ${actionButtons}
-
-                        </div>
-
+                        ${actionButtons}
                     </div>
 
-                </td>
+                </div>
 
-            `;
+            </td>
 
-            tbody.appendChild(tr);
+        `;
 
-        }
-    );
+        tbody.appendChild(tr);
+
+    });
 
 }
 
@@ -570,126 +386,70 @@ else if (
 // STATISTIQUES
 // ==========================================
 
-function updateStats(
-    withdrawals
-) {
+function updateStats(withdrawals) {
 
     let pendingCount = 0;
-
     let processingCount = 0;
-
     let paidCount = 0;
-
     let rejectedCount = 0;
-
     let pendingAmount = 0;
 
+    withdrawals.forEach((withdrawal) => {
 
-    withdrawals.forEach(
-        (withdrawal) => {
+        const amount =
+            Number(withdrawal.amount) || 0;
 
-            const amount =
-                Number(
-                    withdrawal.amount
-                ) || 0;
+        switch (withdrawal.status) {
 
+            case "En attente":
+                pendingCount++;
+                pendingAmount += amount;
+                break;
 
-            switch (
-                withdrawal.status
-            ) {
+            case "En traitement":
+                processingCount++;
+                break;
 
-                case "En attente":
+            case "paid":
+                paidCount++;
+                break;
 
-                    pendingCount++;
-
-                    pendingAmount +=
-                        amount;
-
-                    break;
-
-
-                case "En traitement":
-
-                    processingCount++;
-
-                    break;
-
-
-                case "paid":
-
-                    paidCount++;
-
-                    break;
-
-
-                case "Refusé":
-
-                    rejectedCount++;
-
-                    break;
-
-            }
-
+            case "Refusé":
+                rejectedCount++;
+                break;
         }
-    );
 
+    });
 
     const pendingElement =
-        document.getElementById(
-            "pendingCount"
-        );
+        document.getElementById("pendingCount");
 
     const paidElement =
-        document.getElementById(
-            "paidCount"
-        );
+        document.getElementById("paidCount");
 
     const rejectedElement =
-        document.getElementById(
-            "rejectedCount"
-        );
+        document.getElementById("rejectedCount");
 
     const pendingAmountElement =
-        document.getElementById(
-            "pendingAmount"
-        );
-
+        document.getElementById("pendingAmount");
 
     if (pendingElement) {
-
-        pendingElement.textContent =
-            pendingCount;
-
+        pendingElement.textContent = pendingCount;
     }
-
 
     if (paidElement) {
-
-        paidElement.textContent =
-            paidCount;
-
+        paidElement.textContent = paidCount;
     }
-
 
     if (rejectedElement) {
-
-        rejectedElement.textContent =
-            rejectedCount;
-
+        rejectedElement.textContent = rejectedCount;
     }
-
 
     if (pendingAmountElement) {
-
         pendingAmountElement.textContent =
-            pendingAmount
-                .toLocaleString(
-                    "fr-FR"
-                ) +
+            pendingAmount.toLocaleString("fr-FR") +
             " FCFA";
-
     }
-
 
     console.log(
         "Retraits en attente :",
@@ -708,69 +468,40 @@ function updateStats(
 // PAGINATION
 // ==========================================
 
-function updatePagination(
-    totalItems
-) {
+function updatePagination(totalItems) {
 
     const totalPages =
         Math.max(
             1,
-            Math.ceil(
-                totalItems /
-                rowsPerPage
-            )
+            Math.ceil(totalItems / rowsPerPage)
         );
 
-
-    if (
-        currentPage >
-        totalPages
-    ) {
-
-        currentPage =
-            totalPages;
-
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
     }
-
 
     const pageInfo =
-        document.getElementById(
-            "pageInfo"
-        );
+        document.getElementById("pageInfo");
 
     const prevPage =
-        document.getElementById(
-            "prevPage"
-        );
+        document.getElementById("prevPage");
 
     const nextPage =
-        document.getElementById(
-            "nextPage"
-        );
-
+        document.getElementById("nextPage");
 
     if (pageInfo) {
-
         pageInfo.textContent =
             `Page ${currentPage} sur ${totalPages}`;
-
     }
-
 
     if (prevPage) {
-
         prevPage.disabled =
             currentPage === 1;
-
     }
 
-
     if (nextPage) {
-
         nextPage.disabled =
-            currentPage ===
-            totalPages;
-
+            currentPage === totalPages;
     }
 
 }
@@ -782,134 +513,69 @@ function updatePagination(
 
 function applyFilters() {
 
-    let filtered =
-        [...allWithdrawals];
-
+    let filtered = [...allWithdrawals];
 
     // ======================================
     // FILTRE PAR STATUT
     // ======================================
 
-    if (
-        currentStatusFilter !==
-        "Tous"
-    ) {
+    if (currentStatusFilter !== "Tous") {
 
-        filtered =
-            filtered.filter(
-                (withdrawal) =>
-                    withdrawal.status ===
-                    currentStatusFilter
-            );
+        filtered = filtered.filter(
+            (withdrawal) =>
+                withdrawal.status === currentStatusFilter
+        );
 
     }
-
 
     // ======================================
     // RECHERCHE
     // ======================================
 
-    if (
-        currentSearch.trim() !==
-        ""
-    ) {
+    if (currentSearch.trim() !== "") {
 
         const search =
-            currentSearch
-                .toLowerCase();
+            currentSearch.toLowerCase();
 
+        filtered = filtered.filter((withdrawal) => {
 
-        filtered =
-            filtered.filter(
-                (withdrawal) => {
+            const fullname =
+                (
+                    withdrawal.profiles?.fullname ?? ""
+                ).toLowerCase();
 
-                    const fullname =
-                        (
-                            withdrawal
-                                .profiles
-                                ?.fullname ??
-                            ""
-                        )
-                        .toLowerCase();
+            const country =
+                (
+                    withdrawal.profiles?.country ?? ""
+                ).toLowerCase();
 
+            const payment =
+                (
+                    withdrawal.payment_method ?? ""
+                ).toLowerCase();
 
-                    const country =
-                        (
-                            withdrawal
-                                .profiles
-                                ?.country ??
-                            ""
-                        )
-                        .toLowerCase();
+            const paymentDetails =
+                (
+                    withdrawal.payment_details ?? ""
+                ).toLowerCase();
 
-
-                    const payment =
-                        (
-                            withdrawal
-                                .payment_method ??
-                            ""
-                        )
-                        .toLowerCase();
-
-
-                    const paymentDetails =
-                        (
-                            withdrawal
-                                .payment_details ??
-                            ""
-                        )
-                        .toLowerCase();
-
-
-                    return (
-
-                        fullname.includes(
-                            search
-                        )
-
-                        ||
-
-                        country.includes(
-                            search
-                        )
-
-                        ||
-
-                        payment.includes(
-                            search
-                        )
-
-                        ||
-
-                        paymentDetails.includes(
-                            search
-                        )
-
-                    );
-
-                }
+            return (
+                fullname.includes(search) ||
+                country.includes(search) ||
+                payment.includes(search) ||
+                paymentDetails.includes(search)
             );
+
+        });
 
     }
 
-
     currentPage = 1;
+    filteredWithdrawals = filtered;
 
-    filteredWithdrawals =
-        filtered;
-
-
-    displayWithdrawals(
-        filteredWithdrawals
-    );
-
-    updateStats(
-        filteredWithdrawals
-    );
-
-    updatePagination(
-        filteredWithdrawals.length
-    );
+    displayWithdrawals(filteredWithdrawals);
+    updateStats(filteredWithdrawals);
+    updatePagination(filteredWithdrawals.length);
 
 }
 
@@ -929,63 +595,42 @@ async function updateWithdrawal(
         status
     );
 
-
     // ======================================
     // CONFIRMATION
     // ======================================
 
-    let confirmationMessage =
-        "";
+    let confirmationMessage = "";
 
-
-    if (
-        status ===
-        "En traitement"
-    ) {
+    if (status === "En traitement") {
 
         confirmationMessage =
             "Voulez-vous mettre ce retrait en traitement ?\n\n" +
-            "Aucun paiement SebPay ne sera effectué à cette étape.";
+            "Cette étape prépare le retrait. Le transfert Jèko sera lancé séparément avec le bouton de paiement.";
 
     }
-
-    else if (
-        status ===
-        "paid"
-    ) {
+    else if (status === "paid") {
 
         confirmationMessage =
             "Voulez-vous marquer ce retrait comme payé ?";
 
     }
-
-    else if (
-        status ===
-        "Refusé"
-    ) {
+    else if (status === "Refusé") {
 
         confirmationMessage =
             "Voulez-vous vraiment refuser ce retrait ?";
 
     }
 
-
     if (
         confirmationMessage &&
-        !confirm(
-            confirmationMessage
-        )
+        !confirm(confirmationMessage)
     ) {
-
         return;
-
     }
-
 
     const {
         data: { session }
     } = await sb.auth.getSession();
-
 
     if (!session) {
 
@@ -994,36 +639,24 @@ async function updateWithdrawal(
         );
 
         return;
-
     }
-
 
     const {
         data,
         error
-    } =
-        await sb.functions.invoke(
-            "admin-update-withdrawal",
-            {
-
-                body: {
-
-                    withdrawalId,
-
-                    status
-
-                },
-
-                headers: {
-
-                    Authorization:
-                        `Bearer ${session.access_token}`
-
-                }
-
+    } = await sb.functions.invoke(
+        "admin-update-withdrawal",
+        {
+            body: {
+                withdrawalId,
+                status
+            },
+            headers: {
+                Authorization:
+                    `Bearer ${session.access_token}`
             }
-        );
-
+        }
+    );
 
     if (error) {
 
@@ -1037,20 +670,14 @@ async function updateWithdrawal(
         );
 
         return;
-
     }
-
 
     console.log(
         "Réponse mise à jour :",
         data
     );
 
-
-    if (
-        data &&
-        data.success === false
-    ) {
+    if (data && data.success === false) {
 
         alert(
             data.error ||
@@ -1058,34 +685,28 @@ async function updateWithdrawal(
         );
 
         return;
-
     }
 
-
     await loadWithdrawals();
-
     applyFilters();
 
 }
 
+
 // ==========================================
-// PAIEMENT SEBPAY
+// PAIEMENT JÈKO
 // ==========================================
 
-async function payWithdrawalWithSebPay(
+async function payWithdrawalWithJeko(
     withdrawalId
 ) {
 
     console.log(
-        "Demande de paiement SebPay :",
+        "Demande de paiement Jèko :",
         withdrawalId
     );
 
-
-    // ======================================
-    // RETROUVER LE RETRAIT
-    // ======================================
-
+    // Retrouver le retrait dans les données déjà chargées.
     const withdrawal =
         allWithdrawals.find(
             (item) =>
@@ -1093,276 +714,213 @@ async function payWithdrawalWithSebPay(
                 String(withdrawalId)
         );
 
-
     if (!withdrawal) {
 
         alert(
-            "Retrait introuvable."
+            "Retrait introuvable. Rechargez la page puis réessayez."
         );
 
         return;
-
     }
 
+    // Le payout Jèko ne doit être lancé qu'après validation administrative.
+    if (withdrawal.status !== "En traitement") {
 
-    // ======================================
-    // VERIFICATION DU STATUT
-    // ======================================
+        alert(
+            "Le retrait doit être au statut « En traitement » avant le paiement Jèko."
+        );
 
+        return;
+    }
+
+    // Protection supplémentaire contre un double envoi.
     if (
-        withdrawal.status !==
-        "En traitement"
+        withdrawal.provider_reference ||
+        withdrawal.provider_transaction_id
     ) {
 
         alert(
-            "Ce retrait doit être en traitement avant de lancer le paiement SebPay."
+            "Une référence de paiement existe déjà pour ce retrait.\n\n" +
+            "Ne relancez pas le transfert. Vérifiez son état dans Jèko et consultez le webhook."
         );
 
         return;
-
     }
 
-
-    // ======================================
-    // CONFIRMATION
-    // ======================================
-
     const amount =
-        Number(
-            withdrawal.amount
-        ) || 0;
-
+        Number(withdrawal.amount) || 0;
 
     const recipientName =
         withdrawal.recipient_name ??
         withdrawal.profiles?.fullname ??
         "Bénéficiaire";
 
-
     const operator =
         withdrawal.operator ??
         withdrawal.payment_method ??
         "-";
-
 
     const phone =
         withdrawal.phone ??
         withdrawal.payment_details ??
         "-";
 
+    if (!Number.isFinite(amount) || amount <= 0) {
 
-    const confirmationMessage =
-        "Confirmer le lancement du paiement SebPay ?\n\n" +
-
-        `Bénéficiaire : ${recipientName}\n` +
-
-        `Montant : ${amount.toLocaleString("fr-FR")} FCFA\n` +
-
-        `Opérateur : ${operator}\n` +
-
-        `Téléphone : ${phone}\n\n` +
-
-        "Le statut final sera confirmé par SebPay.\n\n" +
-
-        "En mode actuel, aucun paiement réel ne sera effectué.";
-
-
-    if (
-        !confirm(
-            confirmationMessage
-        )
-    ) {
+        alert(
+            "Le montant de ce retrait est invalide."
+        );
 
         return;
-
     }
 
+    const confirmationMessage =
+        "Confirmer l'envoi du paiement via Jèko ?\n\n" +
+        `Bénéficiaire : ${recipientName}\n` +
+        `Montant : ${amount.toLocaleString("fr-FR")} FCFA\n` +
+        `Opérateur : ${operator}\n` +
+        `Téléphone : ${phone}\n\n` +
+        "Cette action transmettra une demande de transfert réelle à Jèko.\n" +
+        "Ne cliquez qu'une seule fois. Le webhook confirmera le résultat final.";
 
-    // ======================================
-    // SESSION ADMIN
-    // ======================================
+    if (!confirm(confirmationMessage)) {
+        return;
+    }
 
+    // Vérifier que la session administrateur est toujours active.
     const {
-        data: {
-            session
-        }
-    } =
-        await sb.auth.getSession();
+        data: { session },
+        error: sessionError
+    } = await sb.auth.getSession();
 
-
-    if (!session) {
+    if (sessionError || !session) {
 
         alert(
             "Votre session a expiré. Veuillez vous reconnecter."
         );
 
         return;
-
     }
 
-
-    // ======================================
-    // APPEL EDGE FUNCTION
-    // ======================================
-
-    console.log(
-        "Appel sebpay-payout..."
-    );
-
-
+    // Appel de la fonction Supabase jeko-payout.
     let data;
     let error;
 
-
     try {
 
-        ({
-            data,
-            error
-        } =
-            await sb.functions.invoke(
-                "sebpay-payout",
-                {
-
-                    body: {
-
-                        withdrawalId:
-                            withdrawalId
-
-                    },
-
-                    headers: {
-
-                        Authorization:
-                            `Bearer ${session.access_token}`
-
-                    }
-
+        ({ data, error } = await sb.functions.invoke(
+            "jeko-payout",
+            {
+                body: {
+                    withdrawalId: withdrawalId
+                },
+                headers: {
+                    Authorization:
+                        `Bearer ${session.access_token}`
                 }
-            )
-        );
+            }
+        ));
 
-    }
-
-    catch (invokeError) {
+    } catch (invokeError) {
 
         console.error(
-            "Erreur appel sebpay-payout :",
+            "Erreur appel jeko-payout :",
             invokeError
         );
 
         alert(
-            "Une erreur est survenue lors de la communication avec SebPay."
+            "La communication avec Jèko a échoué.\n\n" +
+            "Vérifiez le statut du retrait et les journaux Supabase avant toute nouvelle tentative."
         );
 
         return;
-
     }
-
-
-    // ======================================
-    // ERREUR EDGE FUNCTION
-    // ======================================
 
     if (error) {
 
         console.error(
-            "Erreur sebpay-payout :",
+            "Erreur jeko-payout :",
             error
         );
 
         alert(
-            "Le paiement SebPay n'a pas pu être lancé.\n\n" +
-            "Consultez la console pour plus de détails."
+            "La demande de paiement n'a pas pu être confirmée.\n\n" +
+            "Consultez les journaux de la fonction jeko-payout. Ne relancez pas le paiement sans vérifier son état chez Jèko."
         );
 
         return;
-
     }
 
-
     console.log(
-        "Réponse sebpay-payout :",
+        "Réponse jeko-payout :",
         data
     );
 
+    if (!data || data.success !== true) {
 
-    // ======================================
-    // ERREUR METIER
-    // ======================================
-
-    if (
-        data &&
-        data.success === false
-    ) {
+        const message =
+            data?.error ??
+            data?.message ??
+            "Jèko n'a pas confirmé la demande de transfert.";
 
         alert(
-            data.error ??
-            "Le paiement SebPay a échoué."
+            `Paiement non confirmé : ${message}` +
+            (
+                data?.provider_reference || data?.reference
+                    ? `\nRéférence : ${
+                        data.provider_reference ?? data.reference
+                    }`
+                    : ""
+            ) +
+            "\n\nVérifiez le statut chez Jèko avant toute nouvelle tentative."
         );
 
-        return;
-
-    }
-
-
-    // ======================================
-    // SIMULATION REUSSIE
-    // ======================================
-
-    if (
-        data?.simulation === true
-    ) {
-
-        const payout =
-            data.payout ?? {};
-
-
-        alert(
-            "✅ Paiement SebPay simulé avec succès.\n\n" +
-
-            `Retrait : #${withdrawalId}\n` +
-
-            `Montant : ${Number(
-                payout.amount ??
-                amount
-            ).toLocaleString("fr-FR")} FCFA\n` +
-
-            `Opérateur : ${payout.operator ?? operator}\n` +
-
-            `Statut : ${payout.status ?? "pending"}\n\n` +
-
-            "Aucun paiement réel n'a été effectué."
-        );
-
-
-        // Recharger les retraits
         await loadWithdrawals();
-
         applyFilters();
 
         return;
-
     }
 
+    const reference =
+        data.provider_reference ??
+        data.reference ??
+        "Non communiquée";
 
-    // ======================================
-    // PAYOUT REEL ACCEPTE
-    // ======================================
+    const transactionId =
+        data.provider_transaction_id ??
+        data.transaction_id ??
+        "En attente";
+
+    const jekoStatus =
+        data.jeko_status ?? "pending";
 
     alert(
-        "✅ Demande de paiement SebPay envoyée.\n\n" +
-
-        "Le statut final sera confirmé par le webhook SebPay."
+        "✅ Demande de transfert transmise à Jèko.\n\n" +
+        `Retrait : #${withdrawalId}\n` +
+        `Montant : ${
+            Number(
+                data.amount_xof ??
+                data.amount_fcfa ??
+                amount
+            ).toLocaleString("fr-FR")
+        } FCFA\n` +
+        `Opérateur : ${
+            data.payment_method ??
+            data.operator ??
+            operator
+        }\n` +
+        `Référence : ${reference}\n` +
+        `Transaction Jèko : ${transactionId}\n` +
+        `Statut Jèko : ${jekoStatus}\n\n` +
+        "Le retrait reste « En traitement » jusqu'à la confirmation finale du webhook Jèko."
     );
 
-
-    // Recharger les retraits
+    // Recharger l'état réel enregistré dans Supabase.
     await loadWithdrawals();
-
     applyFilters();
 
 }
+
 
 // ==========================================
 // GESTION DES FILTRES
@@ -1373,16 +931,10 @@ document.addEventListener(
     () => {
 
         const statusFilter =
-            document.getElementById(
-                "statusFilter"
-            );
-
+            document.getElementById("statusFilter");
 
         const searchInput =
-            document.getElementById(
-                "searchWithdrawal"
-            );
-
+            document.getElementById("searchWithdrawal");
 
         if (statusFilter) {
 
@@ -1399,7 +951,6 @@ document.addEventListener(
             );
 
         }
-
 
         if (searchInput) {
 
@@ -1426,10 +977,7 @@ document.addEventListener(
 // ==========================================
 
 const prevPage =
-    document.getElementById(
-        "prevPage"
-    );
-
+    document.getElementById("prevPage");
 
 if (prevPage) {
 
@@ -1437,10 +985,7 @@ if (prevPage) {
         "click",
         () => {
 
-            if (
-                currentPage >
-                1
-            ) {
+            if (currentPage > 1) {
 
                 currentPage--;
 
@@ -1465,10 +1010,7 @@ if (prevPage) {
 // ==========================================
 
 const nextPage =
-    document.getElementById(
-        "nextPage"
-    );
-
+    document.getElementById("nextPage");
 
 if (nextPage) {
 
@@ -1482,11 +1024,7 @@ if (nextPage) {
                     rowsPerPage
                 );
 
-
-            if (
-                currentPage <
-                totalPages
-            ) {
+            if (currentPage < totalPages) {
 
                 currentPage++;
 
@@ -1511,10 +1049,7 @@ if (nextPage) {
 // ==========================================
 
 const rowsSelect =
-    document.getElementById(
-        "rowsPerPage"
-    );
-
+    document.getElementById("rowsPerPage");
 
 if (rowsSelect) {
 
@@ -1523,9 +1058,7 @@ if (rowsSelect) {
         () => {
 
             rowsPerPage =
-                Number(
-                    rowsSelect.value
-                );
+                Number(rowsSelect.value);
 
             currentPage = 1;
 
