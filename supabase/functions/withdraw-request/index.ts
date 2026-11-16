@@ -9,6 +9,24 @@ const corsHeaders = {
     "POST, OPTIONS",
 };
 
+function normalizeOperator(value: string): string | null {
+  const operator = value.trim().toLowerCase();
+
+  const operators: Record<string, string> = {
+    wave: "wave",
+    "wave money": "wave",
+    orange: "orange_money",
+    "orange money": "orange_money",
+    "orange money ci": "orange_money",
+    mtn: "mtn",
+    "mtn money": "mtn",
+    moov: "moov",
+    "moov money": "moov",
+  };
+
+  return operators[operator] ?? null;
+}
+
 serve(async (req) => {
 
   // ==========================================
@@ -227,6 +245,22 @@ serve(async (req) => {
         "",
       ).trim();
 
+      const operator = normalizeOperator(String(paymentMethod ?? ""));
+
+      if (!operator) {
+  return new Response(
+    JSON.stringify({
+      error: "Méthode de paiement non reconnue. Veuillez choisir Wave, Orange Money, MTN ou Moov Money.",
+    }),
+    {
+      status: 400,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+}
 
     // ==========================================
     // VALIDATION DU NOM
@@ -493,31 +527,17 @@ serve(async (req) => {
     } =
       await supabase
         .from("withdrawals")
-        .insert({
-          affiliate_id:
-            userId,
-
-          amount:
-            requestedAmount,
-
-          payment_method:
-            paymentMethod,
-
-          payment_details:
-            paymentDetails,
-
-          recipient_name:
-            recipientName,
-
-          phone:
-            phone,
-
-          country:
-            country,
-
-          status:
-            "En attente",
-        })
+       .insert({
+  affiliate_id: userId,
+  amount: requestedAmount,
+  payment_method: paymentMethod,
+  payment_details: paymentDetails,
+  operator: operator,
+  recipient_name: recipientName,
+  phone: phone,
+  country: country,
+  status: "En attente",
+})
         .select(
           `
             id,
