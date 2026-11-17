@@ -58,16 +58,16 @@ Deno.serve(async (req: Request) => {
 
     const body = await req.json();
     const orderId = body.orderId;
-    const paymentMethod = String(body.paymentMethod ?? "").toLowerCase();
 
-    const allowedMethods = ["wave", "orange", "mtn", "moov", "djamo"];
-
-    if (!orderId || !allowedMethods.includes(paymentMethod)) {
-      return json({
-        success: false,
-        message: "Commande ou moyen de paiement invalide.",
-      }, 400);
-    }
+if (
+  typeof orderId !== "string" ||
+  !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId)
+) {
+  return json({
+    success: false,
+    message: "Identifiant de commande invalide.",
+  }, 400);
+}
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
@@ -119,13 +119,12 @@ Deno.serve(async (req: Request) => {
           currency: order.currency || "XOF",
           reference,
           paymentDetails: {
-            type: "redirect",
-            data: {
-              paymentMethod,
-              successUrl,
-              errorUrl,
-            },
-          },
+  type: "redirect",
+  data: {
+    successUrl,
+    errorUrl,
+  },
+},
         }),
         signal: AbortSignal.timeout(30000),
       },
@@ -177,7 +176,6 @@ Deno.serve(async (req: Request) => {
       redirectUrl: jekoData.redirectUrl,
       reference,
       paymentRequestId: jekoData.id,
-      paymentMethod,
     });
 
   } catch (error) {
