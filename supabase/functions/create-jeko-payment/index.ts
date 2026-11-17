@@ -8,7 +8,10 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-function json(body: Record<string, unknown>, status = 200) {
+function json(
+  body: Record<string, unknown>,
+  status = 200,
+) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
@@ -47,38 +50,52 @@ Deno.serve(async (req: Request) => {
       return json({ success: false, message: "Authentification requise." }, 401);
     }
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+      },
+    );
 
+    const token = authorization.substring(7);
     const { data: authData, error: authError } =
-      await supabase.auth.getUser(authorization.substring(7));
+      await supabase.auth.getUser(token);
 
     if (authError || !authData.user) {
       return json({ success: false, message: "Session invalide." }, 401);
     }
 
     const body = await req.json();
-const orderId = body.orderId;
-const paymentMethod = body.paymentMethod;
+    const orderId = body.orderId;
+    const paymentMethod = String(body.paymentMethod || "")
+      .trim()
+      .toLowerCase();
 
-const allowedMethods = [
-  "wave",
-  "orange",
-  "mtn",
-  "moov",
-  "djamo",
-  "jeko",
-];
+    const allowedMethods = [
+      "wave",
+      "orange",
+      "mtn",
+      "moov",
+      "djamo",
+    ];
 
-if (!allowedMethods.includes(paymentMethod)) {
-  return json({
-    success: false,
-    message: "Moyen de paiement invalide.",
-  }, 400);
-}
+    if (
+      typeof orderId !== "string" ||
+      !allowedMethods.includes(paymentMethod)
+    ) {
+      return json({
+        success: false,
+        message: "Commande ou moyen de paiement invalide.",
+      }, 400);
+    }
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
-      .select("id, user_id, order_reference, amount, currency, status")
+      .select("id, user_id, order_reference, amount, currency, status, payment_reference")
       .eq("id", orderId)
       .eq("user_id", authData.user.id)
       .single();
@@ -97,18 +114,21 @@ if (!allowedMethods.includes(paymentMethod)) {
       return json({ success: false, message: "Montant invalide." }, 400);
     }
 
-    // Jèko attend le montant en centimes.
-    const amountCents = Math.round(amount * 100);
-
+    // Référence stable et unique pour cette commande.
     const reference = `PIM-${order.id.replaceAll("-", "")}`;
 
     const baseUrl = "https://prof-ia-affiliate.vercel.app";
 
+    // Le client revient sur son espace après le paiement.
+    // L'accès réel est attribué uniquement par le webhook signé.
     const successUrl =
-      `${baseUrl}/payment.html?payment=success&reference=${encodeURIComponent(reference)}`;
+      `${baseUrl}/dashboard.html?payment=processing&reference=${encodeURIComponent(reference)}`;
 
     const errorUrl =
       `${baseUrl}/payment.html?payment=error&reference=${encodeURIComponent(reference)}`;
+
+    // Jèko attend le montant en centimes dans payment_requests.
+    const amountCents = Math.round(amount * 100);
 
     const jekoResponse = await fetch(
       "https://api.jeko.africa/partner_api/payment_requests",
@@ -126,29 +146,34 @@ if (!allowedMethods.includes(paymentMethod)) {
           currency: order.currency || "XOF",
           reference,
           paymentDetails: {
-  type: "redirect",
-  data: {
-  paymentMethod,
-  successUrl,
-  errorUrl,
-},
-},
+            type: "redirect",
+            data: {
+              paymentMethod,
+              successUrl,
+              errorUrl,
+            },
+          },
         }),
         signal: AbortSignal.timeout(30000),
       },
     );
 
     const responseText = await jekoResponse.text();
-
     let jekoData: Record<string, any>;
 
     try {
-      jekoData = JSON.parse(responseText);
+      jekoData = responseText ? JSON.parse(responseText) : {};
     } catch {
       jekoData = {};
     }
 
-    if (!jekoResponse.ok || !jekoData.redirectUrl) {
+    const redirectUrl =
+      jekoData.redirectUrl ||
+      jekoData.redirect_url ||
+      jekoData.data?.redirectUrl ||
+      jekoData.data?.redirect_url;
+
+    if (!jekoResponse.ok || !redirectUrl) {
       console.error("Erreur Jèko :", jekoResponse.status, jekoData);
 
       return json({
@@ -158,7 +183,6 @@ if (!allowedMethods.includes(paymentMethod)) {
       }, 502);
     }
 
-    // Enregistrer le fournisseur et la référence du paiement.
     const { error: updateError } = await supabase
       .from("orders")
       .update({
@@ -181,9 +205,9 @@ if (!allowedMethods.includes(paymentMethod)) {
 
     return json({
       success: true,
-      redirectUrl: jekoData.redirectUrl,
+      redirectUrl,
       reference,
-      paymentRequestId: jekoData.id,
+      paymentRequestId: jekoData.id ?? null,
     });
 
   } catch (error) {
