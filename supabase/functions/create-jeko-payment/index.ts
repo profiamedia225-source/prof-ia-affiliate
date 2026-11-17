@@ -57,15 +57,22 @@ Deno.serve(async (req: Request) => {
     }
 
     const body = await req.json();
-    const orderId = body.orderId;
+const orderId = body.orderId;
+const paymentMethod = body.paymentMethod;
 
-if (
-  typeof orderId !== "string" ||
-  !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId)
-) {
+const allowedMethods = [
+  "wave",
+  "orange",
+  "mtn",
+  "moov",
+  "djamo",
+  "jeko",
+];
+
+if (!allowedMethods.includes(paymentMethod)) {
   return json({
     success: false,
-    message: "Identifiant de commande invalide.",
+    message: "Moyen de paiement invalide.",
   }, 400);
 }
 
@@ -121,9 +128,10 @@ if (
           paymentDetails: {
   type: "redirect",
   data: {
-    successUrl,
-    errorUrl,
-  },
+  paymentMethod,
+  successUrl,
+  errorUrl,
+},
 },
         }),
         signal: AbortSignal.timeout(30000),
