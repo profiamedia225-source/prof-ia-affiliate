@@ -263,8 +263,7 @@ async function createOrder() {
         currency:
             currentProduct.currency,
 
-        payment_provider:
-            "paystack",
+        payment_provider: "jeko",
 
         status:
             "pending",
@@ -343,23 +342,24 @@ Initialisation Paystack
 ==========================================================
 */
 
-async function preparePayment() {
 
+
+async function preparePayment() {
     const button = document.getElementById("payButton");
 
     try {
-
         button.disabled = true;
-        button.textContent = "Initialisation...";
+        button.textContent = "Initialisation du paiement...";
 
+        // 1. Charger les informations nécessaires
         await loadUser();
-
         await loadProfile(currentUser.id);
-
         await loadProduct();
 
+        // 2. Créer la commande dans Supabase
         const order = await createOrder();
 
+        // 3. Récupérer la session utilisateur
         const {
             data: { session },
             error: sessionError
@@ -369,14 +369,15 @@ async function preparePayment() {
             stop("Session utilisateur introuvable.");
         }
 
-        console.log("API_URL =", API_URL);
+        // 4. Demander à Jèko de créer le lien de paiement
         const response = await fetch(
-            `${API_URL}/functions/v1/initialize-payment`,
+            `${API_URL}/functions/v1/create-jeko-payment`,
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${session.access_token}`
+                    "Authorization": `Bearer ${session.access_token}`,
+                    "apikey": window.SUPABASE_ANON_KEY
                 },
                 body: JSON.stringify({
                     orderId: order.id
@@ -386,35 +387,27 @@ async function preparePayment() {
 
         const result = await response.json();
 
-        if (!response.ok) {
-
-            console.error(result);
-
-            stop(
-                result.error ||
-                "Erreur lors de l'initialisation du paiement."
-            );
+        if (!response.ok || !result.success) {
+            console.error("Erreur paiement Jèko :", result);
+            stop(result.message || "Impossible d'initialiser le paiement Jèko.");
         }
 
-        if (!result.authorization_url) {
-            stop("Lien de paiement Paystack introuvable.");
+        if (!result.redirectUrl) {
+            stop("Lien de paiement Jèko introuvable.");
         }
 
-        window.location.href = result.authorization_url;
+        // 5. Rediriger le client vers la page hébergée Jèko
+        window.location.href = result.redirectUrl;
 
     } catch (err) {
-
-        console.error(err);
-
-        alert(
-            err.message ||
-            "Une erreur est survenue."
-        );
+        console.error("Erreur paiement :", err);
 
         button.disabled = false;
         button.textContent = "PAYER MAINTENANT";
     }
 }
+
+
 
 /*
 ==========================================================
