@@ -1,8 +1,9 @@
+
 /*
 ==========================================================
 PROF IA MEDIA PARTNERS
-payment.js V4
-Partie 1/3
+payment.js V5
+Transmission du moyen de paiement Jèko
 ==========================================================
 */
 
@@ -13,6 +14,7 @@ let currentUser = null;
 let currentProfile = null;
 let currentProduct = null;
 
+
 /**
  * Affiche un message puis stoppe l'exécution.
  */
@@ -20,6 +22,7 @@ function stop(message) {
     alert(message);
     throw new Error(message);
 }
+
 
 /**
  * Charge l'utilisateur connecté.
@@ -36,15 +39,17 @@ async function loadUser() {
     }
 
     currentUser = user;
+
     return user;
 }
+
 
 /**
  * Charge le profil.
  */
 async function loadProfile(userId) {
 
-    const { data, error } = await sb
+    const { data, error } = await client
         .from("profiles")
         .select("*")
         .eq("id", userId)
@@ -55,8 +60,10 @@ async function loadProfile(userId) {
     }
 
     currentProfile = data;
+
     return data;
 }
+
 
 /**
  * Charge le produit actif.
@@ -67,8 +74,7 @@ async function loadProduct() {
         window.location.search
     );
 
-    const productCode =
-        params.get("product");
+    const productCode = params.get("product");
 
     if (!productCode) {
 
@@ -76,9 +82,7 @@ async function loadProduct() {
             "Code produit manquant dans l'URL."
         );
 
-        throw new Error(
-            "Produit non spécifié."
-        );
+        throw new Error("Produit non spécifié.");
     }
 
     console.log(
@@ -89,17 +93,11 @@ async function loadProduct() {
     const {
         data,
         error
-    } = await sb
+    } = await client
         .from("products")
         .select("*")
-        .eq(
-            "product_code",
-            productCode
-        )
-        .eq(
-            "status",
-            true
-        )
+        .eq("product_code", productCode)
+        .eq("status", true)
         .maybeSingle();
 
     if (error) {
@@ -133,8 +131,7 @@ async function loadProduct() {
 
     document.getElementById(
         "productName"
-    ).textContent =
-        currentProduct.product_name;
+    ).textContent = currentProduct.product_name;
 
     document.getElementById(
         "productPrice"
@@ -146,6 +143,7 @@ async function loadProduct() {
         + currentProduct.currency;
 }
 
+
 /**
  * Génère une référence de commande.
  */
@@ -155,9 +153,13 @@ function generateReference() {
 
     const yyyy = now.getFullYear();
 
-    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const mm = String(
+        now.getMonth() + 1
+    ).padStart(2, "0");
 
-    const dd = String(now.getDate()).padStart(2, "0");
+    const dd = String(
+        now.getDate()
+    ).padStart(2, "0");
 
     const random = Math.floor(
         100000 + Math.random() * 900000
@@ -165,58 +167,43 @@ function generateReference() {
 
     return `PIM-ORD-${yyyy}${mm}${dd}-${random}`;
 }
+
+
 /*
 ==========================================================
 PARTIE 2/3
 Création de la commande
 ==========================================================
 */
+
+
 /**
  * Crée une nouvelle commande dans Supabase.
  */
 async function createOrder() {
 
-    // ==========================================
     // VÉRIFICATIONS
-    // ==========================================
-
     if (!currentUser) {
-
         stop("Utilisateur introuvable.");
-
     }
 
     if (!currentProfile) {
-
         stop("Profil introuvable.");
-
     }
 
     if (!currentProduct) {
-
         stop("Produit introuvable.");
-
     }
 
-
-    // ==========================================
     // RÉFÉRENCE DE COMMANDE
-    // ==========================================
+    const orderReference = generateReference();
 
-    const orderReference =
-        generateReference();
-
-
-    // ==========================================
     // PARRAIN
-    // ==========================================
-
     const affiliateId =
         currentProfile.referred_by &&
         currentProfile.referred_by !== currentUser.id
             ? currentProfile.referred_by
             : null;
-
 
     console.log(
         "👤 Utilisateur :",
@@ -238,76 +225,47 @@ async function createOrder() {
         currentProduct.product_code
     );
 
-
-    // ==========================================
     // OBJET COMMANDE
-    // ==========================================
-
     const order = {
 
-        user_id:
-            currentUser.id,
+        user_id: currentUser.id,
 
-        order_reference:
-            orderReference,
+        order_reference: orderReference,
 
-        product_id:
-            currentProduct.product_code,
+        product_id: currentProduct.product_code,
 
-        product_name:
-            currentProduct.product_name,
+        product_name: currentProduct.product_name,
 
-        amount:
-            currentProduct.price,
+        amount: currentProduct.price,
 
-        currency:
-            currentProduct.currency,
+        currency: currentProduct.currency,
 
         payment_provider: "jeko",
 
-        status:
-            "pending",
+        status: "pending",
 
-        customer_email:
-            currentUser.email,
+        customer_email: currentUser.email,
 
-        affiliate_id:
-            affiliateId
+        affiliate_id: affiliateId
 
     };
-
 
     console.log(
         "📦 Commande à créer :",
         order
     );
 
-
-    // ==========================================
     // INSERTION
-    // ==========================================
-
     const {
-
         data,
-
         error
-
-    } = await sb
-
+    } = await client
         .from("orders")
-
         .insert(order)
-
         .select()
-
         .single();
 
-
-    // ==========================================
     // ERREUR
-    // ==========================================
-
     if (error || !data) {
 
         console.error(
@@ -315,115 +273,220 @@ async function createOrder() {
             error
         );
 
-        stop(
-            "Impossible de créer la commande."
-        );
-
+        stop("Impossible de créer la commande.");
     }
 
-
-    // ==========================================
     // SUCCÈS
-    // ==========================================
-
     console.log(
         "✅ Commande créée :",
         data
     );
 
-
     return data;
-
 }
+
+
 /*
 ==========================================================
 PARTIE 3/3
-Initialisation Paystack
+Initialisation du paiement Jèko
 ==========================================================
 */
 
 
-
 async function preparePayment() {
+
     const button = document.getElementById("payButton");
 
-    try {
-        button.disabled = true;
-        button.textContent = "Initialisation du paiement...";
+    const methodSelect = document.getElementById("paymentMethod");
 
-        // 1. Charger les informations nécessaires
+    // VÉRIFIER LE MOYEN DE PAIEMENT
+    const paymentMethod = methodSelect?.value
+        ?.trim()
+        .toLowerCase();
+
+    const supportedMethods = [
+        "wave",
+        "orange",
+        "mtn",
+        "moov",
+        "djamo"
+    ];
+
+    if (
+        !paymentMethod ||
+        !supportedMethods.includes(paymentMethod)
+    ) {
+
+        alert(
+            "Veuillez sélectionner un moyen de paiement valide."
+        );
+
+        methodSelect?.focus();
+
+        return;
+    }
+
+    try {
+
+        button.disabled = true;
+
+        button.textContent =
+            "Initialisation du paiement...";
+
+        // 1. CHARGER LES INFORMATIONS NÉCESSAIRES
         await loadUser();
+
         await loadProfile(currentUser.id);
+
         await loadProduct();
 
-        // 2. Créer la commande dans Supabase
+        // 2. CRÉER LA COMMANDE DANS SUPABASE
         const order = await createOrder();
 
-        // 3. Récupérer la session utilisateur
+        // 3. RÉCUPÉRER LA SESSION UTILISATEUR
         const {
             data: { session },
             error: sessionError
         } = await client.auth.getSession();
 
         if (sessionError || !session) {
-            stop("Session utilisateur introuvable.");
+
+            stop(
+                "Session utilisateur introuvable. Veuillez vous reconnecter."
+            );
         }
 
-        // 4. Demander à Jèko de créer le lien de paiement
+        // 4. ENVOYER LA COMMANDE ET LE MOYEN DE PAIEMENT À JÈKO
         const response = await fetch(
             `${API_URL}/functions/v1/create-jeko-payment`,
             {
                 method: "POST",
+
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${session.access_token}`,
-                    "apikey": window.SUPABASE_ANON_KEY
+
+                    "Authorization":
+                        `Bearer ${session.access_token}`,
+
+                    "apikey":
+                        window.SUPABASE_ANON_KEY
                 },
+
                 body: JSON.stringify({
-                    orderId: order.id
+
+                    orderId: order.id,
+
+                    paymentMethod: paymentMethod
+
                 })
             }
         );
 
-        const result = await response.json();
+        // 5. LIRE LA RÉPONSE DU SERVEUR
+        const responseText = await response.text();
 
+        let result = {};
+
+        try {
+
+            result = responseText
+                ? JSON.parse(responseText)
+                : {};
+
+        } catch {
+
+            console.error(
+                "Réponse non JSON de create-jeko-payment :",
+                responseText
+            );
+
+            stop(
+                "Réponse invalide du serveur de paiement. Consultez les logs Supabase."
+            );
+        }
+
+        // 6. VÉRIFIER LE RÉSULTAT
         if (!response.ok || !result.success) {
-            console.error("Erreur paiement Jèko :", result);
-            stop(result.message || "Impossible d'initialiser le paiement Jèko.");
+
+            console.error(
+                "Erreur paiement Jèko :",
+                {
+                    httpStatus: response.status,
+                    response: result
+                }
+            );
+
+            stop(
+                result.message ||
+                result.error ||
+                `Jèko n'a pas pu créer le paiement (HTTP ${response.status}).`
+            );
         }
 
-        if (!result.redirectUrl) {
-            stop("Lien de paiement Jèko introuvable.");
+        // 7. RÉCUPÉRER LE LIEN DE PAIEMENT
+        const redirectUrl =
+            result.redirectUrl ||
+            result.redirect_url ||
+            result.data?.redirectUrl ||
+            result.data?.redirect_url;
+
+        if (
+            typeof redirectUrl !== "string" ||
+            !redirectUrl.startsWith("https://")
+        ) {
+
+            console.error(
+                "URL de redirection Jèko absente ou invalide :",
+                result
+            );
+
+            stop(
+                "Lien de paiement Jèko introuvable ou invalide."
+            );
         }
 
-        // 5. Rediriger le client vers la page hébergée Jèko
-        window.location.href = result.redirectUrl;
+        // 8. REDIRIGER LE CLIENT VERS JÈKO
+        window.location.assign(redirectUrl);
 
     } catch (err) {
-        console.error("Erreur paiement :", err);
+
+        console.error(
+            "Erreur paiement :",
+            err
+        );
 
         button.disabled = false;
+
         button.textContent = "PAYER MAINTENANT";
     }
 }
 
 
-
 /*
 ==========================================================
-Initialisation
+INITIALISATION
 ==========================================================
 */
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    const button = document.getElementById("payButton");
+        const button = document.getElementById("payButton");
 
-    if (!button) {
-        console.error("Bouton payButton introuvable.");
-        return;
+        if (!button) {
+
+            console.error(
+                "Bouton payButton introuvable."
+            );
+
+            return;
+        }
+
+        console.log(
+            "✅ payment.js V5 chargé."
+        );
+
     }
-
-    console.log("✅ payment.js V4 chargé.");
-
-});
+);

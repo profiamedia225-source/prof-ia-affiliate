@@ -1,46 +1,26 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Paiement | PROF IA MEDIA PARTNERS</title>
 
-    <link
-        rel="stylesheet"
-        href="css/payment.css"
-    >
-
+    <link rel="stylesheet" href="css/payment.css">
 </head>
 
 <body>
 
 <div class="container">
-
     <div class="card">
 
-        <!-- ======================================
-             LOGO
-        ======================================= -->
+        <!-- LOGO -->
+        <div class="logo">🎓</div>
 
-        <div class="logo">
-            🎓
-        </div>
-
-
-        <!-- ======================================
-             INFORMATIONS DU PRODUIT
-        ======================================= -->
-
-        <h1>
-            PROF IA MEDIA PARTNERS
-        </h1>
+        <!-- INFORMATIONS DU PRODUIT -->
+        <h1>PROF IA MEDIA PARTNERS</h1>
 
         <h2 id="productName">
             Chargement de la formation...
@@ -50,108 +30,63 @@
             Chargement des informations...
         </h3>
 
-        <div
-            id="productPrice"
-            class="price"
-        >
-            --
-        </div>
+        <div id="productPrice" class="price">--</div>
 
         <div class="subtitle">
             Paiement unique • Accès immédiat
         </div>
 
-
         <hr>
 
-
-        <!-- ======================================
-             DESCRIPTION DU PRODUIT
-        ======================================= -->
-
+        <!-- DESCRIPTION DU PRODUIT -->
         <section id="productDescriptionSection">
+            <h2>🚀 À propos de cette formation</h2>
 
-            <h2>
-                🚀 À propos de cette formation
-            </h2>
-
-            <div
-                id="productDescription"
-                class="product-description"
-            >
+            <div id="productDescription" class="product-description">
                 Chargement des informations...
             </div>
-
         </section>
 
-
         <hr>
 
-
-        <!-- ======================================
-             BONUS
-        ======================================= -->
-
-        <h2>
-            🎁 Bonus Exclusif
-        </h2>
+        <!-- BONUS -->
+        <h2>🎁 Bonus Exclusif</h2>
 
         <ul>
-
-            <li>
-                💼 Accès au Programme d’Affiliation PROF IA MEDIA PARTNERS.
-            </li>
-
-            <li>
-                🔗 Votre lien d'affiliation personnel.
-            </li>
-
-            <li>
-                📊 Tableau de bord professionnel.
-            </li>
-
-            <li>
-                💰 Commissions automatiques sur les ventes éligibles.
-            </li>
-
-            <li>
-                📈 Opportunité de développer une véritable source de revenus.
-            </li>
-
+            <li>💼 Accès au Programme d’Affiliation PROF IA MEDIA PARTNERS.</li>
+            <li>🔗 Votre lien d'affiliation personnel.</li>
+            <li>📊 Tableau de bord professionnel.</li>
+            <li>💰 Commissions automatiques sur les ventes éligibles.</li>
+            <li>📈 Opportunité de développer une véritable source de revenus.</li>
         </ul>
-
 
         <hr>
 
-
-        <!-- ======================================
-             PAIEMENT SÉCURISÉ
-        ======================================= -->
-
+        <!-- PAIEMENT SÉCURISÉ -->
         <div class="secure">
-    🔒 Paiement sécurisé avec Jèko
-</div>
+            🔒 Paiement sécurisé avec Jèko
+        </div>
 
-<div class="payment-method">
-    <label for="paymentMethod">
-        Choisissez votre moyen de paiement
-    </label>
+        <div class="payment-method">
+            <label for="paymentMethod">
+                Choisissez votre moyen de paiement
+            </label>
 
-    <select id="paymentMethod" required>
-        <option value="">-- Choisir un opérateur --</option>
-        <option value="wave">Wave</option>
-        <option value="orange">Orange Money</option>
-        <option value="mtn">MTN Money</option>
-        <option value="moov">Moov Money</option>
-        <option value="djamo">Djamo</option>
-    </select>
-</div>
+            <select
+                id="paymentMethod"
+                name="paymentMethod"
+                required
+            >
+                <option value="">-- Choisir un opérateur --</option>
+                <option value="wave">Wave</option>
+                <option value="orange">Orange Money</option>
+                <option value="mtn">MTN Money</option>
+                <option value="moov">Moov Money</option>
+                <option value="djamo">Djamo</option>
+            </select>
+        </div>
 
-
-        <!-- ======================================
-             BOUTON PAIEMENT
-        ======================================= -->
-
+        <!-- BOUTON PAIEMENT -->
         <button
             id="payButton"
             type="button"
@@ -160,76 +95,43 @@
             PAYER MAINTENANT
         </button>
 
-
-        <!-- ======================================
-             INFORMATIONS FINALES
-        ======================================= -->
-
+        <!-- INFORMATIONS FINALES -->
         <p class="footer">
-
             Après validation du paiement,
             votre compte sera automatiquement activé
             et vous aurez immédiatement accès
             à votre espace membre ainsi qu'à la
             formation achetée.
-
         </p>
 
     </div>
-
 </div>
 
-
-<!-- ==========================================
-     SUPABASE
-========================================== -->
-
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
-<!-- ==========================================
-     CONFIGURATION
-========================================== -->
-
+<!-- CONFIGURATION -->
 <script src="js/config.js"></script>
 
-
-<!-- ==========================================
-     SCRIPT DE PAIEMENT
-========================================== -->
-
+<!-- SCRIPT DE PAIEMENT -->
 <script src="js/payment.js"></script>
 
-
-<!-- ==========================================
-     CHARGEMENT DES INFORMATIONS DU PRODUIT
-========================================== -->
-
+<!-- CHARGEMENT DES INFORMATIONS DU PRODUIT -->
 <script>
-
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
 
         try {
 
-            // ======================================
             // RÉCUPÉRER LE CODE PRODUIT
-            // ======================================
+            const params = new URLSearchParams(
+                window.location.search
+            );
 
-            const params =
-                new URLSearchParams(
-                    window.location.search
-                );
+            const productCode = params.get("product");
 
-            const productCode =
-                params.get("product");
-
-
-            // ======================================
             // VÉRIFICATION
-            // ======================================
-
             if (!productCode) {
 
                 console.error(
@@ -238,8 +140,7 @@ document.addEventListener(
 
                 document.getElementById(
                     "productName"
-                ).textContent =
-                    "Produit non spécifié";
+                ).textContent = "Produit non spécifié";
 
                 document.getElementById(
                     "productSubtitle"
@@ -252,27 +153,19 @@ document.addEventListener(
                     "Veuillez revenir au tableau de bord et sélectionner une formation.";
 
                 return;
-
             }
-
 
             console.log(
                 "🔎 Produit demandé :",
                 productCode
             );
 
-
-            // ======================================
             // RÉCUPÉRATION DU PRODUIT
-            // ======================================
-
             const {
                 data: product,
                 error
             } = await sb
-
                 .from("products")
-
                 .select(`
                     id,
                     product_name,
@@ -282,24 +175,11 @@ document.addEventListener(
                     currency,
                     status
                 `)
-
-                .eq(
-                    "product_code",
-                    productCode
-                )
-
-                .eq(
-                    "status",
-                    true
-                )
-
+                .eq("product_code", productCode)
+                .eq("status", true)
                 .maybeSingle();
 
-
-            // ======================================
             // ERREUR SUPABASE
-            // ======================================
-
             if (error) {
 
                 console.error(
@@ -309,8 +189,7 @@ document.addEventListener(
 
                 document.getElementById(
                     "productName"
-                ).textContent =
-                    "Erreur de chargement";
+                ).textContent = "Erreur de chargement";
 
                 document.getElementById(
                     "productSubtitle"
@@ -319,18 +198,12 @@ document.addEventListener(
 
                 document.getElementById(
                     "productDescription"
-                ).textContent =
-                    "Veuillez réessayer.";
+                ).textContent = "Veuillez réessayer.";
 
                 return;
-
             }
 
-
-            // ======================================
             // PRODUIT INTROUVABLE
-            // ======================================
-
             if (!product) {
 
                 console.error(
@@ -340,8 +213,7 @@ document.addEventListener(
 
                 document.getElementById(
                     "productName"
-                ).textContent =
-                    "Formation introuvable";
+                ).textContent = "Formation introuvable";
 
                 document.getElementById(
                     "productSubtitle"
@@ -354,72 +226,41 @@ document.addEventListener(
                     "Veuillez revenir au tableau de bord.";
 
                 return;
-
             }
 
-
-            // ======================================
             // AFFICHAGE DU NOM
-            // ======================================
-
             document.getElementById(
                 "productName"
-            ).textContent =
-                product.product_name;
+            ).textContent = product.product_name;
 
-
-            // ======================================
             // SOUS-TITRE
-            // ======================================
-
             document.getElementById(
                 "productSubtitle"
             ).textContent =
                 "Formation professionnelle";
 
-
-            // ======================================
             // AFFICHAGE DU PRIX
-            // ======================================
+            const price = Number(
+                product.price
+            ).toLocaleString("fr-FR");
 
-            const price =
-                Number(
-                    product.price
-                ).toLocaleString(
-                    "fr-FR"
-                );
-
-            const currency =
-                product.currency ||
-                "XOF";
+            const currency = product.currency || "XOF";
 
             document.getElementById(
                 "productPrice"
-            ).textContent =
-                price +
-                " " +
-                currency;
+            ).textContent = price + " " + currency;
 
-
-            // ======================================
             // DESCRIPTION
-            // ======================================
-
             document.getElementById(
                 "productDescription"
             ).textContent =
                 product.description ||
                 "Découvrez cette formation professionnelle et développez vos compétences.";
 
-
-            // ======================================
             // TITRE DE LA PAGE
-            // ======================================
-
             document.title =
                 product.product_name +
                 " | PROF IA MEDIA PARTNERS";
-
 
             console.log(
                 "✅ Produit chargé pour paiement :",
@@ -436,11 +277,8 @@ document.addEventListener(
         }
 
     }
-
 );
-
 </script>
 
 </body>
-
 </html>
