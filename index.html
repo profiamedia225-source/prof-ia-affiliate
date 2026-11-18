@@ -7,7 +7,6 @@
 <meta name="theme-color" content="#071426">
 
 <title>PROF IA MEDIA | Nos formations</title>
-
 <link rel="stylesheet" href="css/style.css">
 
 <style>
@@ -27,6 +26,7 @@
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 90px;
 }
 
 body {
@@ -34,6 +34,11 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
 }
 
 .pim-container {
@@ -52,7 +57,7 @@ body {
     justify-content: space-between;
     gap: 20px;
     padding: 13px 4%;
-    background: rgba(7,20,38,.96);
+    background: rgba(7,20,38,.97);
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(12px);
 }
@@ -65,6 +70,7 @@ body {
     text-decoration: none;
     font-weight: 800;
     letter-spacing: .5px;
+    white-space: nowrap;
 }
 
 .pim-brand img {
@@ -84,6 +90,7 @@ body {
     color: var(--muted);
     text-decoration: none;
     font-size: 14px;
+    transition: .2s;
 }
 
 .pim-nav a:hover {
@@ -96,7 +103,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
+    min-height: 46px;
     padding: 12px 20px;
     border: 1px solid transparent;
     border-radius: 10px;
@@ -159,6 +166,7 @@ body {
 }
 
 .pim-course {
+    min-width: 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -332,6 +340,7 @@ body {
 .pim-faq summary {
     cursor: pointer;
     font-weight: 700;
+    line-height: 1.4;
 }
 
 .pim-faq details p {
@@ -378,7 +387,7 @@ body {
     font-size: 12px;
 }
 
-/* RESPONSIVE */
+/* TABLETTES */
 
 @media(max-width:850px) {
     .pim-courses {
@@ -391,69 +400,235 @@ body {
     }
 }
 
+/* TÉLÉPHONES */
+
 @media(max-width:600px) {
+
+    html {
+        scroll-padding-top: 125px;
+    }
+
+    .pim-container {
+        width: 92%;
+    }
+
+    /* Navigation mobile */
+
     .pim-navbar {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr auto;
         gap: 10px;
         padding: 10px 4%;
     }
 
     .pim-brand {
-        font-size: 14px;
+        font-size: 13px;
+        gap: 7px;
     }
 
     .pim-brand img {
-        width: 36px;
-        height: 36px;
+        width: 34px;
+        height: 34px;
     }
 
     .pim-navbar > .pim-btn {
         min-height: 38px;
-        padding: 9px 12px;
-        font-size: 12px;
+        padding: 9px 11px;
+        font-size: 11px;
+        white-space: nowrap;
     }
 
     .pim-nav {
-        order: 3;
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: space-between;
         width: 100%;
-        justify-content: space-around;
-        gap: 8px;
+        gap: 5px;
+        padding-top: 7px;
+        border-top: 1px solid var(--border);
     }
 
     .pim-nav a {
-        font-size: 12px;
+        padding: 7px 3px;
+        font-size: 11px;
+        text-align: center;
+        white-space: nowrap;
     }
+
+    /* Sections */
 
     .pim-section {
-        padding: 38px 0;
-    }
-
-    .pim-courses,
-    .pim-steps,
-    .pim-benefits {
-        grid-template-columns: 1fr;
-    }
-
-    .pim-course-image {
-        height: 190px;
+        padding: 35px 0;
     }
 
     .pim-section-title {
         margin-bottom: 22px;
     }
 
+    .pim-section-title h1,
+    .pim-section-title h2 {
+        font-size: 26px;
+        line-height: 1.2;
+    }
+
+    .pim-section-title p {
+        font-size: 14px;
+        padding: 0 5px;
+    }
+
+    /* Formations */
+
+    .pim-courses {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .pim-course {
+        border-radius: 15px;
+    }
+
+    .pim-course-image {
+        height: 200px;
+    }
+
     .pim-course-body {
         padding: 17px;
     }
 
-    .pim-footer-content {
-        flex-direction: column;
-        gap: 16px;
+    .pim-course h3 {
+        font-size: 19px;
     }
 
+    .pim-course p {
+        font-size: 14px;
+    }
+
+    .pim-course .pim-btn {
+        min-height: 48px;
+        font-size: 14px;
+    }
+
+    /* Étapes et avantages */
+
+    .pim-steps,
+    .pim-benefits {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 10px;
+    }
+
+    .pim-step,
+    .pim-benefit {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .pim-step h3,
+    .pim-benefit h3 {
+        font-size: 14px;
+    }
+
+    .pim-step p,
+    .pim-benefit p {
+        font-size: 12px;
+    }
+
+    .pim-step-number {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 9px;
+        font-size: 13px;
+    }
+
+    .pim-benefit-icon {
+        font-size: 22px;
+    }
+
+    /* Appel à l'action */
+
     .pim-cta {
-        margin: 30px auto;
-        padding: 30px 17px;
+        margin: 25px auto;
+        padding: 28px 17px;
+        border-radius: 15px;
+    }
+
+    .pim-cta h2 {
+        font-size: 24px;
+    }
+
+    .pim-cta p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .pim-cta .pim-btn {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    /* FAQ */
+
+    .pim-faq details {
+        padding: 14px;
+    }
+
+    .pim-faq summary {
+        font-size: 14px;
+    }
+
+    .pim-faq details p {
+        font-size: 13px;
+    }
+
+    /* Pied de page */
+
+    .pim-footer {
+        padding: 25px 0 15px;
+    }
+
+    .pim-footer-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 17px;
+        text-align: center;
+    }
+
+    .pim-footer h3 {
+        font-size: 16px;
+    }
+
+    .pim-footer p {
+        font-size: 13px;
+    }
+
+    .pim-copyright {
+        font-size: 11px;
+        line-height: 1.5;
+    }
+}
+
+/* PETITS TÉLÉPHONES */
+
+@media(max-width:360px) {
+    .pim-brand {
+        font-size: 11px;
+    }
+
+    .pim-navbar > .pim-btn {
+        font-size: 10px;
+        padding: 8px;
+    }
+
+    .pim-nav a {
+        font-size: 10px;
+    }
+
+    .pim-course-image {
+        height: 175px;
+    }
+
+    .pim-steps,
+    .pim-benefits {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -481,7 +656,7 @@ body {
 
 <main>
 
-    <!-- FORMATIONS : PREMIÈRE SECTION -->
+    <!-- FORMATIONS -->
     <section class="pim-section" id="formations">
 
         <div class="pim-container">
@@ -498,7 +673,6 @@ body {
                 <article class="pim-course pim-featured">
 
                     <div class="pim-course-image">
-
                         <img
                             src="images/formation-creation-ia.jpg"
                             alt="Formation Créateur de contenu IA"
@@ -509,11 +683,9 @@ body {
                             Insérer l'image ici<br>
                             images/formation-creation-ia.jpg
                         </div>
-
                     </div>
 
                     <div class="pim-course-body">
-
                         <span class="pim-course-label">Formation vedette</span>
 
                         <h3>Créateur de contenu IA de A à Z</h3>
@@ -523,13 +695,9 @@ body {
                             avec l'intelligence artificielle.
                         </p>
 
-                        <a
-                            class="pim-btn"
-                            href="register.html?product=formation_complete"
-                        >
+                        <a class="pim-btn" href="register.html?product=formation_complete">
                             Découvrir la formation
                         </a>
-
                     </div>
 
                 </article>
@@ -538,7 +706,6 @@ body {
                 <article class="pim-course">
 
                     <div class="pim-course-image">
-
                         <img
                             src="images/formation-montage-video.jpg"
                             alt="Formation montage vidéo"
@@ -549,11 +716,9 @@ body {
                             Insérer l'image ici<br>
                             images/formation-montage-video.jpg
                         </div>
-
                     </div>
 
                     <div class="pim-course-body">
-
                         <span class="pim-course-label">Création audiovisuelle</span>
 
                         <h3>Montage vidéo</h3>
@@ -563,13 +728,9 @@ body {
                             des vidéos de qualité.
                         </p>
 
-                        <a
-                            class="pim-btn"
-                            href="register.html?product=PIMF02"
-                        >
+                        <a class="pim-btn" href="register.html?product=PIMF02">
                             Découvrir la formation
                         </a>
-
                     </div>
 
                 </article>
@@ -578,7 +739,6 @@ body {
                 <article class="pim-course">
 
                     <div class="pim-course-image">
-
                         <img
                             src="images/formation-developpement-ia.jpg"
                             alt="Formation développement d'applications et IA"
@@ -589,11 +749,9 @@ body {
                             Insérer l'image ici<br>
                             images/formation-developpement-ia.jpg
                         </div>
-
                     </div>
 
                     <div class="pim-course-body">
-
                         <span class="pim-course-label">Technologie & IA</span>
 
                         <h3>Développement d'applications et IA</h3>
@@ -603,23 +761,16 @@ body {
                             possibilités de l'intelligence artificielle.
                         </p>
 
-                        <a
-                            class="pim-btn"
-                            href="register.html?product=PIMF03"
-                        >
+                        <a class="pim-btn" href="register.html?product=PIMF03">
                             Découvrir la formation
                         </a>
-
                     </div>
 
                 </article>
 
             </div>
-
         </div>
-
     </section>
-
 
     <!-- COMMENT ÇA MARCHE -->
     <section class="pim-section pim-how" id="fonctionnement">
@@ -628,7 +779,7 @@ body {
 
             <div class="pim-section-title">
                 <h2>Comment ça marche ?</h2>
-                <p>Quatre étapes simples pour commencer.</p>
+                <p>Cinq étapes simples pour commencer.</p>
             </div>
 
             <div class="pim-steps">
@@ -659,16 +810,13 @@ body {
 
                 <article class="pim-step">
                     <span class="pim-step-number">05</span>
-                    <h3>Retirez via mobile money</h3>
-                    <p>Votre argent en poche</p>
+                    <h3>Retirez via Mobile Money</h3>
+                    <p>Recevez vos gains selon les conditions de retrait.</p>
                 </article>
 
             </div>
-
         </div>
-
     </section>
-
 
     <!-- AVANTAGES -->
     <section class="pim-section" id="avantages">
@@ -707,11 +855,8 @@ body {
                 </article>
 
             </div>
-
         </div>
-
     </section>
-
 
     <!-- APPEL À L'ACTION -->
     <section class="pim-container">
@@ -731,7 +876,6 @@ body {
         </div>
 
     </section>
-
 
     <!-- FAQ -->
     <section class="pim-section" id="faq">
@@ -767,13 +911,10 @@ body {
                 </details>
 
             </div>
-
         </div>
-
     </section>
 
 </main>
-
 
 <!-- PIED DE PAGE -->
 <footer class="pim-footer" id="contact">
@@ -809,9 +950,7 @@ body {
         </div>
 
     </div>
-
 </footer>
-
 
 <!-- SCRIPTS EXISTANTS DU PROJET CONSERVÉS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
