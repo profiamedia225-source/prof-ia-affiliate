@@ -1,10 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#071426">
-<title>PROF IA MEDIA | Formations et affiliation</title>
+
+<title>PROF IA MEDIA | Nos formations</title>
+
 <link rel="stylesheet" href="css/style.css">
 
 <style>
@@ -58,6 +61,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    color: white;
     text-decoration: none;
     font-weight: 800;
     letter-spacing: .5px;
@@ -171,6 +175,7 @@ body {
 }
 
 .pim-course-image {
+    position: relative;
     height: 190px;
     overflow: hidden;
     background: linear-gradient(135deg,#123c3a,#17304c);
@@ -185,8 +190,8 @@ body {
 
 .image-placeholder {
     display: none;
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    inset: 0;
     place-items: center;
     padding: 20px;
     color: #d5e7f4;
@@ -500,20 +505,10 @@ body {
                             onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
                         >
 
-                        <div class="formation-card">
-    <img
-        src="images/formation-ia.jpg"
-        alt="Formation Créateur de contenu IA"
-        class="formation-image"
-    >
-
-    <h3>Créateur de contenu IA</h3>
-    <p>Apprends à créer des vidéos avec l'intelligence artificielle.</p>
-
-    <a href="payment.html" class="btn-formation">
-        Découvrir la formation
-    </a>
-</div>
+                        <div class="image-placeholder">
+                            Insérer l'image ici<br>
+                            images/formation-creation-ia.jpg
+                        </div>
 
                     </div>
 
