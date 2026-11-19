@@ -1,170 +1,107 @@
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Paiement | PROF IA MEDIA PARTNERS</title>
-
+    <meta name="theme-color" content="#0f172a">
+    <title>Paiement | PROF IA MEDIA</title>
     <link rel="stylesheet" href="css/payment.css">
 </head>
 
 <body>
+    <main class="container">
+        <div class="card">
 
-<div class="container">
-    <div class="card">
-
-        <!-- LOGO -->
-        <div class="logo">🎓</div>
-
-        <!-- INFORMATIONS DU PRODUIT -->
-        <h1>PROF IA MEDIA PARTNERS</h1>
-
-        <h2 id="productName">
-            Chargement de la formation...
-        </h2>
-
-        <h3 id="productSubtitle">
-            Chargement des informations...
-        </h3>
-
-        <div id="productPrice" class="price">--</div>
-
-        <div class="subtitle">
-            Paiement unique • Accès immédiat
-        </div>
-
-        <hr>
-
-        <!-- DESCRIPTION DU PRODUIT -->
-        <section id="productDescriptionSection">
-            <h2>🚀 À propos de cette formation</h2>
-
-            <div id="productDescription" class="product-description">
-                Chargement des informations...
+            <div class="brand">
+                <div class="logo">🎓</div>
+                <p>PROF IA MEDIA</p>
             </div>
-        </section>
 
-        <hr>
+            <div class="product">
+                <span class="eyebrow">VOTRE FORMATION</span>
 
-        <!-- BONUS -->
-        <h2>🎁 Bonus Exclusif</h2>
+                <h1 id="productName">Chargement...</h1>
 
-        <ul>
-            <li>💼 Accès au Programme d’Affiliation PROF IA MEDIA PARTNERS.</li>
-            <li>🔗 Votre lien d'affiliation personnel.</li>
-            <li>📊 Tableau de bord professionnel.</li>
-            <li>💰 Commissions automatiques sur les ventes éligibles.</li>
-            <li>📈 Opportunité de développer une véritable source de revenus.</li>
-        </ul>
+                <p id="productSubtitle" class="product-subtitle">
+                    Chargement des informations...
+                </p>
 
-        <hr>
+                <div id="productPrice" class="price">--</div>
+                <p class="price-note">Paiement unique</p>
+            </div>
 
-        <!-- PAIEMENT SÉCURISÉ -->
-        <div class="secure">
-            🔒 Paiement sécurisé avec Jèko
+            <!-- Conservé pour le script existant -->
+            <section id="productDescriptionSection" hidden>
+                <div id="productDescription"></div>
+            </section>
+
+            <div class="payment-area">
+                <div class="secure">
+                    <span>🔒</span>
+                    Paiement sécurisé avec Jèko
+                </div>
+
+                <label for="paymentMethod">
+                    Moyen de paiement
+                </label>
+
+                <select
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    required
+                >
+                    <option value="">Choisir un opérateur</option>
+                    <option value="wave">Wave</option>
+                    <option value="orange">Orange Money</option>
+                    <option value="mtn">MTN Money</option>
+                    <option value="moov">Moov Money</option>
+                    <option value="djamo">Djamo</option>
+                </select>
+
+                <button
+                    id="payButton"
+                    type="button"
+                    onclick="preparePayment()"
+                >
+                    PAYER MAINTENANT
+                </button>
+
+                <p class="payment-info">
+                    Votre accès sera activé automatiquement après confirmation du paiement.
+                </p>
+            </div>
+
         </div>
+    </main>
 
-        <div class="payment-method">
-            <label for="paymentMethod">
-                Choisissez votre moyen de paiement
-            </label>
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-            <select
-                id="paymentMethod"
-                name="paymentMethod"
-                required
-            >
-                <option value="">-- Choisir un opérateur --</option>
-                <option value="wave">Wave</option>
-                <option value="orange">Orange Money</option>
-                <option value="mtn">MTN Money</option>
-                <option value="moov">Moov Money</option>
-                <option value="djamo">Djamo</option>
-            </select>
-        </div>
+    <!-- CONFIGURATION -->
+    <script src="js/config.js"></script>
 
-        <!-- BOUTON PAIEMENT -->
-        <button
-            id="payButton"
-            type="button"
-            onclick="preparePayment()"
-        >
-            PAYER MAINTENANT
-        </button>
+    <!-- LOGIQUE DE PAIEMENT EXISTANTE -->
+    <script src="js/payment.js"></script>
 
-        <!-- INFORMATIONS FINALES -->
-        <p class="footer">
-            Après validation du paiement,
-            votre compte sera automatiquement activé
-            et vous aurez immédiatement accès
-            à votre espace membre ainsi qu'à la
-            formation achetée.
-        </p>
-
-    </div>
-</div>
-
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- CONFIGURATION -->
-<script src="js/config.js"></script>
-
-<!-- SCRIPT DE PAIEMENT -->
-<script src="js/payment.js"></script>
-
-<!-- CHARGEMENT DES INFORMATIONS DU PRODUIT -->
-<script>
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
-
+    <!-- CHARGEMENT DU PRODUIT DEPUIS SUPABASE -->
+    <script>
+    document.addEventListener("DOMContentLoaded", async () => {
         try {
-
-            // RÉCUPÉRER LE CODE PRODUIT
-            const params = new URLSearchParams(
-                window.location.search
-            );
-
+            const params = new URLSearchParams(window.location.search);
             const productCode = params.get("product");
 
-            // VÉRIFICATION
             if (!productCode) {
+                document.getElementById("productName").textContent =
+                    "Produit non spécifié";
 
-                console.error(
-                    "Aucun produit spécifié dans l'URL."
-                );
-
-                document.getElementById(
-                    "productName"
-                ).textContent = "Produit non spécifié";
-
-                document.getElementById(
-                    "productSubtitle"
-                ).textContent =
-                    "Impossible de déterminer le produit.";
-
-                document.getElementById(
-                    "productDescription"
-                ).textContent =
-                    "Veuillez revenir au tableau de bord et sélectionner une formation.";
+                document.getElementById("productSubtitle").textContent =
+                    "Veuillez sélectionner une formation.";
 
                 return;
             }
 
-            console.log(
-                "🔎 Produit demandé :",
-                productCode
-            );
-
-            // RÉCUPÉRATION DU PRODUIT
-            const {
-                data: product,
-                error
-            } = await sb
+            const { data: product, error } = await sb
                 .from("products")
                 .select(`
                     id,
@@ -179,106 +116,58 @@ document.addEventListener(
                 .eq("status", true)
                 .maybeSingle();
 
-            // ERREUR SUPABASE
             if (error) {
+                console.error("Erreur chargement produit :", error);
 
-                console.error(
-                    "Erreur chargement produit :",
-                    error
-                );
+                document.getElementById("productName").textContent =
+                    "Erreur de chargement";
 
-                document.getElementById(
-                    "productName"
-                ).textContent = "Erreur de chargement";
-
-                document.getElementById(
-                    "productSubtitle"
-                ).textContent =
-                    "Impossible de charger cette formation.";
-
-                document.getElementById(
-                    "productDescription"
-                ).textContent = "Veuillez réessayer.";
+                document.getElementById("productSubtitle").textContent =
+                    "Veuillez réessayer.";
 
                 return;
             }
 
-            // PRODUIT INTROUVABLE
             if (!product) {
+                document.getElementById("productName").textContent =
+                    "Formation introuvable";
 
-                console.error(
-                    "Produit introuvable :",
-                    productCode
-                );
-
-                document.getElementById(
-                    "productName"
-                ).textContent = "Formation introuvable";
-
-                document.getElementById(
-                    "productSubtitle"
-                ).textContent =
-                    "Ce produit n'est pas disponible.";
-
-                document.getElementById(
-                    "productDescription"
-                ).textContent =
-                    "Veuillez revenir au tableau de bord.";
+                document.getElementById("productSubtitle").textContent =
+                    "Cette formation n'est pas disponible.";
 
                 return;
             }
 
-            // AFFICHAGE DU NOM
-            document.getElementById(
-                "productName"
-            ).textContent = product.product_name;
+            document.getElementById("productName").textContent =
+                product.product_name;
 
-            // SOUS-TITRE
-            document.getElementById(
-                "productSubtitle"
-            ).textContent =
-                "Formation professionnelle";
+            document.getElementById("productSubtitle").textContent =
+                "Accédez à votre formation en ligne";
 
-            // AFFICHAGE DU PRIX
-            const price = Number(
-                product.price
-            ).toLocaleString("fr-FR");
-
+            const price = Number(product.price).toLocaleString("fr-FR");
             const currency = product.currency || "XOF";
 
-            document.getElementById(
-                "productPrice"
-            ).textContent = price + " " + currency;
+            document.getElementById("productPrice").textContent =
+                price + " " + currency;
 
-            // DESCRIPTION
-            document.getElementById(
-                "productDescription"
-            ).textContent =
-                product.description ||
-                "Découvrez cette formation professionnelle et développez vos compétences.";
+            document.getElementById("productDescription").textContent =
+                product.description || "";
 
-            // TITRE DE LA PAGE
             document.title =
-                product.product_name +
-                " | PROF IA MEDIA PARTNERS";
+                product.product_name + " | PROF IA MEDIA";
 
-            console.log(
-                "✅ Produit chargé pour paiement :",
-                product
-            );
+            console.log("Produit chargé :", product);
 
         } catch (error) {
+            console.error("Erreur générale :", error);
 
-            console.error(
-                "Erreur générale :",
-                error
-            );
+            document.getElementById("productName").textContent =
+                "Une erreur est survenue";
 
+            document.getElementById("productSubtitle").textContent =
+                "Impossible de charger la formation.";
         }
-
-    }
-);
-</script>
-
+    });
+    </script>
 </body>
 </html>
