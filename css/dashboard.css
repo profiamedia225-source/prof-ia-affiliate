@@ -574,3 +574,153 @@ body.dark-theme #affiliateLink {
         transform: none;
     }
 }
+
+/* ==========================================
+   CORRECTION STRUCTURELLE DU DASHBOARD
+   PROF IA MEDIA PARTNERS
+========================================== */
+
+/* Organisation générale */
+.dashboard {
+    display: grid !important;
+    grid-template-columns: 250px minmax(0, 1fr) !important;
+    align-items: stretch;
+    width: 100%;
+    min-height: 100vh;
+    overflow: visible;
+}
+
+/* Conteneur du menu chargé par sidebar.js */
+#sidebar-container {
+    width: 250px !important;
+    min-width: 250px !important;
+    min-height: 100vh;
+    position: relative;
+    z-index: 10;
+}
+
+/* Menu latéral réellement injecté */
+#sidebar-container .sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    left: auto !important;
+    width: 250px !important;
+    min-width: 250px !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+}
+
+/* Zone principale */
+.dashboard > .content {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 36px !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* En-tête */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+/* Grille des raccourcis */
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+/* Grille des statistiques */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+/* Empêcher les cartes de déborder */
+.quick-card,
+.stats-grid .card {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+/* Tablettes et petits ordinateurs */
+@media (max-width: 1100px) {
+    .dashboard {
+        grid-template-columns: 220px minmax(0, 1fr) !important;
+    }
+
+    #sidebar-container {
+        width: 220px !important;
+        min-width: 220px !important;
+    }
+
+    #sidebar-container .sidebar {
+        width: 220px !important;
+        min-width: 220px !important;
+    }
+
+    .dashboard > .content {
+        padding: 25px !important;
+    }
+
+    .quick-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Téléphones */
+@media (max-width: 768px) {
+    .dashboard {
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    #sidebar-container {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: auto;
+    }
+
+    #sidebar-container .sidebar {
+        position: relative !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+    }
+
+    .dashboard > .content {
+        width: 100% !important;
+        padding: 20px 15px !important;
+    }
+
+    .top-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .quick-grid,
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+}
