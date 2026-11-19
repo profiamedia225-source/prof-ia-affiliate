@@ -724,3 +724,39 @@ body.dark-theme #affiliateLink {
         gap: 14px;
     }
 }
+/* ==========================================
+   BOUTONS D'ACTION DES CARTES DU DASHBOARD
+========================================== */
+
+.card-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: #16a34a !important;
+    color: #ffffff !important;
+
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none !important;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-action:hover {
+    background: #15803d !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(22, 163, 74, 0.20);
+}
+
+.card-action:focus-visible {
+    outline: 3px solid rgba(22, 163, 74, 0.30);
+    outline-offset: 3px;
+}

@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Mon espace - PROF IA MEDIA PARTNERS</title>
 
     <!-- CSS EXISTANTS -->
@@ -17,7 +16,6 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- NOUVEAU DESIGN HUMANISÉ -->
     <style>
         :root {
             --primary: #2563eb;
@@ -91,7 +89,7 @@
             font-size: 14px;
         }
 
-        /* RACCOURCIS */
+        /* CARTES DE NAVIGATION */
 
         .quick-grid {
             display: grid;
@@ -132,10 +130,86 @@
             margin-bottom: 13px;
         }
 
+        /* BOUTONS VERTS DES CARTES */
+
         .quick-card h3 {
-            font-size: 16px;
-            margin: 0 0 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            align-self: flex-start;
+
+            width: fit-content;
+            max-width: 100%;
+            box-sizing: border-box;
+
+            padding: 10px 15px;
+            margin: 0 0 10px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #ffffff !important;
+
+            font-size: 15px;
+            line-height: 1.35;
             font-weight: 700;
+            text-align: center;
+
+            box-shadow: 0 3px 8px rgba(22, 163, 74, .18);
+
+            transition: background .2s ease,
+                        box-shadow .2s ease,
+                        transform .2s ease;
+        }
+
+        .quick-card:hover h3,
+        .quick-card:focus-visible h3 {
+            background: linear-gradient(135deg, #15803d, #16a34a);
+            box-shadow: 0 5px 12px rgba(22, 163, 74, .28);
+            transform: translateY(-1px);
+            color: #ffffff !important;
+        }
+
+        /* BOUTON D'ACCÈS À LA FORMATION */
+
+        #trainingAccessContainer .quick-card a,
+        #trainingAccessContainer .quick-card button,
+        #trainingAccessContainer .quick-card .btn,
+        #trainingAccessContainer .quick-card .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            width: fit-content;
+            max-width: 100%;
+            box-sizing: border-box;
+
+            padding: 10px 15px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #ffffff !important;
+
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+
+            transition: background .2s ease,
+                        box-shadow .2s ease,
+                        transform .2s ease;
+        }
+
+        #trainingAccessContainer .quick-card a:hover,
+        #trainingAccessContainer .quick-card button:hover,
+        #trainingAccessContainer .quick-card .btn:hover,
+        #trainingAccessContainer .quick-card .btn-primary:hover {
+            background: linear-gradient(135deg, #15803d, #16a34a);
+            color: #ffffff !important;
+            box-shadow: 0 5px 12px rgba(22, 163, 74, .28);
+            transform: translateY(-1px);
         }
 
         .quick-card p {
@@ -305,7 +379,7 @@
             min-width: 0;
         }
 
-        /* ADAPTATION TABLETTE */
+        /* TABLETTE */
 
         @media (max-width: 1100px) {
             .quick-grid {
@@ -317,7 +391,7 @@
             }
         }
 
-        /* ADAPTATION TELEPHONE */
+        /* TELEPHONE */
 
         @media (max-width: 700px) {
             .content {
@@ -411,7 +485,7 @@
     <!-- CONTENU PRINCIPAL -->
     <main class="content">
 
-        <!-- ACCUEIL PERSONNALISÉ -->
+        <!-- ACCUEIL -->
         <header class="top-header">
 
             <div class="welcome-block">
@@ -428,7 +502,7 @@
 
         </header>
 
-        <!-- RACCOURCIS -->
+        <!-- CARTES DE NAVIGATION -->
         <section class="quick-grid">
 
             <a href="referrals.html" class="quick-card">
@@ -494,7 +568,7 @@
 
         </section>
 
-        <!-- INFORMATIONS DU COMPTE -->
+        <!-- PROFIL -->
         <section class="profile-section">
 
             <h2><i class="fas fa-user-circle"></i> Mon profil</h2>
@@ -579,7 +653,7 @@
 
 </div>
 
-<!-- SCRIPTS EXISTANTS : CONSERVÉS -->
+<!-- SCRIPTS EXISTANTS CONSERVÉS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/config.js"></script>
