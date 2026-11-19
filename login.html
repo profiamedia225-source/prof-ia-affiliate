@@ -15,9 +15,18 @@
             box-sizing: border-box;
         }
 
+        html {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             margin: 0;
+            width: 100%;
             min-height: 100vh;
+            min-height: 100svh;
+            overflow-x: hidden;
             font-family: Arial, sans-serif;
             color: #fff;
             background:
@@ -26,68 +35,86 @@
                 linear-gradient(135deg, #061126, #0b1d3d 55%, #061126);
         }
 
-        .register-page {
+        .login-page {
+            width: 100%;
             min-height: 100vh;
+            min-height: 100svh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px 16px;
+            padding: 35px 18px;
         }
 
-        .register-card {
+        .login-card {
             width: 100%;
-            max-width: 440px;
-            padding: 42px 35px;
+            max-width: 460px;
+            min-width: 0;
+            margin: auto;
+            padding: 42px 36px;
             border: 1px solid rgba(255,255,255,.14);
             border-radius: 24px;
-            background: rgba(13, 31, 62, .88);
+            background: rgba(13, 31, 62, .92);
             box-shadow: 0 20px 60px rgba(0,0,0,.35);
             backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             text-align: center;
         }
 
-        .logo {
+        .login-logo {
             display: block;
-            width: 105px;
-            height: 85px;
+            width: 110px;
+            height: 90px;
+            max-width: 100%;
             object-fit: contain;
             margin: 0 auto 20px;
         }
 
-        h1 {
-            margin: 0 0 12px;
+        .login-card h1 {
+            margin: 0 0 14px;
+            color: #fff;
             font-size: 30px;
+            line-height: 1.25;
             font-weight: 800;
+            overflow-wrap: break-word;
         }
 
-        .register-card > p {
+        .login-description {
+            margin: 0 0 30px;
             color: #b9c9df;
-            line-height: 1.6;
             font-size: 15px;
-            margin-bottom: 28px;
+            line-height: 1.7;
         }
 
         #loginForm {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 17px;
+            width: 100%;
+            margin: 0;
         }
 
         #loginForm input {
+            display: block;
             width: 100%;
-            min-height: 54px;
-            padding: 0 17px;
+            min-width: 0;
+            min-height: 56px;
+            margin: 0;
+            padding: 14px 17px;
             border: 1px solid rgba(255,255,255,.17);
             border-radius: 12px;
             outline: none;
             background: rgba(255,255,255,.08);
             color: #fff;
+            font-family: Arial, sans-serif;
             font-size: 16px;
-            transition: .2s;
+            line-height: 1.4;
+            box-shadow: none;
+            transition: border-color .2s, box-shadow .2s;
         }
 
         #loginForm input::placeholder {
             color: #aabbd2;
+            opacity: 1;
         }
 
         #loginForm input:focus {
@@ -95,29 +122,46 @@
             box-shadow: 0 0 0 3px rgba(0,230,118,.12);
         }
 
-        .btn-primary {
+        #loginForm input:-webkit-autofill,
+        #loginForm input:-webkit-autofill:hover,
+        #loginForm input:-webkit-autofill:focus {
+            -webkit-text-fill-color: #fff;
+            transition: background-color 9999s ease-in-out 0s;
+        }
+
+        .login-submit {
+            display: block;
             width: 100%;
-            min-height: 54px;
-            margin-top: 5px;
+            min-height: 56px;
+            margin: 5px 0 0;
+            padding: 14px 18px;
             border: none;
             border-radius: 12px;
             background: linear-gradient(100deg, #00d66b, #00f58b);
             color: #052d1b;
+            font-family: Arial, sans-serif;
             font-size: 16px;
             font-weight: 800;
+            text-align: center;
             cursor: pointer;
-            transition: .2s;
+            transition: transform .2s, box-shadow .2s;
         }
 
-        .btn-primary:hover {
+        .login-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0,230,118,.25);
         }
 
+        .login-submit:active {
+            transform: scale(.98);
+        }
+
         .login-link {
-            margin-top: 25px !important;
-            margin-bottom: 0 !important;
-            font-size: 14px !important;
+            margin: 25px 0 0;
+            color: #b9c9df;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-wrap: break-word;
         }
 
         .login-link a {
@@ -130,40 +174,104 @@
             text-decoration: underline;
         }
 
-        .brand-footer {
+        .login-footer {
             margin-top: 28px;
             color: #8296b4;
             font-size: 12px;
+            line-height: 1.5;
         }
 
+        /* Tablettes */
+        @media (max-width: 768px) {
+            .login-page {
+                padding: 28px 20px;
+            }
+
+            .login-card {
+                max-width: 480px;
+            }
+        }
+
+        /* Téléphones */
         @media (max-width: 480px) {
-            .register-page {
-                padding: 18px 14px;
+            .login-page {
+                min-height: 100svh;
+                align-items: center;
+                padding: 22px 15px;
             }
 
-            .register-card {
-                padding: 32px 22px;
-                border-radius: 20px;
+            .login-card {
+                width: 100%;
+                max-width: 100%;
+                padding: 30px 22px;
+                border-radius: 21px;
             }
 
-            .logo {
+            .login-logo {
                 width: 90px;
-                height: 72px;
-                margin-bottom: 15px;
+                height: 74px;
+                margin-bottom: 16px;
             }
 
-            h1 {
+            .login-card h1 {
                 font-size: 26px;
+                line-height: 1.25;
             }
 
-            .register-card > p {
+            .login-description {
+                font-size: 14px;
+                line-height: 1.65;
+                margin-bottom: 25px;
+            }
+
+            #loginForm {
+                gap: 15px;
+            }
+
+            #loginForm input {
+                min-height: 54px;
+                padding: 13px 15px;
+                font-size: 16px;
+            }
+
+            .login-submit {
+                min-height: 54px;
+                font-size: 16px;
+            }
+
+            .login-link {
+                margin-top: 23px;
                 font-size: 14px;
             }
 
-            #loginForm input,
-            .btn-primary {
-                min-height: 52px;
-                font-size: 15px;
+            .login-footer {
+                margin-top: 24px;
+                font-size: 11px;
+            }
+        }
+
+        /* Très petits téléphones */
+        @media (max-width: 360px) {
+            .login-page {
+                padding: 16px 11px;
+            }
+
+            .login-card {
+                padding: 26px 17px;
+            }
+
+            .login-card h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Réduction des animations si demandée par l'appareil */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition-duration: .01ms !important;
+                animation-duration: .01ms !important;
             }
         }
     </style>
@@ -171,71 +279,71 @@
 
 <body>
 
-<section class="register-page">
+    <main class="login-page">
 
-    <div class="register-card">
+        <section class="login-card">
 
-        <img
-            src="images/logo.png"
-            class="logo"
-            alt="PROF IA MEDIA"
-        >
-
-        <h1>Bienvenue !</h1>
-
-        <p>
-            Connectez-vous à votre espace PROF IA MEDIA
-            pour retrouver vos formations et votre activité.
-        </p>
-
-        <form id="loginForm">
-
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Adresse e-mail"
-                autocomplete="email"
-                required
+            <img
+                src="images/logo.png"
+                class="login-logo"
+                alt="Logo PROF IA MEDIA"
             >
 
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Mot de passe"
-                autocomplete="current-password"
-                required
-            >
+            <h1>Bienvenue !</h1>
 
-            <button
-                type="submit"
-                class="btn-primary"
-            >
-                Se connecter
-            </button>
+            <p class="login-description">
+                Connectez-vous à votre espace PROF IA MEDIA
+                pour retrouver vos formations et votre activité.
+            </p>
 
-        </form>
+            <form id="loginForm">
 
-        <p class="login-link">
-            Pas encore inscrit ?
-            <a href="register.html?product=formation_complete">
-                Créer un compte
-            </a>
-        </p>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Adresse e-mail"
+                    autocomplete="email"
+                    required
+                >
 
-        <div class="brand-footer">
-            © 2026 PROF IA MEDIA — Tous droits réservés.
-        </div>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Mot de passe"
+                    autocomplete="current-password"
+                    required
+                >
 
-    </div>
+                <button
+                    type="submit"
+                    class="login-submit"
+                >
+                    Se connecter
+                </button>
 
-</section>
+            </form>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/config.js"></script>
-<script src="js/utils.js"></script>
-<script src="js/auth.js"></script>
+            <p class="login-link">
+                Pas encore inscrit ?
+                <a href="register.html?product=formation_complete">
+                    Créer un compte
+                </a>
+            </p>
+
+            <div class="login-footer">
+                © 2026 PROF IA MEDIA — Tous droits réservés.
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
 
 </body>
 </html>
