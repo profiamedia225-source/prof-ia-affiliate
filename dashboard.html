@@ -1,328 +1,209 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - PROF IA MEDIA</title>
 
-<title>Dashboard - PROF IA MEDIA</title>
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/sidebar.css">
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/dashboard.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
 <div class="dashboard">
 
-    <!-- ===== SIDEBAR ===== -->
-
+    <!-- MENU LATERAL -->
     <div id="sidebar-container"></div>
 
-    <!-- ===== CONTENU ===== -->
-
+    <!-- CONTENU PRINCIPAL -->
     <main class="content">
 
-        <!-- HEADER -->
-
+        <!-- EN-TETE -->
         <header class="top-header">
 
-            <div>
+            <div class="welcome-block">
+                <p class="hello" id="greeting">Bonjour 👋</p>
 
-            <p class="hello" id="greeting">
-                Bonjour 👋
-            </p>
+                <h1 id="welcome">AMANI CESARD</h1>
 
-                <h1 id="welcome">
-                    AMANI CESARD
-                </h1>
-
-                <span class="status">
-                    🟢 Compte Actif
-                </span>
-
+                <span class="status">🟢 Compte Actif</span>
             </div>
 
-<p id="todayDate"></p>
+            <p id="todayDate"></p>
 
         </header>
 
-<section class="quick-grid">
+        <!-- RACCOURCIS -->
+        <section class="quick-grid">
 
-    <a href="referrals.html" class="quick-card">
+            <a href="referrals.html" class="quick-card">
+                <div class="quick-icon">👥</div>
+                <h3>Mes filleuls</h3>
+                <p>Voir vos affiliés</p>
+            </a>
 
-        <div class="quick-icon">👥</div>
+            <a href="commissions.html" class="quick-card">
+                <div class="quick-icon">💰</div>
+                <h3>Mes commissions</h3>
+                <p>Consulter vos gains</p>
+            </a>
 
-        <h3>Mes filleuls</h3>
+            <div id="trainingAccessContainer">
+                <div class="quick-card">
+                    <div class="quick-icon">🎓</div>
+                    <h3>Mes formations</h3>
+                    <p>Chargement de vos accès...</p>
+                </div>
+            </div>
 
-        <p>Voir tous vos affiliés</p>
+            <a href="withdrawals.html" class="quick-card">
+                <div class="quick-icon">💳</div>
+                <h3>Retraits</h3>
+                <p>Demander un paiement</p>
+            </a>
 
-    </a>
+        </section>
 
-
-    <a href="commissions.html" class="quick-card">
-
-        <div class="quick-icon">💰</div>
-
-        <h3>Mes commissions</h3>
-
-        <p>Consulter vos gains</p>
-
-    </a>
-
-
-    <div id="trainingAccessContainer">
-
-    <div class="quick-card">
-
-        <div class="quick-icon">🎓</div>
-
-        <h3>Mes formations</h3>
-
-        <p>Chargement de vos accès...</p>
-
-    </div>
-
-</div>
-
-
-    <a href="withdrawals.html" class="quick-card">
-
-        <div class="quick-icon">💳</div>
-
-        <h3>Retraits</h3>
-
-        <p>Demander un paiement</p>
-
-    </a>
-
-</section>
-
-        <!-- CARTES -->
-
+        <!-- STATISTIQUES -->
         <section class="stats-grid">
 
             <div class="card">
-
                 <span class="icon">👥</span>
-
                 <h3>Filleuls</h3>
-
                 <h2 id="referralCount">0</h2>
-
             </div>
 
-
             <div class="card">
-
                 <span class="icon">💰</span>
-
                 <h3>Solde disponible</h3>
-
-                <h2 id="commissionAmount">
-
-                    0 FCFA
-
-                </h2>
-
+                <h2 id="commissionAmount">0 FCFA</h2>
             </div>
 
-
-<div class="card">
-
-    <span class="icon">⏳</span>
-
-    <h3>Retraits en attente</h3>
-
-    <h2 id="pendingWithdrawalAmount">
-
-        0 FCFA
-
-    </h2>
-
-</div>
-
+            <div class="card">
+                <span class="icon">⏳</span>
+                <h3>Retraits en attente</h3>
+                <h2 id="pendingWithdrawalAmount">0 FCFA</h2>
+            </div>
 
             <div class="card">
-
                 <span class="icon">📈</span>
-
                 <h3>Ventes</h3>
-
-                <h2 id="salesCount">
-
-                    0
-
-                </h2>
-
+                <h2 id="salesCount">0</h2>
             </div>
 
-
-
             <div class="card">
-
                 <span class="icon">💳</span>
-
                 <h3>Retraits</h3>
-
-                <h2 id="withdrawAmount">
-
-                    0 FCFA
-
-                </h2>
-
+                <h2 id="withdrawAmount">0 FCFA</h2>
             </div>
 
         </section>
 
-
-
-        <!-- PROFIL -->
-
+        <!-- INFORMATIONS DU COMPTE -->
         <section class="profile-section">
 
-            <h2>
-                Informations du compte
-            </h2>
+            <h2>Informations du compte</h2>
 
             <div class="profile-grid">
 
                 <div>
-
                     <label>Nom complet</label>
-
                     <p id="fullname"></p>
-
                 </div>
 
                 <div>
-
                     <label>Email</label>
-
                     <p id="email"></p>
-
                 </div>
 
                 <div>
-
                     <label>Téléphone</label>
-
                     <p id="phone"></p>
-
                 </div>
 
                 <div>
-
                     <label>Pays</label>
-
                     <p id="country"></p>
-
                 </div>
 
                 <div>
-
                     <label>Code affilié</label>
-
                     <p id="affiliateCode"></p>
-
                 </div>
 
             </div>
 
         </section>
 
-
-
         <!-- LIEN D'AFFILIATION -->
-
         <section class="affiliate-box">
 
-            <h2>
-
-                🔗 Mon lien d'affiliation
-
-            </h2>
+            <h2>🔗 Mon lien d'affiliation</h2>
 
             <input
                 id="affiliateLink"
                 type="text"
-                readonly>
+                readonly
+                aria-label="Mon lien d'affiliation">
 
             <button
                 class="btn-primary"
+                type="button"
                 onclick="copyAffiliateLink()">
-
+                <i class="fas fa-copy"></i>
                 Copier le lien
-
             </button>
 
-<div class="qr-section">
-
-    <h3>QR Code</h3>
-
-    <div id="qrcode"></div>
-
-</div>
+            <div class="qr-section">
+                <h3>QR Code</h3>
+                <div id="qrcode"></div>
+            </div>
 
         </section>
 
+        <!-- AUTRES FORMATIONS -->
+        <section class="activity">
 
+            <h2>🎓 Autres formations</h2>
 
-       <!-- AUTRES FORMATIONS -->
+            <p class="activity-description">
+                Découvrez nos autres formations disponibles.
+            </p>
 
-<section class="activity">
+            <div id="otherProductsContainer">
+                <p>Chargement des formations...</p>
+            </div>
 
-    <h2>
-        🎓 Autres formations
-    </h2>
-
-    <p style="margin-bottom: 20px;">
-        Découvrez nos autres formations disponibles.
-    </p>
-
-    <div id="otherProductsContainer">
-
-        <p>
-            Chargement des formations...
-        </p>
-
-    </div>
-
-</section>
+        </section>
 
     </main>
 
 </div>
-<!-- Garde ici tous tes scripts existants -->
+
+<!-- SCRIPTS EXISTANTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script src="js/config.js"></script>
-
 <script src="js/notificationService.js"></script>
-
 <script src="js/theme.js"></script>
-
 <script src="js/utils.js"></script>
-
 <script src="js/auth.js"></script>
-
 <script src="js/profile.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script src="js/dashboard.js"></script>
-
 <script src="js/app.js"></script>
-
 <script src="js/sidebar.js"></script>
 
 </body>
-
 </html>
