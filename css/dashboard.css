@@ -1,133 +1,450 @@
 
-/* =====================================================
+/* ==========================================
    PROF IA MEDIA PARTNERS
-   ADAPTATION RESPONSIVE DU TABLEAU DE BORD
-   ===================================================== */
+   DASHBOARD — DESIGN PROFESSIONNEL
+   ========================================== */
 
-/* Largeur et débordements */
 .dashboard,
 .content {
     min-width: 0;
+    box-sizing: border-box;
 }
 
 .content {
     width: calc(100% - 260px);
     max-width: 100%;
+    padding: 30px;
+    overflow-x: hidden;
 }
 
-.top-header,
-.quick-grid,
-.stats-grid,
-.profile-section,
-.affiliate-box,
-.activity {
-    min-width: 0;
-}
+/* ==========================================
+   CARTE DE BIENVENUE
+   ========================================== */
 
-/* En-tête */
-.top-header {
+.dashboard-welcome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 20px;
-    flex-wrap: wrap;
+    padding: 30px;
+    margin-bottom: 26px;
+    border-radius: 22px;
+    background: linear-gradient(
+        120deg,
+        #111c35,
+        #172d55 65%,
+        #123c4a
+    );
+    color: #ffffff;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, .16);
 }
 
-#welcome {
+.dashboard-welcome .hello {
+    margin: 0 0 6px;
+    color: #cbd5e1;
+    font-size: 15px;
+}
+
+.dashboard-welcome h1 {
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-size: clamp(23px, 3vw, 32px);
     overflow-wrap: anywhere;
 }
 
-/* Cartes statistiques */
-.stats-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 30px;
+    background: rgba(34, 197, 94, .14);
+    color: #86efac;
+    font-size: 12px;
+    font-weight: 700;
 }
 
-.card {
-    min-width: 0;
-    overflow-wrap: anywhere;
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
 }
 
-.card h2 {
-    overflow-wrap: anywhere;
+.today-date {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 13px;
+    text-transform: capitalize;
 }
 
-/* Raccourcis */
+/* ==========================================
+   CARTES DE RACCOURCIS
+   ========================================== */
+
 .quick-grid {
+    display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
 }
 
 .quick-card {
+    box-sizing: border-box;
     min-width: 0;
-    overflow-wrap: anywhere;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    border-radius: 18px;
+    text-decoration: none !important;
+    color: inherit;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid rgba(148, 163, 184, .2);
+    box-shadow: 0 7px 22px rgba(15, 23, 42, .06);
+    transition: transform .2s, box-shadow .2s;
 }
 
-/* Profil */
-.profile-grid > div {
+.quick-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, .11);
+}
+
+.quick-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: rgba(59, 130, 246, .12);
+    font-size: 22px;
+}
+
+.quick-title {
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.quick-action {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.quick-action i {
+    margin-left: 4px;
+}
+
+.training-access-grid {
+    display: contents;
+}
+
+.training-access-grid .quick-card {
+    height: 100%;
+}
+
+.training-card .btn-primary {
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* ==========================================
+   SECTIONS ET TITRES
+   ========================================== */
+
+.section-block,
+.profile-section {
+    box-sizing: border-box;
     min-width: 0;
-    overflow-wrap: anywhere;
+    margin: 0 0 24px;
+    padding: 25px;
+    border-radius: 20px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid rgba(148, 163, 184, .2);
+    box-shadow: 0 7px 22px rgba(15, 23, 42, .05);
 }
 
-.profile-grid p {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-/* Lien affilié */
-#affiliateLink {
-    display: block;
-    max-width: 100%;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.btn-primary {
-    min-height: 46px;
-}
-
-.qr-section {
-    margin-top: 25px;
-}
-
-#qrcode {
-    max-width: 100%;
-    overflow: hidden;
-}
-
-/* Formations */
-#otherProductsContainer {
-    min-width: 0;
-    max-width: 100%;
-}
-
-.activity-description {
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 20px;
 }
 
-/* Tableaux : défilement interne */
+.section-heading h2,
+.profile-section h2 {
+    margin: 4px 0 0;
+    font-size: 21px;
+}
+
+.eyebrow {
+    color: #16a34a;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+/* ==========================================
+   CARTES STATISTIQUES
+   ========================================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.stats-grid .card {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 20px 16px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #f8fafc, #eef4ff);
+    border: 1px solid #e2e8f0;
+}
+
+.stats-grid .card .icon {
+    font-size: 23px;
+}
+
+.stats-grid .card h3 {
+    margin: 12px 0 8px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.stats-grid .card h2 {
+    margin: 0;
+    color: #14213d;
+    font-size: clamp(17px, 2vw, 23px);
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   PROFIL REPLIABLE
+   ========================================== */
+
+.collapsible-section {
+    padding: 0;
+    overflow: hidden;
+}
+
+.collapsible-section summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 21px 24px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.collapsible-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.collapsible-section[open] summary {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.collapsible-section summary i:last-child {
+    color: #64748b;
+    transition: transform .2s;
+}
+
+.collapsible-section[open] summary i:last-child {
+    transform: rotate(180deg);
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    padding: 22px 24px 24px;
+}
+
+.profile-grid > div {
+    min-width: 0;
+    padding: 15px;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.profile-grid label {
+    display: block;
+    margin-bottom: 6px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.profile-grid p {
+    margin: 0;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   LIEN D'AFFILIATION ET QR CODE
+   ========================================== */
+
+.affiliate-box h2 {
+    margin: 0;
+}
+
+#affiliateLink {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #dbe3ef;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #334155;
+}
+
+.btn-primary {
+    min-height: 44px;
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.qr-section {
+    margin-top: 22px;
+    text-align: center;
+}
+
+#qrcode {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#qrcode img,
+#qrcode canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* ==========================================
+   AUTRES FORMATIONS
+   ========================================== */
+
+.activity-description {
+    margin: -8px 0 18px;
+    color: #64748b;
+}
+
+#otherProductsContainer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.other-product-card {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.other-product-card h3 {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+.other-product-card p {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.other-product-card .product-price {
+    font-size: 16px;
+    color: #0f172a;
+}
+
+.other-product-card .btn-primary {
+    width: 100%;
+}
+
 .table-container {
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
-/* Tablettes */
-@media (max-width: 1100px) {
+/* ==========================================
+   MODE SOMBRE
+   ========================================== */
 
-    .content {
-        padding: 28px;
-    }
+body.dark-theme .quick-card,
+body.dark-theme .section-block,
+body.dark-theme .profile-section {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #334155;
+}
 
+body.dark-theme .stats-grid .card,
+body.dark-theme .profile-grid > div,
+body.dark-theme .other-product-card {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+body.dark-theme .stats-grid .card h2,
+body.dark-theme .profile-grid p,
+body.dark-theme .other-product-card .product-price {
+    color: #f8fafc;
+}
+
+body.dark-theme #affiliateLink {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+
+/* ==========================================
+   TABLETTES
+   ========================================== */
+
+@media (max-width: 1200px) {
     .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .quick-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
 }
 
-/* Téléphones */
-@media (max-width: 768px) {
+/* ==========================================
+   TÉLÉPHONES
+   ========================================== */
 
+@media (max-width: 768px) {
     .dashboard {
         display: block;
         width: 100%;
@@ -135,220 +452,125 @@
     }
 
     .content {
+        box-sizing: border-box;
         width: 100%;
-        margin-left: 0;
-        padding: 18px 14px 30px;
+        margin: 0;
+        padding: 16px 13px 30px;
         overflow-x: hidden;
     }
 
-    .top-header {
-        display: flex;
-        flex-direction: column;
+    .dashboard-welcome {
         align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 24px;
+        flex-direction: column;
+        padding: 20px;
+        gap: 10px;
+        border-radius: 17px;
     }
 
-    .hello {
-        font-size: 15px;
-    }
-
-    #welcome {
-        font-size: 25px;
-        line-height: 1.25;
-        margin-top: 6px;
-    }
-
-    .status {
-        font-size: 12px;
-        padding: 7px 12px;
-        margin-top: 10px;
-    }
-
-    #todayDate {
-        font-size: 13px;
+    .dashboard-welcome h1 {
+        font-size: 23px;
     }
 
     .quick-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
-        margin: 16px 0 24px;
+        margin-bottom: 20px;
     }
 
     .quick-card {
-        min-height: 115px;
-        padding: 14px 9px;
+        min-height: 125px;
+        padding: 14px 12px;
         border-radius: 14px;
     }
 
-    .quick-icon {
-        font-size: 25px;
-    }
-
-    .quick-card h3 {
+    .quick-title {
         font-size: 14px;
     }
 
-    .quick-card p {
+    .quick-action {
         font-size: 11px;
-        line-height: 1.4;
     }
 
     .stats-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 11px;
-        margin-bottom: 24px;
+        gap: 10px;
     }
 
-    .card {
-        padding: 16px 12px;
-        border-radius: 14px;
+    .stats-grid .card {
+        padding: 14px 11px;
     }
 
-    .icon {
-        font-size: 25px;
+    .stats-grid .card h3 {
+        font-size: 11px;
     }
 
-    .card h3 {
-        font-size: 13px;
-        line-height: 1.4;
-        margin-top: 9px;
+    .stats-grid .card h2 {
+        font-size: 18px;
     }
 
-    .card h2 {
-        font-size: 20px;
-        margin-top: 10px;
+    .section-block {
+        padding: 17px 14px;
+        border-radius: 16px;
     }
 
-    .profile-section,
-    .affiliate-box,
-    .activity {
-        padding: 18px 14px;
-        margin-bottom: 18px;
-        border-radius: 15px;
-    }
-
-    .profile-section h2,
-    .affiliate-box h2,
-    .activity h2 {
-        font-size: 19px;
-        margin-bottom: 18px;
+    .section-heading h2 {
+        font-size: 18px;
     }
 
     .profile-grid {
         grid-template-columns: 1fr;
-        gap: 17px;
+        gap: 10px;
+        padding: 15px;
     }
 
-    .profile-grid label {
-        font-size: 12px;
-        margin-bottom: 5px;
-    }
-
-    .profile-grid p {
+    .collapsible-section summary {
+        padding: 17px 15px;
         font-size: 15px;
     }
 
-    #affiliateLink {
-        font-size: 13px;
-        padding: 13px 10px;
-        margin-bottom: 12px;
-    }
-
-    .btn-primary {
-        width: 100%;
-        padding: 13px 16px;
-        font-size: 14px;
-    }
-
-    .qr-section {
-        text-align: center;
-    }
-
-    #qrcode {
-        display: flex;
-        justify-content: center;
-        margin-top: 12px;
-    }
-
-    .activity-description {
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
     #otherProductsContainer {
+        grid-template-columns: 1fr;
+    }
+
+    #affiliateLink {
+        font-size: 12px;
+    }
+
+    .affiliate-box .btn-primary {
         width: 100%;
     }
-
-    #otherProductsContainer img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .table-container {
-        width: 100%;
-    }
-
 }
 
-/* Petits téléphones */
+/* ==========================================
+   PETITS TÉLÉPHONES
+   ========================================== */
+
 @media (max-width: 380px) {
-
     .content {
-        padding: 14px 10px 25px;
+        padding: 13px 10px 24px;
     }
 
-    #welcome {
-        font-size: 22px;
+    .quick-grid {
+        gap: 8px;
     }
 
-    .quick-card h3 {
+    .quick-card {
+        padding: 12px 9px;
+    }
+
+    .quick-title {
         font-size: 12px;
     }
 
-    .quick-card p {
-        font-size: 10px;
+    .stats-grid .card h2 {
+        font-size: 16px;
     }
-
-    .card {
-        padding: 13px 9px;
-    }
-
-    .card h3 {
-        font-size: 12px;
-    }
-
-    .card h2 {
-        font-size: 18px;
-    }
-
 }
 
-/* Mode sombre */
-body.dark-theme .quick-card,
-body.dark-theme .profile-section,
-body.dark-theme .affiliate-box,
-body.dark-theme .activity {
-    background: #1e293b;
-    color: #f8fafc;
-    border: 1px solid #334155;
-}
+/* Désactivation de l'effet hover sur écran tactile */
 
-body.dark-theme .quick-card p {
-    color: #cbd5e1;
-}
-
-/* Accessibilité tactile */
 @media (hover: none) {
-
-    .quick-card:hover,
-    .card:hover {
+    .quick-card:hover {
         transform: none;
     }
-
-    .btn-primary,
-    .quick-card {
-        -webkit-tap-highlight-color: transparent;
-    }
-
 }
