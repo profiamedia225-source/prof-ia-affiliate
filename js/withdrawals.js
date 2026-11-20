@@ -208,8 +208,8 @@ method.addEventListener("change", () => {
 
             case "Djamo":
 
-    paymentLabel.textContent = "Numéro ou informations Djamo";
-    paymentDetails.placeholder = "Entrez vos informations Djamo";
+    paymentLabel.textContent = "Numéro Djamo";
+    paymentDetails.placeholder = "Ex : 0101234567";
     break;
 
         default:
