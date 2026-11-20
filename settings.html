@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -7,151 +8,418 @@
 
     <title>Paramètres | PROF IA MEDIA PARTNERS</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Styles communs -->
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/theme.css">
+
+    <!-- Style spécifique à la page -->
     <link rel="stylesheet" href="css/settings.css">
+
+    <!-- Icônes du sidebar -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* Contenu de la page */
+        .settings-page {
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary, #777);
+            line-height: 1.6;
+        }
+
+        /* Cartes de paramètres */
+        .settings-card {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 25px;
+            margin-bottom: 22px;
+            border-radius: 14px;
+            background: var(--card-bg, #ffffff);
+            border: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .settings-card h2 {
+            font-size: 19px;
+            margin: 0 0 22px;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 17px 0;
+            border-bottom: 1px solid var(--border-color, #eeeeee);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-item h3 {
+            font-size: 15px;
+            margin: 0 0 6px;
+        }
+
+        .setting-item p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-secondary, #777);
+            margin: 0;
+        }
+
+        /* Sélecteur de thème */
+        #theme {
+            width: 100%;
+            max-width: 350px;
+            min-height: 45px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color, #dddddd);
+            background: var(--input-bg, #ffffff);
+            color: var(--text-color, #222222);
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        /* Interrupteurs */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch .slider {
+            position: absolute;
+            inset: 0;
+            cursor: pointer;
+            background-color: #c9c9c9;
+            transition: 0.3s;
+            border-radius: 30px;
+        }
+
+        .switch .slider::before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .switch input:checked + .slider {
+            background-color: #2563eb;
+        }
+
+        .switch input:checked + .slider::before {
+            transform: translateX(22px);
+        }
+
+        .switch input:focus-visible + .slider {
+            outline: 3px solid rgba(37, 99, 235, 0.25);
+        }
+
+        /* Sécurité */
+        .danger-btn {
+            max-width: 100%;
+            padding: 12px 18px;
+            border: 1px solid #dc2626;
+            border-radius: 8px;
+            background: transparent;
+            color: #dc2626;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .security-note {
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-secondary, #777);
+        }
+
+        /* Enregistrement */
+        .save-container {
+            display: flex;
+            justify-content: flex-end;
+            margin: 25px 0 10px;
+        }
+
+        .save-btn {
+            min-height: 46px;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* Adaptation tablette */
+        @media (max-width: 900px) {
+            .settings-page {
+                padding: 22px;
+            }
+
+            .settings-card {
+                padding: 22px;
+            }
+        }
+
+        /* Adaptation téléphone */
+        @media (max-width: 600px) {
+            .settings-page {
+                padding: 16px;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+
+            .page-header p {
+                font-size: 14px;
+            }
+
+            .settings-card {
+                padding: 18px 15px;
+                margin-bottom: 16px;
+                border-radius: 11px;
+            }
+
+            .settings-card h2 {
+                font-size: 17px;
+                margin-bottom: 15px;
+            }
+
+            .setting-item {
+                gap: 12px;
+                padding: 15px 0;
+            }
+
+            .setting-item h3 {
+                font-size: 14px;
+            }
+
+            .setting-item p {
+                font-size: 12px;
+            }
+
+            #theme {
+                max-width: 100%;
+            }
+
+            .danger-btn {
+                width: 100%;
+                font-size: 13px;
+            }
+
+            .save-container {
+                display: block;
+                margin-top: 20px;
+            }
+
+            .save-btn {
+                width: 100%;
+            }
+        }
+
+        /* Mode sombre */
+        body.dark .settings-card,
+        [data-theme="dark"] .settings-card {
+            background: var(--card-bg, #1e293b);
+            border-color: var(--border-color, #334155);
+        }
+
+        body.dark .setting-item,
+        [data-theme="dark"] .setting-item {
+            border-color: var(--border-color, #334155);
+        }
+
+        body.dark #theme,
+        [data-theme="dark"] #theme {
+            background: var(--input-bg, #1e293b);
+            color: var(--text-color, #ffffff);
+            border-color: var(--border-color, #475569);
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Sidebar -->
-    <div id="sidebar-container"></div>
+    <div class="dashboard">
 
-    <!-- Contenu principal -->
-    <main class="main-content">
+        <!-- Sidebar commun -->
+        <div id="sidebar-container"></div>
 
-        <div class="page-header">
-            <h1>⚙️ Paramètres</h1>
-            <p>
-                Personnalisez votre expérience sur
-                <strong>PROF IA MEDIA PARTNERS</strong>.
-            </p>
-        </div>
+        <!-- Contenu principal -->
+        <main class="content">
 
-        <!-- Notifications -->
-        <div class="settings-card">
+            <div class="settings-page">
 
-            <h2>🔔 Notifications</h2>
-
-            <div class="setting-item">
-
-                <div>
-                    <h3>Email</h3>
-                    <p>Recevoir les notifications par email.</p>
+                <div class="page-header">
+                    <h1>⚙️ Paramètres</h1>
+                    <p>
+                        Personnalisez votre expérience sur
+                        <strong>PROF IA MEDIA PARTNERS</strong>.
+                    </p>
                 </div>
 
-                <label class="switch">
-                    <input
-                        type="checkbox"
-                        id="email_notifications">
+                <!-- Notifications -->
+                <div class="settings-card">
 
-                    <span class="slider"></span>
-                </label>
+                    <h2>🔔 Notifications</h2>
+
+                    <div class="setting-item">
+
+                        <div>
+                            <h3>Email</h3>
+                            <p>Recevoir les notifications par email.</p>
+                        </div>
+
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                id="email_notifications">
+                            <span class="slider"></span>
+                        </label>
+
+                    </div>
+
+                    <div class="setting-item">
+
+                        <div>
+                            <h3>Nouvelle commission</h3>
+                            <p>
+                                Être informé lorsqu'une commission est ajoutée.
+                            </p>
+                        </div>
+
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                id="commission_notifications">
+                            <span class="slider"></span>
+                        </label>
+
+                    </div>
+
+                    <div class="setting-item">
+
+                        <div>
+                            <h3>Nouveau filleul</h3>
+                            <p>
+                                Recevoir une notification lorsqu'un nouvel
+                                affilié rejoint votre réseau.
+                            </p>
+                        </div>
+
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                id="referral_notifications">
+                            <span class="slider"></span>
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Apparence -->
+                <div class="settings-card">
+
+                    <h2>🎨 Apparence</h2>
+
+                    <select id="theme">
+                        <option value="light">☀️ Clair</option>
+                        <option value="dark">🌙 Sombre</option>
+                        <option value="system">💻 Automatique</option>
+                    </select>
+
+                </div>
+
+                <!-- Sécurité -->
+                <div class="settings-card">
+
+                    <h2>🔒 Sécurité</h2>
+
+                    <button
+                        class="danger-btn"
+                        id="logoutAllDevices"
+                        type="button">
+
+                        Déconnecter tous les appareils
+
+                    </button>
+
+                    <p class="security-note">
+                        Cette fonctionnalité sera disponible dans une
+                        prochaine mise à jour.
+                    </p>
+
+                </div>
+
+                <!-- Enregistrement -->
+                <div class="save-container">
+
+                    <button
+                        id="saveSettingsBtn"
+                        class="save-btn"
+                        type="button">
+
+                        💾 Enregistrer les paramètres
+
+                    </button>
+
+                </div>
 
             </div>
 
-            <div class="setting-item">
+        </main>
 
-                <div>
-                    <h3>Nouvelle commission</h3>
-                    <p>Être informé lorsqu'une commission est ajoutée.</p>
-                </div>
+    </div>
 
-                <label class="switch">
-                    <input
-                        type="checkbox"
-                        id="commission_notifications">
-
-                    <span class="slider"></span>
-                </label>
-
-            </div>
-
-            <div class="setting-item">
-
-                <div>
-                    <h3>Nouveau filleul</h3>
-                    <p>Recevoir une notification lorsqu'un nouvel affilié rejoint votre réseau.</p>
-                </div>
-
-                <label class="switch">
-                    <input
-                        type="checkbox"
-                        id="referral_notifications">
-
-                    <span class="slider"></span>
-                </label>
-
-            </div>
-
-        </div>
-
-
-        <!-- Apparence -->
-        <div class="settings-card">
-
-            <h2>🎨 Apparence</h2>
-
-            <select id="theme">
-
-                <option value="light">☀️ Clair</option>
-
-                <option value="dark">🌙 Sombre</option>
-
-                <option value="system">💻 Automatique</option>
-
-            </select>
-
-        </div>
-
-        <!-- Sécurité -->
-        <div class="settings-card">
-
-            <h2>🔒 Sécurité</h2>
-
-            <button
-                class="danger-btn"
-                id="logoutAllDevices">
-
-                Déconnecter tous les appareils
-
-            </button>
-
-            <p class="security-note">
-                Cette fonctionnalité sera disponible dans une prochaine mise à jour.
-            </p>
-
-        </div>
-
-        <!-- Bouton -->
-        <div class="save-container">
-
-            <button
-                id="saveSettingsBtn"
-                class="save-btn">
-
-                💾 Enregistrer les paramètres
-
-            </button>
-
-        </div>
-
-    </main>
-
-    <!-- Scripts -->
-
+    <!-- Scripts : fonctionnalités conservées -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
     <script src="js/config.js"></script>
-
     <script src="js/theme.js"></script>
-
     <script src="js/sidebar.js"></script>
-
     <script src="js/settings.js"></script>
 
 </body>
-
 </html>
