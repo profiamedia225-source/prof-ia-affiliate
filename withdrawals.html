@@ -1,140 +1,468 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Demandes de retrait</title>
+    <title>Demandes de retrait - PROF IA MEDIA PARTNERS</title>
 
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/sidebar.css">
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/dashboard.css">
+    <!-- CSS COMMUNS : IDENTIQUES AU DASHBOARD -->
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- RESPONSIVE SPÉCIFIQUE AUX RETRAITS -->
+    <style>
+
+        /* ======================================
+           PAGE DES RETRAITS
+        ====================================== */
+
+        .withdrawals-page {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .withdrawals-page *,
+        .withdrawals-page *::before,
+        .withdrawals-page *::after {
+            box-sizing: border-box;
+        }
+
+        /* ======================================
+           EN-TÊTE
+        ====================================== */
+
+        .withdrawals-page .top-header {
+            width: 100%;
+            min-width: 0;
+            margin-bottom: 24px;
+        }
+
+        .withdrawals-page .top-header h1 {
+            font-size: clamp(20px, 2.2vw, 27px);
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+            margin: 0;
+        }
+
+        /* ======================================
+           CARTE DU SOLDE
+        ====================================== */
+
+        .withdrawals-page .cards {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            width: 100%;
+            max-width: 600px;
+            min-width: 0;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .withdrawals-page .cards .card {
+            width: 100%;
+            min-width: 0;
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        .withdrawals-page .cards .card h3 {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .withdrawals-page .cards .card h2 {
+            font-size: clamp(23px, 3vw, 32px);
+            font-weight: 800;
+            overflow-wrap: anywhere;
+            margin: 0;
+        }
+
+        /* ======================================
+           FORMULAIRE DE RETRAIT
+        ====================================== */
+
+        .withdrawals-page .profile-section {
+            width: 100%;
+            max-width: 850px;
+            min-width: 0;
+            padding: 25px;
+            border-radius: 17px;
+            margin-bottom: 25px;
+        }
+
+        .withdrawals-page .profile-section h2 {
+            font-size: clamp(18px, 2vw, 22px);
+            line-height: 1.4;
+            margin-top: 0;
+            margin-bottom: 24px;
+            overflow-wrap: anywhere;
+        }
+
+        .withdrawals-page #withdrawForm {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .withdrawals-page .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        /* Montant et méthode de paiement */
+
+        .withdrawals-page .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .withdrawals-page .form-group input,
+        .withdrawals-page .form-group select {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            min-height: 48px;
+            padding: 12px 14px;
+            border: 1px solid #dbe3ee;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .withdrawals-page .form-group input:focus,
+        .withdrawals-page .form-group select:focus {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, .10);
+        }
+
+        /* Informations de paiement sur toute la largeur */
+
+        .withdrawals-page #withdrawForm .form-group:nth-child(3) {
+            grid-column: 1 / -1;
+        }
+
+        /* ======================================
+           BOUTON DE VALIDATION
+        ====================================== */
+
+        .withdrawals-page #withdrawForm .btn-primary {
+            grid-column: 1 / -1;
+            width: 100%;
+            min-height: 49px;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            cursor: pointer;
+        }
+
+        /* ======================================
+           MODE SOMBRE
+        ====================================== */
+
+        body.dark-theme .withdrawals-page .form-group label {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .withdrawals-page .form-group input,
+        body.dark-theme .withdrawals-page .form-group select {
+            background: #1e293b;
+            color: #f1f5f9;
+            border-color: #475569;
+        }
+
+        body.dark-theme .withdrawals-page .form-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* ======================================
+           PETITS ORDINATEURS ET TABLETTES
+        ====================================== */
+
+        @media (max-width: 1024px) {
+
+            .withdrawals-page .profile-section {
+                padding: 20px;
+            }
+
+            .withdrawals-page .cards {
+                max-width: 100%;
+            }
+
+        }
+
+        /* ======================================
+           TÉLÉPHONES
+        ====================================== */
+
+        @media (max-width: 768px) {
+
+            .withdrawals-page {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .withdrawals-page .top-header {
+                margin-bottom: 18px;
+            }
+
+            .withdrawals-page .top-header h1 {
+                font-size: 21px;
+            }
+
+            .withdrawals-page .cards {
+                width: 100%;
+                gap: 12px;
+                margin-bottom: 18px;
+            }
+
+            .withdrawals-page .cards .card {
+                padding: 18px;
+                border-radius: 14px;
+            }
+
+            .withdrawals-page .profile-section {
+                width: 100%;
+                padding: 17px;
+                border-radius: 14px;
+            }
+
+            .withdrawals-page .profile-section h2 {
+                font-size: 18px;
+                margin-bottom: 19px;
+            }
+
+            .withdrawals-page #withdrawForm {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 16px;
+            }
+
+            .withdrawals-page #withdrawForm .form-group:nth-child(3),
+            .withdrawals-page #withdrawForm .btn-primary {
+                grid-column: 1;
+            }
+
+            .withdrawals-page .form-group label {
+                font-size: 13px;
+            }
+
+            .withdrawals-page .form-group input,
+            .withdrawals-page .form-group select {
+                min-height: 47px;
+                font-size: 14px;
+            }
+
+            .withdrawals-page #withdrawForm .btn-primary {
+                min-height: 48px;
+            }
+
+        }
+
+        /* ======================================
+           PETITS TÉLÉPHONES
+        ====================================== */
+
+        @media (max-width: 480px) {
+
+            .withdrawals-page .top-header h1 {
+                font-size: 19px;
+            }
+
+            .withdrawals-page .cards .card {
+                padding: 15px;
+            }
+
+            .withdrawals-page .cards .card h3 {
+                font-size: 14px;
+            }
+
+            .withdrawals-page .cards .card h2 {
+                font-size: 24px;
+            }
+
+            .withdrawals-page .profile-section {
+                padding: 14px;
+            }
+
+            .withdrawals-page .profile-section h2 {
+                font-size: 17px;
+            }
+
+            .withdrawals-page #withdrawForm {
+                gap: 14px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-<div class="dashboard">
+    <div class="dashboard">
 
-<div id="sidebar-container"></div>
+        <!-- SIDEBAR COMMUN : NE PAS MODIFIER -->
+        <div id="sidebar-container"></div>
 
-    <main class="content">
+        <!-- CONTENU PRINCIPAL -->
+        <main class="content withdrawals-page">
 
-        <header class="top-header">
+            <!-- EN-TÊTE -->
+            <header class="top-header">
 
-            <h1>💳 Demandes de retrait</h1>
+                <h1>💳 Demandes de retrait</h1>
 
-        </header>
+            </header>
 
-<section class="cards">
+            <!-- SOLDE DISPONIBLE -->
+            <section class="cards">
 
-    <div class="card">
+                <div class="card">
 
-        <h3>💰 Solde disponible</h3>
+                    <h3>💰 Solde disponible</h3>
 
-        <h2 id="availableBalance">
+                    <h2 id="availableBalance">
+                        0 FCFA
+                    </h2>
 
-            0 FCFA
+                </div>
 
-        </h2>
+            </section>
+
+            <!-- NOUVELLE DEMANDE -->
+            <section class="profile-section">
+
+                <h2>Nouvelle demande de retrait</h2>
+
+                <form id="withdrawForm">
+
+                    <!-- MONTANT -->
+                    <div class="form-group">
+
+                        <label for="amount">
+                            Montant à retirer
+                        </label>
+
+                        <input
+                            type="number"
+                            id="amount"
+                            placeholder="Minimum : 5000"
+                            min="5000"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- MÉTHODE DE PAIEMENT -->
+                    <div class="form-group">
+
+                        <label for="method">
+                            Méthode de paiement
+                        </label>
+
+                        <select id="method" required>
+
+                            <option value="">Choisir...</option>
+
+                            <option value="Wave">Wave</option>
+
+                            <option value="Orange Money">
+                                Orange Money
+                            </option>
+
+                            <option value="MTN Money">
+                                MTN Money
+                            </option>
+
+                            <option value="Moov Money">
+                                Moov Money
+                            </option>
+
+                            <option value="Virement bancaire">
+                                Virement bancaire
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- INFORMATIONS DE PAIEMENT -->
+                    <div class="form-group">
+
+                        <label id="paymentLabel" for="paymentDetails">
+                            Numéro ou informations de paiement
+                        </label>
+
+                        <input
+                            type="text"
+                            id="paymentDetails"
+                            placeholder="Ex : 0701234567 ou IBAN"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- VALIDATION -->
+                    <button type="submit" class="btn-primary">
+
+                        Envoyer la demande
+
+                    </button>
+
+                </form>
+
+            </section>
+
+        </main>
 
     </div>
 
-</section>
+    <!-- SCRIPTS EXISTANTS : CONSERVÉS -->
 
-<section class="profile-section">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <h2>Nouvelle demande de retrait</h2>
+    <script src="js/config.js"></script>
 
-    <form id="withdrawForm">
+    <script src="js/notificationService.js"></script>
 
-        <div class="form-group">
+    <script src="js/theme.js"></script>
 
-            <label>Montant à retirer</label>
+    <script src="js/utils.js"></script>
 
-            <input
-                type="number"
-                id="amount"
-                placeholder="Minimum : 5000"
-                required
-            >
+    <script src="js/auth.js"></script>
 
-        </div>
+    <script src="js/settings-service.js"></script>
 
-        <div class="form-group">
+    <script src="js/withdrawals.js"></script>
 
-            <label>Méthode de paiement</label>
-
-            <select id="method" required>
-
-                <option value="">Choisir...</option>
-
-                <option value="Wave">Wave</option>
-
-                <option value="Orange Money">Orange Money</option>
-
-                <option value="MTN Money">MTN Money</option>
-
-                <option value="Moov Money">Moov Money</option>
-
-                <option value="Virement bancaire">Virement bancaire</option>
-
-            </select>
-
-        </div>
-
-<div class="form-group">
-
-    <label id="paymentLabel">
-    Numéro ou informations de paiement
-</label>
-
-    <input
-        type="text"
-        id="paymentDetails"
-        placeholder="Ex : 0701234567 ou IBAN"
-        required
-    >
-
-</div>
-
-        <button type="submit" class="btn-primary">
-
-            Envoyer la demande
-
-        </button>
-
-    </form>
-
-</section>
-
-    </main>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/config.js"></script>
-
-<script src="js/notificationService.js"></script>
-
-<script src="js/theme.js"></script>
-
-<script src="js/utils.js"></script>
-
-<script src="js/auth.js"></script>
-
-<script src="js/settings-service.js"></script>
-
-<script src="js/withdrawals.js"></script>
-
-<script src="js/sidebar.js"></script>
+    <script src="js/sidebar.js"></script>
 
 </body>
 
