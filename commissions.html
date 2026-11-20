@@ -1,106 +1,339 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Mes commissions - PROF IA MEDIA</title>
 
+    <!-- CSS communs -->
     <link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/sidebar.css">
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS spécifique aux commissions -->
+    <style>
+        /* =====================================
+           PAGE MES COMMISSIONS
+        ===================================== */
+
+        .commissions-page {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .commissions-page *,
+        .commissions-page *::before,
+        .commissions-page *::after {
+            box-sizing: border-box;
+        }
+
+        /* En-tête */
+        .commissions-page .top-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            min-width: 0;
+            margin-bottom: 22px;
+        }
+
+        .commissions-page .top-header h1 {
+            margin: 0;
+            font-size: clamp(19px, 2.2vw, 26px);
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        .commissions-page #totalCommissions {
+            margin: 0;
+            padding: 10px 15px;
+            border-radius: 12px;
+            background: #edf4ff;
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Section principale */
+        .commissions-page .commissions-section {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Conteneur du tableau */
+        .commissions-page .table-container {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #94a3b8 #edf1f5;
+        }
+
+        .commissions-page .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .commissions-page .table-container::-webkit-scrollbar-track {
+            background: #edf1f5;
+            border-radius: 10px;
+        }
+
+        .commissions-page .table-container::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        .commissions-page .table-container::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Tableau */
+        .commissions-page table.table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .commissions-page table.table th {
+            padding: 16px 14px;
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .commissions-page table.table td {
+            padding: 16px 14px;
+            color: #475569;
+            font-size: 13px;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf1f5;
+        }
+
+        .commissions-page table.table tbody tr:hover {
+            background: #f8faff;
+        }
+
+        .commissions-page table.table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Première colonne */
+        .commissions-page table.table th:first-child,
+        .commissions-page table.table td:first-child {
+            width: 65px;
+            text-align: center;
+        }
+
+        /* Statut */
+        .commissions-page table.table th:last-child,
+        .commissions-page table.table td:last-child {
+            white-space: nowrap;
+        }
+
+        /* =====================================
+           MODE SOMBRE
+        ===================================== */
+
+        body.dark-theme .commissions-page #totalCommissions {
+            background: #1e3a5f;
+            color: #93c5fd;
+        }
+
+        body.dark-theme .commissions-page table.table th {
+            background: #263449;
+            color: #f1f5f9;
+            border-color: #334155;
+        }
+
+        body.dark-theme .commissions-page table.table td {
+            color: #cbd5e1;
+            border-color: #334155;
+        }
+
+        body.dark-theme .commissions-page table.table tbody tr:hover {
+            background: #263449;
+        }
+
+        body.dark-theme .commissions-page .table-container::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        /* =====================================
+           TABLETTES
+        ===================================== */
+
+        @media (max-width: 1024px) {
+            .commissions-page .commissions-section {
+                padding: 17px;
+            }
+
+            .commissions-page table.table {
+                min-width: 560px;
+            }
+        }
+
+        /* =====================================
+           TÉLÉPHONES
+        ===================================== */
+
+        @media (max-width: 768px) {
+            .commissions-page {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .commissions-page .top-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+
+            .commissions-page .top-header h1 {
+                font-size: 21px;
+            }
+
+            .commissions-page #totalCommissions {
+                font-size: 13px;
+                padding: 9px 12px;
+            }
+
+            .commissions-page .commissions-section {
+                padding: 13px;
+                border-radius: 15px;
+            }
+
+            .commissions-page table.table {
+                min-width: 540px;
+            }
+
+            .commissions-page table.table th,
+            .commissions-page table.table td {
+                padding: 13px 11px;
+                font-size: 12px;
+            }
+        }
+
+        /* =====================================
+           PETITS TÉLÉPHONES
+        ===================================== */
+
+        @media (max-width: 480px) {
+            .commissions-page .top-header h1 {
+                font-size: 19px;
+            }
+
+            .commissions-page .commissions-section {
+                padding: 10px;
+            }
+
+            .commissions-page table.table {
+                min-width: 520px;
+            }
+
+            .commissions-page table.table th,
+            .commissions-page table.table td {
+                padding: 12px 9px;
+                font-size: 11px;
+            }
+        }
+    </style>
 
 </head>
 
 <body>
 
-<div class="dashboard">
+    <div class="dashboard">
 
-    <div id="sidebar-container"></div>
+        <!-- SIDEBAR COMMUN -->
+        <div id="sidebar-container"></div>
 
-    <!-- Contenu -->
-    <main class="content">
+        <!-- CONTENU PRINCIPAL -->
+        <main class="content commissions-page">
 
-        <header class="top-header">
+            <!-- EN-TÊTE -->
+            <header class="top-header">
 
-            <h1>💰 Mes commissions</h1>
+                <h1>💰 Mes commissions</h1>
 
-            <p id="totalCommissions">
-                Total : 0 commission
-            </p>
+                <p id="totalCommissions">
+                    Total : 0 commission
+                </p>
 
-        </header>
+            </header>
 
-<section class="profile-section">
+            <!-- TABLEAU DES COMMISSIONS -->
+            <section class="profile-section commissions-section">
 
-    <div class="table-container">
+                <div class="table-container">
 
-        <table class="table">
+                    <table class="table">
 
-            <thead>
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Client</th>
+                                <th>Montant</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
 
-                <tr>
+                        <tbody id="commissionsBody">
 
-                    <th>N°</th>
+                            <tr>
+                                <td colspan="5"
+                                    style="text-align:center;padding:40px;">
+                                    Chargement des commissions...
+                                </td>
+                            </tr>
 
-                    <th>Client</th>
+                        </tbody>
 
-                    <th>Montant</th>
+                    </table>
 
-                    <th>Date</th>
+                </div>
 
-                    <th>Statut</th>
+            </section>
 
-                </tr>
-
-            </thead>
-
-            <tbody id="commissionsBody">
-
-                <tr>
-
-                    <td colspan="5" style="text-align:center;padding:40px;">
-
-                        Chargement des commissions...
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
+        </main>
 
     </div>
 
-</section>
+    <!-- SCRIPTS EXISTANTS : CONSERVÉS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    </main>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/config.js"></script>
-
-<script src="js/notificationService.js"></script>
-
-<script src="js/theme.js"></script>
-
-<script src="js/utils.js"></script>
-
-<script src="js/auth.js"></script>
-
-<script src="js/commissions.js"></script>
-
-<script src="js/sidebar.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/notificationService.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/commissions.js"></script>
+    <script src="js/sidebar.js"></script>
 
 </body>
-
 </html>
