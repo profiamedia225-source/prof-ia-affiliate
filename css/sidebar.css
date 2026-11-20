@@ -1,8 +1,8 @@
 
 /* ==========================================
    PROF IA MEDIA PARTNERS
-   BARRE LATERALE
-========================================== */
+   SIDEBAR RESPONSIVE
+   ========================================== */
 
 .sidebar {
     position: fixed;
@@ -10,14 +10,18 @@
     left: 0;
     width: 250px;
     height: 100vh;
+    height: 100dvh;
     background: #14213d;
     color: #ffffff;
     padding: 28px 18px;
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    z-index: 1000;
-    box-shadow: 4px 0 18px rgba(15, 23, 42, .08);
+    z-index: 1200;
+    box-shadow: 4px 0 18px rgba(15, 23, 42, .12);
+    box-sizing: border-box;
+    transition: transform .3s ease, width .3s ease;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -34,10 +38,12 @@
 .logo {
     text-align: center;
     margin-bottom: 35px;
+    flex-shrink: 0;
 }
 
 .logo img {
     width: 76px;
+    max-width: 100%;
     height: auto;
     object-fit: contain;
     margin-bottom: 12px;
@@ -62,16 +68,21 @@
 .sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
+    width: 100%;
 }
 
 .sidebar li {
     margin-bottom: 8px;
+    width: 100%;
 }
 
 .sidebar a {
     display: flex;
     align-items: center;
     gap: 13px;
+    width: 100%;
+    box-sizing: border-box;
     padding: 13px 15px;
     color: #cbd5e1;
     text-decoration: none;
@@ -89,13 +100,19 @@
 .sidebar a.active {
     background: #16a34a;
     color: #ffffff;
-    box-shadow: 0 5px 15px rgba(22, 163, 74, .2);
+    box-shadow: 0 5px 15px rgba(22, 163, 94, .2);
 }
 
 .sidebar i {
     width: 22px;
+    min-width: 22px;
     text-align: center;
     font-size: 17px;
+}
+
+.sidebar a span:not(.notification-badge) {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 /* NOTIFICATIONS */
@@ -120,6 +137,7 @@
 .logout {
     margin-top: auto;
     padding-top: 25px;
+    flex-shrink: 0;
 }
 
 .logout a {
@@ -131,42 +149,181 @@
     color: #ffffff;
 }
 
-/* RESPONSIVE */
+/* BOUTON HAMBURGER */
 
-@media (max-width: 768px) {
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    background: #14213d;
+    color: #ffffff;
+    cursor: pointer;
+    z-index: 1301;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
+}
+
+.sidebar-toggle span {
+    display: block;
+    width: 21px;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 5px;
+    transition: .25s ease;
+}
+
+/* ANIMATION DU BOUTON */
+
+.sidebar-toggle.is-open span:first-child {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.sidebar-toggle.is-open span:nth-child(2) {
+    opacity: 0;
+}
+
+.sidebar-toggle.is-open span:last-child {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* FOND SOMBRE MOBILE */
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 15, 30, .6);
+    backdrop-filter: blur(2px);
+    z-index: 1100;
+}
+
+.sidebar-overlay.is-visible {
+    display: block;
+}
+
+body.sidebar-open {
+    overflow: hidden;
+}
+
+/* TABLETTES ET PETITS ORDINATEURS */
+
+@media (min-width: 769px) and (max-width: 1100px) {
+
     .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        padding: 18px 15px;
-    }
-
-    .logo {
-        margin-bottom: 18px;
+        width: 220px;
+        padding: 22px 13px;
     }
 
     .logo img {
-        width: 58px;
+        width: 65px;
+    }
+
+    .logo {
+        margin-bottom: 25px;
+    }
+
+    .sidebar a {
+        padding: 12px 10px;
+        gap: 10px;
+        font-size: 13px;
+    }
+
+}
+
+/* TELEPHONES ET TABLETTES EN MODE PORTRAIT */
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: min(300px, 85vw);
+        max-width: 85vw;
+        height: 100vh;
+        height: 100dvh;
+        padding: 24px 18px;
+        padding-top: 75px;
+        transform: translateX(-105%);
+        visibility: hidden;
+        transition:
+            transform .3s ease,
+            visibility .3s ease;
+        z-index: 1200;
+    }
+
+    .sidebar.is-open {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .sidebar-toggle {
+        display: flex;
+    }
+
+    .logo {
+        margin-bottom: 25px;
+    }
+
+    .logo img {
+        width: 65px;
     }
 
     .sidebar ul {
         display: flex;
-        flex-wrap: wrap;
-        gap: 7px;
+        flex-direction: column;
+        gap: 0;
     }
 
     .sidebar li {
-        margin-bottom: 0;
+        margin-bottom: 8px;
     }
 
     .sidebar a {
-        padding: 10px 12px;
-        font-size: 12px;
-        gap: 7px;
+        padding: 13px 15px;
+        font-size: 14px;
+        gap: 13px;
     }
 
     .logout {
-        margin-top: 15px;
-        padding-top: 10px;
+        margin-top: auto;
+        padding-top: 20px;
     }
+
+    /* LIBERER L'ESPACE DU CONTENU PRINCIPAL */
+
+    .dashboard > .content,
+    .dashboard > main.content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+}
+
+/* PETITS TELEPHONES */
+
+@media (max-width: 380px) {
+
+    .sidebar {
+        width: 280px;
+        max-width: 85vw;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .sidebar-toggle {
+        width: 42px;
+        height: 42px;
+    }
+
 }
