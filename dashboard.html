@@ -552,13 +552,7 @@
         <!-- STATISTIQUES -->
         <section class="stats-grid">
 
-            <div class="card">
-                <span class="icon">👥</span>
-                <h3>Mes filleuls</h3>
-                <h2 id="referralCount">0</h2>
-            </div>
-
-            <div class="card">
+ <div class="card">
                 <span class="icon">💰</span>
                 <h3>Solde disponible</h3>
                 <h2 id="commissionAmount">0 FCFA</h2>
@@ -570,19 +564,56 @@
                 <h2 id="pendingWithdrawalAmount">0 FCFA</h2>
             </div>
 
-            <div class="card">
+<div class="card">
+                <span class="icon">💳</span>
+                <h3>Total des retraits</h3>
+                <h2 id="withdrawAmount">0 FCFA</h2>
+            </div>
+
+ <div class="card">
                 <span class="icon">📈</span>
                 <h3>Mes ventes</h3>
                 <h2 id="salesCount">0</h2>
             </div>
 
             <div class="card">
-                <span class="icon">💳</span>
-                <h3>Total des retraits</h3>
-                <h2 id="withdrawAmount">0 FCFA</h2>
+                <span class="icon">👥</span>
+                <h3>Mes filleuls</h3>
+                <h2 id="referralCount">0</h2>
             </div>
 
         </section>
+
+ <!-- LIEN D'AFFILIATION -->
+        <section class="affiliate-box">
+
+            <h2><i class="fas fa-share-alt"></i> Invitez et gagnez des commissions</h2>
+
+            <p style="color:#718096;font-size:14px;margin-top:-12px;margin-bottom:18px;">
+                Partagez votre lien personnel avec vos proches et votre communauté.
+            </p>
+
+            <input
+                id="affiliateLink"
+                type="text"
+                readonly
+                aria-label="Mon lien d'affiliation">
+
+            <button
+                class="btn-primary"
+                type="button"
+                onclick="copyAffiliateLink()">
+                <i class="fas fa-copy"></i>
+                Copier mon lien
+            </button>
+
+            <div class="qr-section">
+                <h3>Ou partagez votre QR Code</h3>
+                <div id="qrcode"></div>
+            </div>
+
+        </section>
+
 
         <!-- PROFIL -->
         <section class="profile-section">
@@ -620,36 +651,7 @@
 
         </section>
 
-        <!-- LIEN D'AFFILIATION -->
-        <section class="affiliate-box">
-
-            <h2><i class="fas fa-share-alt"></i> Invitez et gagnez des commissions</h2>
-
-            <p style="color:#718096;font-size:14px;margin-top:-12px;margin-bottom:18px;">
-                Partagez votre lien personnel avec vos proches et votre communauté.
-            </p>
-
-            <input
-                id="affiliateLink"
-                type="text"
-                readonly
-                aria-label="Mon lien d'affiliation">
-
-            <button
-                class="btn-primary"
-                type="button"
-                onclick="copyAffiliateLink()">
-                <i class="fas fa-copy"></i>
-                Copier mon lien
-            </button>
-
-            <div class="qr-section">
-                <h3>Ou partagez votre QR Code</h3>
-                <div id="qrcode"></div>
-            </div>
-
-        </section>
-
+       
        
 
     </main>
