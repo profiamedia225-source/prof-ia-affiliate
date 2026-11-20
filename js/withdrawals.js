@@ -226,7 +226,6 @@ async function loadPaymentMethods() {
         "Orange Money",
         "MTN Money",
         "Moov Money",
-        "Djamo"
     ];
 
     method.innerHTML = "";
