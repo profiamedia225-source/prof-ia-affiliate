@@ -39,25 +39,52 @@
             min-height: 100vh;
         }
 
+        /* CONTENU PRINCIPAL */
         .content {
-            padding: 30px;
+            box-sizing: border-box;
+            width: auto;
             max-width: 1500px;
-            margin: auto;
+            min-width: 0;
+            flex: 1 1 0;
+            margin-inline: auto;
+            padding: clamp(16px, 2.2vw, 32px);
+        }
+
+        .content *,
+        .content *::before,
+        .content *::after {
+            box-sizing: border-box;
+        }
+
+        .content > * {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .content img,
+        .content canvas,
+        .content svg {
+            max-width: 100%;
         }
 
         /* ACCUEIL */
-
         .top-header {
             background: linear-gradient(120deg, #ffffff, #eef4ff);
             border: 1px solid var(--border);
             border-radius: 22px;
-            padding: 30px;
+            padding: clamp(18px, 2.4vw, 30px);
             margin-bottom: 28px;
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
             gap: 20px;
             box-shadow: 0 5px 20px rgba(30, 64, 175, .04);
+        }
+
+        .welcome-block {
+            min-width: 0;
+            flex: 1 1 260px;
         }
 
         .welcome-block .hello {
@@ -71,6 +98,7 @@
             font-size: 29px;
             font-weight: 750;
             margin: 0 0 12px;
+            overflow-wrap: anywhere;
         }
 
         .status {
@@ -87,34 +115,44 @@
         #todayDate {
             color: var(--muted);
             font-size: 14px;
+            overflow-wrap: anywhere;
         }
 
         /* CARTES DE NAVIGATION */
-
         .quick-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 18px;
-            margin-bottom: 30px;
+            align-items: stretch;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .quick-grid > *,
+        #trainingAccessContainer {
+            min-width: 0;
+            max-width: 100%;
         }
 
         .quick-card {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 155px;
-            padding: 22px;
+            min-width: 0;
+            min-height: 125px;
+            height: 100%;
+            padding: 15px;
             background: var(--white);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 15px;
             text-decoration: none;
             color: var(--text);
             box-shadow: 0 4px 15px rgba(15, 23, 42, .035);
             transition: transform .2s, box-shadow .2s;
+            overflow-wrap: anywhere;
         }
 
         .quick-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
         }
 
@@ -122,57 +160,65 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 45px;
-            height: 45px;
+            width: 38px;
+            height: 38px;
             border-radius: 13px;
             background: #edf3ff;
-            font-size: 22px;
-            margin-bottom: 13px;
+            font-size: 19px;
+            margin-bottom: 9px;
         }
-
-        /* BOUTONS VERTS DES CARTES */
 
         .quick-card h3 {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             align-self: flex-start;
-
             width: fit-content;
             max-width: 100%;
-            box-sizing: border-box;
-
-            padding: 10px 15px;
-            margin: 0 0 10px;
-
+            padding: 8px 11px;
+            margin: 0 0 7px;
             border: none;
             border-radius: 10px;
-
             background: linear-gradient(135deg, #16a34a, #22c55e);
             color: #ffffff !important;
-
-            font-size: 15px;
+            font-size: 13px;
             line-height: 1.35;
             font-weight: 700;
             text-align: center;
-
+            overflow-wrap: anywhere;
             box-shadow: 0 3px 8px rgba(22, 163, 74, .18);
-
-            transition: background .2s ease,
-                        box-shadow .2s ease,
-                        transform .2s ease;
         }
 
         .quick-card:hover h3,
         .quick-card:focus-visible h3 {
             background: linear-gradient(135deg, #15803d, #16a34a);
-            box-shadow: 0 5px 12px rgba(22, 163, 74, .28);
-            transform: translateY(-1px);
             color: #ffffff !important;
         }
 
-        /* BOUTON D'ACCÈS À LA FORMATION */
+        /* TITRE DE LA FORMATION : SANS FOND VERT */
+        #trainingAccessContainer .quick-card h3 {
+            display: block;
+            width: auto;
+            max-width: 100%;
+            padding: 0;
+            margin: 0 0 8px;
+            background: transparent !important;
+            color: #263449 !important;
+            box-shadow: none !important;
+            border-radius: 0;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: left;
+        }
 
+        #trainingAccessContainer .quick-card:hover h3 {
+            background: transparent !important;
+            color: #263449 !important;
+            transform: none;
+            box-shadow: none !important;
+        }
+
+        /* BOUTON ACCÈS FORMATION */
         #trainingAccessContainer .quick-card a,
         #trainingAccessContainer .quick-card button,
         #trainingAccessContainer .quick-card .btn,
@@ -180,36 +226,16 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-
             width: fit-content;
             max-width: 100%;
-            box-sizing: border-box;
-
             padding: 10px 15px;
-
             border: none;
             border-radius: 10px;
-
             background: linear-gradient(135deg, #16a34a, #22c55e);
             color: #ffffff !important;
-
             font-weight: 700;
             text-decoration: none;
             cursor: pointer;
-
-            transition: background .2s ease,
-                        box-shadow .2s ease,
-                        transform .2s ease;
-        }
-
-        #trainingAccessContainer .quick-card a:hover,
-        #trainingAccessContainer .quick-card button:hover,
-        #trainingAccessContainer .quick-card .btn:hover,
-        #trainingAccessContainer .quick-card .btn-primary:hover {
-            background: linear-gradient(135deg, #15803d, #16a34a);
-            color: #ffffff !important;
-            box-shadow: 0 5px 12px rgba(22, 163, 74, .28);
-            transform: translateY(-1px);
         }
 
         .quick-card p {
@@ -217,14 +243,14 @@
             color: var(--muted);
             margin: 0;
             line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         /* STATISTIQUES */
-
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
-            gap: 15px;
+            gap: 14px;
             margin-bottom: 30px;
         }
 
@@ -232,7 +258,7 @@
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 21px;
+            padding: 18px;
             min-width: 0;
             box-shadow: 0 4px 15px rgba(15, 23, 42, .035);
         }
@@ -256,10 +282,10 @@
             color: #1e293b;
             margin: 0;
             overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
-        /* INFORMATIONS DU COMPTE */
-
+        /* SECTIONS */
         .profile-section,
         .affiliate-box,
         .activity {
@@ -268,6 +294,7 @@
             border-radius: 20px;
             padding: 26px;
             margin-bottom: 25px;
+            min-width: 0;
             box-shadow: 0 4px 15px rgba(15, 23, 42, .035);
         }
 
@@ -277,8 +304,10 @@
             color: #1e293b;
             font-size: 19px;
             margin: 0 0 22px;
+            overflow-wrap: anywhere;
         }
 
+        /* PROFIL */
         .profile-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -308,16 +337,16 @@
             overflow-wrap: anywhere;
         }
 
-        /* LIEN D'AFFILIATION */
-
+        /* AFFILIATION */
         .affiliate-box {
             background: linear-gradient(120deg, #ffffff, #f0f6ff);
         }
 
         .affiliate-box input {
+            display: block;
             width: 100%;
+            max-width: 100%;
             min-width: 0;
-            box-sizing: border-box;
             padding: 15px;
             border: 1px solid #dce5f1;
             border-radius: 12px;
@@ -354,14 +383,22 @@
 
         #qrcode {
             display: inline-block;
+            max-width: 100%;
             padding: 12px;
             background: white;
             border: 1px solid var(--border);
             border-radius: 12px;
+            overflow: hidden;
+        }
+
+        #qrcode img,
+        #qrcode canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
         }
 
         /* AUTRES FORMATIONS */
-
         .activity-description {
             color: var(--muted);
             font-size: 14px;
@@ -371,17 +408,37 @@
 
         #otherProductsContainer {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
-
-        #trainingAccessContainer {
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 235px), 1fr));
+            align-items: stretch;
+            gap: 12px;
             min-width: 0;
         }
 
-        /* TABLETTE */
+        #otherProductsContainer > * {
+            min-width: 0;
+            max-width: 100%;
+            padding: 13px !important;
+            margin-bottom: 0 !important;
+            border-radius: 13px !important;
+            overflow-wrap: anywhere;
+        }
 
-        @media (max-width: 1100px) {
+        #otherProductsContainer h3 {
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        #otherProductsContainer p {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        #otherProductsContainer strong {
+            font-size: 13px;
+        }
+
+        /* TABLETTES ET PETITS ORDINATEURS */
+        @media (max-width: 1200px) {
             .quick-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
@@ -389,75 +446,150 @@
             .stats-grid {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
             }
+
+            #otherProductsContainer {
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+            }
         }
 
-        /* TELEPHONE */
-
-        @media (max-width: 700px) {
+        /* TABLETTES ET TELEPHONES */
+        @media (max-width: 768px) {
             .content {
-                padding: 15px;
+                padding: 16px;
             }
 
             .top-header {
-                padding: 21px;
-                flex-direction: column;
                 align-items: flex-start;
+                flex-direction: column;
+                padding: 21px;
                 border-radius: 17px;
             }
 
             .welcome-block h1 {
-                font-size: 23px;
-                overflow-wrap: anywhere;
-            }
-
-            #todayDate {
-                margin: 0;
+                font-size: clamp(20px, 4vw, 25px);
             }
 
             .quick-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 11px;
+                gap: 10px;
             }
 
             .quick-card {
-                min-height: 135px;
-                padding: 15px;
+                min-height: 115px;
+                padding: 12px;
             }
 
-            .quick-card h3 {
-                font-size: 14px;
-            }
-
-            .quick-card p {
-                font-size: 12px;
+            .quick-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+                margin-bottom: 8px;
             }
 
             .stats-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 11px;
-            }
-
-            .stats-grid .card {
-                padding: 16px;
-            }
-
-            .stats-grid .card h2 {
-                font-size: 19px;
+                gap: 10px;
             }
 
             .profile-section,
             .affiliate-box,
             .activity {
-                padding: 19px;
+                padding: 17px;
                 border-radius: 16px;
+            }
+
+            .activity h2,
+            .profile-section h2,
+            .affiliate-box h2 {
+                font-size: 17px;
+                line-height: 1.4;
+            }
+        }
+
+        /* TELEPHONES */
+        @media (max-width: 480px) {
+            .content {
+                padding: 12px;
+            }
+
+            .top-header {
+                padding: 17px;
+                margin-bottom: 16px;
+            }
+
+            .welcome-block h1 {
+                font-size: 21px;
+            }
+
+            .welcome-block .hello {
+                font-size: 14px;
+            }
+
+            #todayDate {
+                font-size: 12px;
+            }
+
+            .quick-grid {
+                gap: 8px;
+                margin-bottom: 18px;
+            }
+
+            .quick-card {
+                min-height: 108px;
+                padding: 10px;
+                border-radius: 13px;
+            }
+
+            .quick-card h3 {
+                font-size: 12px;
+                line-height: 1.3;
+                padding: 7px 8px;
+            }
+
+            .quick-card p {
+                font-size: 11px;
+                line-height: 1.4;
+            }
+
+            #trainingAccessContainer .quick-card h3 {
+                padding: 0;
+                font-size: 13px;
+            }
+
+            .stats-grid {
+                gap: 8px;
+            }
+
+            .stats-grid .card {
+                padding: 12px;
+                border-radius: 13px;
+            }
+
+            .stats-grid .card h3 {
+                font-size: 11px;
+                line-height: 1.35;
+            }
+
+            .stats-grid .card h2 {
+                font-size: clamp(15px, 4vw, 18px);
+            }
+
+            #otherProductsContainer {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            #otherProductsContainer > * {
+                padding: 10px !important;
             }
 
             .profile-grid {
                 grid-template-columns: 1fr;
-                gap: 11px;
+                gap: 9px;
             }
 
             .affiliate-box input {
+                padding: 12px;
                 font-size: 12px;
             }
 
@@ -466,137 +598,43 @@
             }
         }
 
+        /* TRES PETITS TELEPHONES : 320 A 380 PX */
         @media (max-width: 380px) {
+            .content {
+                padding: 10px;
+            }
+
             .quick-grid,
-            .stats-grid {
+            #otherProductsContainer {
                 grid-template-columns: 1fr;
+            }
+
+            .quick-card {
+                min-height: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .profile-section,
+            .affiliate-box,
+            .activity {
+                padding: 13px;
             }
         }
 
+        /* GRANDS ECRANS */
+        @media (min-width: 1600px) {
+            .content {
+                padding: 34px 40px;
+            }
 
-/* ==========================================
-   OPTIMISATION DES CARTES DU DASHBOARD
-   PROF IA MEDIA PARTNERS
-   ========================================== */
-
-/* CARTES DE NAVIGATION */
-.quick-card {
-    min-height: 125px;
-    padding: 15px;
-    border-radius: 15px;
-}
-
-.quick-grid {
-    gap: 12px;
-    margin-bottom: 22px;
-}
-
-.quick-icon {
-    width: 38px;
-    height: 38px;
-    font-size: 19px;
-    margin-bottom: 9px;
-}
-
-/* TITRES DES CARTES DE NAVIGATION */
-.quick-card h3 {
-    font-size: 13px;
-    padding: 8px 11px;
-    margin-bottom: 7px;
-}
-
-/* TITRE DE LA FORMATION DÉJÀ ACQUISE :
-   SUPPRESSION DU FOND VERT */
-#trainingAccessContainer .quick-card h3 {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    padding: 0;
-    margin: 0 0 8px;
-
-    background: transparent !important;
-    color: #263449 !important;
-
-    box-shadow: none !important;
-    border-radius: 0;
-
-    font-size: 14px;
-    font-weight: 700;
-    text-align: left;
-}
-
-#trainingAccessContainer .quick-card:hover h3 {
-    background: transparent !important;
-    color: #263449 !important;
-    transform: none;
-    box-shadow: none !important;
-}
-
-/* CARTES DES AUTRES FORMATIONS */
-#otherProductsContainer {
-    grid-template-columns: repeat(
-        auto-fit,
-        minmax(240px, 1fr)
-    );
-    gap: 12px;
-}
-
-#otherProductsContainer > div {
-    padding: 13px !important;
-    margin-bottom: 0 !important;
-    border-radius: 13px !important;
-}
-
-/* CONTENU DES CARTES PRODUITS */
-#otherProductsContainer > div h3 {
-    font-size: 15px;
-    line-height: 1.4;
-}
-
-#otherProductsContainer > div p {
-    font-size: 12px;
-    line-height: 1.4;
-}
-
-#otherProductsContainer > div strong {
-    font-size: 13px;
-}
-
-/* VERSION MOBILE */
-@media (max-width: 700px) {
-
-    .quick-card {
-        min-height: 115px;
-        padding: 12px;
-    }
-
-    .quick-grid {
-        gap: 9px;
-    }
-
-    #otherProductsContainer {
-        grid-template-columns: repeat(
-            2,
-            minmax(0, 1fr)
-        );
-        gap: 9px;
-    }
-
-    #otherProductsContainer > div {
-        padding: 10px !important;
-    }
-
-}
-
-/* PETITS ÉCRANS */
-@media (max-width: 380px) {
-
-    #otherProductsContainer {
-        grid-template-columns: 1fr;
-    }
-
-}
-
+            .quick-grid,
+            .stats-grid {
+                gap: 18px;
+            }
+        }
 
     </style>
 </head>
@@ -628,10 +666,13 @@
 
         </header>
 
-         <!-- AUTRES FORMATIONS -->
+        <!-- AUTRES FORMATIONS -->
         <section class="activity">
 
-            <h2><i class="fas fa-graduation-cap"></i> Découvrez nos formations</h2>
+            <h2>
+                <i class="fas fa-graduation-cap"></i>
+                Découvrez nos formations
+            </h2>
 
             <p class="activity-description">
                 Continuez à développer vos compétences avec nos autres formations.
@@ -646,7 +687,7 @@
         <!-- CARTES DE NAVIGATION -->
         <section class="quick-grid">
 
-<div id="trainingAccessContainer">
+            <div id="trainingAccessContainer">
                 <div class="quick-card">
                     <div class="quick-icon">🎓</div>
                     <h3>Mes formations</h3>
@@ -654,13 +695,13 @@
                 </div>
             </div>
 
-<a href="withdrawals.html" class="quick-card">
+            <a href="withdrawals.html" class="quick-card">
                 <div class="quick-icon">💳</div>
                 <h3>Mes retraits</h3>
                 <p>Consultez votre solde et demandez un paiement.</p>
             </a>
 
-<a href="commissions.html" class="quick-card">
+            <a href="commissions.html" class="quick-card">
                 <div class="quick-icon">💰</div>
                 <h3>Mes commissions</h3>
                 <p>Découvrez les gains générés par vos ventes.</p>
@@ -672,13 +713,12 @@
                 <p>Suivez les personnes que vous avez invitées.</p>
             </a>
 
-
         </section>
 
         <!-- STATISTIQUES -->
         <section class="stats-grid">
 
- <div class="card">
+            <div class="card">
                 <span class="icon">💰</span>
                 <h3>Solde disponible</h3>
                 <h2 id="commissionAmount">0 FCFA</h2>
@@ -690,13 +730,13 @@
                 <h2 id="pendingWithdrawalAmount">0 FCFA</h2>
             </div>
 
-<div class="card">
+            <div class="card">
                 <span class="icon">💳</span>
                 <h3>Total des retraits</h3>
                 <h2 id="withdrawAmount">0 FCFA</h2>
             </div>
 
- <div class="card">
+            <div class="card">
                 <span class="icon">📈</span>
                 <h3>Mes ventes</h3>
                 <h2 id="salesCount">0</h2>
@@ -710,10 +750,13 @@
 
         </section>
 
- <!-- LIEN D'AFFILIATION -->
+        <!-- LIEN D'AFFILIATION -->
         <section class="affiliate-box">
 
-            <h2><i class="fas fa-share-alt"></i> Invitez et gagnez des commissions</h2>
+            <h2>
+                <i class="fas fa-share-alt"></i>
+                Invitez et gagnez des commissions
+            </h2>
 
             <p style="color:#718096;font-size:14px;margin-top:-12px;margin-bottom:18px;">
                 Partagez votre lien personnel avec vos proches et votre communauté.
@@ -740,11 +783,13 @@
 
         </section>
 
-
         <!-- PROFIL -->
         <section class="profile-section">
 
-            <h2><i class="fas fa-user-circle"></i> Mon profil</h2>
+            <h2>
+                <i class="fas fa-user-circle"></i>
+                Mon profil
+            </h2>
 
             <div class="profile-grid">
 
@@ -776,9 +821,6 @@
             </div>
 
         </section>
-
-       
-       
 
     </main>
 
