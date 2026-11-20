@@ -228,51 +228,54 @@
 
 </head>
 
+
 <body>
 
-    <!-- SIDEBAR COMMUN -->
-    <div id="sidebar-container"></div>
+    <div class="dashboard">
 
-    <!-- CONTENU PRINCIPAL -->
-    <main class="main-content">
+        <!-- SIDEBAR COMMUN -->
+        <div id="sidebar-container"></div>
 
-        <!-- EN-TÊTE -->
-        <div class="page-header">
+        <!-- CONTENU PRINCIPAL -->
+        <main class="content main-content">
 
-            <h1>🔔 Notifications</h1>
+            <!-- EN-TÊTE -->
+            <div class="page-header">
 
-            <p>
-                Consultez toutes vos notifications.
-            </p>
+                <h1>🔔 Notifications</h1>
 
-        </div>
+                <p>
+                    Consultez toutes vos notifications.
+                </p>
 
-        <!-- LISTE DES NOTIFICATIONS -->
-        <div
-            id="notificationsContainer"
-            class="notifications-list">
-
-            <div class="loading">
-                Chargement des notifications...
             </div>
 
-        </div>
+            <!-- LISTE DES NOTIFICATIONS -->
+            <div
+                id="notificationsContainer"
+                class="notifications-list">
 
-    </main>
+                <div class="loading">
+                    Chargement des notifications...
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
 
     <!-- SCRIPTS EXISTANTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
     <script src="js/config.js"></script>
-
     <script src="js/theme.js"></script>
-
     <script src="js/sidebar.js"></script>
-
     <script src="js/notificationService.js"></script>
-
     <script src="js/notifications.js"></script>
 
 </body>
+</html>
+
 
 </html>
