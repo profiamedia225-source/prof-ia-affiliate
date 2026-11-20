@@ -1,165 +1,537 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mon Profil - PROF IA MEDIA PARTNERS</title>
+    <title>Mon Profil - PROF IA MEDIA PARTNERS</title>
 
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/sidebar.css">
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/profile.css">
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- CSS COMMUNS : IDENTIQUES AU DASHBOARD -->
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/theme.css">
+
+    <!-- CSS SPÉCIFIQUE AU PROFIL -->
+    <link rel="stylesheet" href="css/profile.css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- RESPONSIVE PROFIL -->
+    <style>
+
+        /* ==========================================
+           PAGE MON PROFIL
+        ========================================== */
+
+        .profile-container {
+            width: 100%;
+            max-width: 850px;
+            min-width: 0;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .profile-container *,
+        .profile-container *::before,
+        .profile-container *::after {
+            box-sizing: border-box;
+        }
+
+        /* CARTE PRINCIPALE */
+
+        .profile-card {
+            width: 100%;
+            min-width: 0;
+            padding: clamp(18px, 3vw, 35px);
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 5px 25px rgba(15, 23, 42, 0.05);
+        }
+
+        /* TITRE */
+
+        .profile-card h1 {
+            margin: 0 0 8px;
+            color: #1e293b;
+            font-size: clamp(21px, 2.5vw, 28px);
+            font-weight: 750;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-card .subtitle {
+            margin: 0 0 28px;
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ==========================================
+           FORMULAIRES
+        ========================================== */
+
+        #profileForm,
+        #passwordForm {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .profile-container .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .profile-container .form-group label {
+            display: block;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 650;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-container .form-group input {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            min-height: 47px;
+            padding: 12px 14px;
+            border: 1px solid #dbe3ee;
+            border-radius: 10px;
+            background: #fff;
+            color: #263449;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .profile-container .form-group input:focus {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, .10);
+        }
+
+        .profile-container .form-group input[readonly] {
+            background: #f1f5f9;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        /* BOUTONS */
+
+        .profile-container .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 100%;
+            min-height: 48px;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            background: #16a34a;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            cursor: pointer;
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .profile-container .btn-primary:hover {
+            background: #15803d;
+            transform: translateY(-1px);
+        }
+
+        #profileForm > .btn-primary {
+            grid-column: 1 / -1;
+        }
+
+        /* ==========================================
+           SÉPARATION ET SÉCURITÉ
+        ========================================== */
+
+        .profile-container .section-divider {
+            width: 100%;
+            height: 1px;
+            margin: 32px 0;
+            border: none;
+            background: #e2e8f0;
+        }
+
+        .profile-container .security-section {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .profile-container .security-section h2 {
+            margin: 0 0 8px;
+            color: #1e293b;
+            font-size: clamp(18px, 2vw, 21px);
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .profile-container .section-subtitle {
+            margin: 0 0 22px;
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        #passwordForm > .btn-primary {
+            grid-column: 1 / -1;
+        }
+
+        /* ==========================================
+           MODE SOMBRE
+        ========================================== */
+
+        body.dark-theme .profile-card {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .profile-card h1,
+        body.dark-theme .profile-container .security-section h2 {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .profile-card .subtitle,
+        body.dark-theme .profile-container .section-subtitle {
+            color: #94a3b8;
+        }
+
+        body.dark-theme .profile-container .form-group label {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .profile-container .form-group input {
+            background: #0f172a;
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .profile-container .form-group input[readonly] {
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .profile-container .section-divider {
+            background: #334155;
+        }
+
+        /* ==========================================
+           TABLETTES
+        ========================================== */
+
+        @media (max-width: 1024px) {
+
+            .profile-container {
+                max-width: 750px;
+            }
+
+            .profile-card {
+                padding: 25px;
+            }
+
+            #profileForm,
+            #passwordForm {
+                gap: 17px;
+            }
+
+        }
+
+        /* ==========================================
+           TÉLÉPHONES
+        ========================================== */
+
+        @media (max-width: 768px) {
+
+            .profile-container {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .profile-card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .profile-card h1 {
+                font-size: 22px;
+            }
+
+            .profile-card .subtitle {
+                margin-bottom: 22px;
+                font-size: 13px;
+            }
+
+            #profileForm,
+            #passwordForm {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 16px;
+            }
+
+            #profileForm > .btn-primary,
+            #passwordForm > .btn-primary {
+                grid-column: 1;
+            }
+
+            .profile-container .form-group input {
+                min-height: 48px;
+                font-size: 14px;
+            }
+
+            .profile-container .section-divider {
+                margin: 25px 0;
+            }
+
+            .profile-container .security-section h2 {
+                font-size: 19px;
+            }
+
+        }
+
+        /* ==========================================
+           PETITS TÉLÉPHONES
+        ========================================== */
+
+        @media (max-width: 480px) {
+
+            .profile-card {
+                padding: 15px;
+                border-radius: 13px;
+            }
+
+            .profile-card h1 {
+                font-size: 20px;
+            }
+
+            .profile-card .subtitle {
+                font-size: 12px;
+            }
+
+            #profileForm,
+            #passwordForm {
+                gap: 14px;
+            }
+
+            .profile-container .form-group label {
+                font-size: 13px;
+            }
+
+            .profile-container .form-group input {
+                padding: 11px 12px;
+                font-size: 13px;
+            }
+
+            .profile-container .btn-primary {
+                min-height: 47px;
+                padding: 11px 12px;
+                font-size: 13px;
+            }
+
+            .profile-container .section-divider {
+                margin: 22px 0;
+            }
+
+        }
+
+        /* TRÈS PETITS ÉCRANS */
+
+        @media (max-width: 350px) {
+
+            .profile-card {
+                padding: 12px;
+            }
+
+            .profile-container .form-group input {
+                font-size: 12px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-<div class="dashboard">
+    <div class="dashboard">
 
-    <div id="sidebar-container"></div>
+        <!-- SIDEBAR COMMUN -->
+        <div id="sidebar-container"></div>
 
-    <main class="content">
+        <!-- CONTENU PRINCIPAL -->
+        <main class="content">
 
-        <div class="profile-container">
+            <div class="profile-container">
 
-        <div class="profile-card">
+                <div class="profile-card">
 
-        <h1>👤 Mon Profil</h1>
+                    <!-- TITRE -->
+                    <h1>👤 Mon Profil</h1>
 
-        <p class="subtitle">
+                    <p class="subtitle">
+                        Gérez vos informations personnelles.
+                    </p>
 
-            Gérez vos informations personnelles.
+                    <!-- FORMULAIRE PROFIL -->
+                    <form id="profileForm">
 
-        </p>
+                        <div class="form-group">
 
-        <form id="profileForm">
+                            <label for="fullname">
+                                Nom complet
+                            </label>
 
-            <div class="form-group">
+                            <input
+                                type="text"
+                                id="fullname"
+                                required>
 
-                <label>Nom complet</label>
+                        </div>
 
-                <input
-                    type="text"
-                    id="fullname"
-                    required>
+                        <div class="form-group">
+
+                            <label for="email">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                readonly>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="phone">
+                                Téléphone
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="country">
+                                Pays
+                            </label>
+
+                            <input
+                                type="text"
+                                id="country"
+                                required>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn-primary">
+
+                            💾 Enregistrer
+
+                        </button>
+
+                    </form>
+
+                    <!-- SÉPARATION -->
+                    <hr class="section-divider">
+
+                    <!-- SECTION SÉCURITÉ -->
+                    <section class="security-section">
+
+                        <h2>🔒 Sécurité</h2>
+
+                        <p class="section-subtitle">
+                            Modifiez votre mot de passe.
+                        </p>
+
+                        <!-- FORMULAIRE MOT DE PASSE -->
+                        <form id="passwordForm">
+
+                            <div class="form-group">
+
+                                <label for="newPassword">
+                                    Nouveau mot de passe
+                                </label>
+
+                                <input
+                                    type="password"
+                                    id="newPassword"
+                                    placeholder="********">
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="confirmPassword">
+                                    Confirmer le mot de passe
+                                </label>
+
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    placeholder="********">
+
+                            </div>
+
+                            <button
+                                type="button"
+                                id="changePasswordBtn"
+                                class="btn-primary">
+
+                                🔒 Modifier le mot de passe
+
+                            </button>
+
+                        </form>
+
+                    </section>
+
+                </div>
 
             </div>
 
-            <div class="form-group">
+        </main>
 
-                <label>Email</label>
+    </div>
 
-                <input
-                    type="email"
-                    id="email"
-                    readonly>
+    <!-- SCRIPTS EXISTANTS : CONSERVÉS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-            </div>
+    <script src="js/config.js"></script>
 
-            <div class="form-group">
+    <script src="js/notificationService.js"></script>
 
-                <label>Téléphone</label>
+    <script src="js/theme.js"></script>
 
-                <input
-                    type="tel"
-                    id="phone"
-                    required>
+    <script src="js/profile.js"></script>
 
-            </div>
-
-            <div class="form-group">
-
-                <label>Pays</label>
-
-                <input
-                    type="text"
-                    id="country"
-                    required>
-
-            </div>
-
-            <button
-                type="submit"
-                class="btn-primary">
-
-                💾 Enregistrer
-
-            </button>
-
-  </form>
-
-<hr class="section-divider">
-
-<section class="security-section">
-
-    <h2>🔒 Sécurité</h2>
-
-    <p class="section-subtitle">
-        Modifiez votre mot de passe.
-    </p>
-
-    <form id="passwordForm">
-
-        <div class="form-group">
-
-            <label>Nouveau mot de passe</label>
-
-            <input
-                type="password"
-                id="newPassword"
-                placeholder="********">
-
-        </div>
-
-        <div class="form-group">
-
-            <label>Confirmer le mot de passe</label>
-
-            <input
-                type="password"
-                id="confirmPassword"
-                placeholder="********">
-
-        </div>
-
-     <button
-    type="button"
-    id="changePasswordBtn"
-    class="btn-primary">
-
-    🔒 Modifier le mot de passe
-
-</button>
-
-    </form>
-
-</section>
-
-
-        </div>
-
-    </main>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/config.js"></script>
-
-<script src="js/notificationService.js"></script>
-
-<script src="js/theme.js"></script>
-
-<script src="js/profile.js"></script>
-
-<script src="js/sidebar.js"></script>
+    <script src="js/sidebar.js"></script>
 
 </body>
 
