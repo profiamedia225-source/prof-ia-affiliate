@@ -206,6 +206,12 @@ method.addEventListener("change", () => {
             paymentDetails.placeholder = "Ex : CI12 1234 5678...";
             break;
 
+            case "Djamo":
+
+    paymentLabel.textContent = "Numéro ou informations Djamo";
+    paymentDetails.placeholder = "Entrez vos informations Djamo";
+    break;
+
         default:
 
             paymentLabel.textContent =
