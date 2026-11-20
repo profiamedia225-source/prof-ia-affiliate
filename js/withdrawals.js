@@ -217,22 +217,33 @@ method.addEventListener("change", () => {
     }
 
 });
+
 async function loadPaymentMethods() {
 
-    const settings = await loadSettings();
-
-    const methods =
-        (settings.payment_methods || "")
-        .split(",")
-        .map(item => item.trim())
-        .filter(Boolean);
+    const methods = [
+        "Wave",
+        "Orange Money",
+        "MTN Money",
+        "Moov Money",
+        "Djamo"
+    ];
 
     method.innerHTML = "";
 
+    // Option prédéfinie
+    const placeholder = document.createElement("option");
+
+    placeholder.value = "";
+    placeholder.textContent = "Choisir un opérateur";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+
+    method.appendChild(placeholder);
+
+    // Ajouter les cinq opérateurs
     methods.forEach(paymentMethod => {
 
-        const option =
-            document.createElement("option");
+        const option = document.createElement("option");
 
         option.value = paymentMethod;
         option.textContent = paymentMethod;
@@ -241,6 +252,10 @@ async function loadPaymentMethods() {
 
     });
 
-    method.dispatchEvent(new Event("change"));
+    paymentLabel.textContent =
+        "Numéro ou informations de paiement";
+
+    paymentDetails.placeholder =
+        "Sélectionnez un opérateur";
 
 }
