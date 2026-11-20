@@ -1,494 +1,386 @@
 
-/* ==========================================
-   PROF IA MEDIA PARTNERS
-   DASHBOARD — DESIGN PROFESSIONNEL
-   ========================================== */
+/* =====================================================
+   PROF IA MEDIA PARTNERS — STYLES DE LA PAGE DASHBOARD
+   Ce fichier ne doit pas contrôler le layout global
+   ni le positionnement du sidebar.
+   ===================================================== */
 
-.dashboard,
-.content {
-    min-width: 0;
-    box-sizing: border-box;
-}
-
-.content {
-    width: calc(100% - 260px);
-    max-width: 100%;
-    padding: 30px;
-    overflow-x: hidden;
-}
-
-/* ==========================================
-   CARTE DE BIENVENUE
-   ========================================== */
-
-.dashboard-welcome {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 30px;
-    margin-bottom: 26px;
-    border-radius: 22px;
-    background: linear-gradient(
-        120deg,
-        #111c35,
-        #172d55 65%,
-        #123c4a
-    );
-    color: #ffffff;
-    box-shadow: 0 12px 35px rgba(15, 23, 42, .16);
-}
-
-.dashboard-welcome .hello {
-    margin: 0 0 6px;
-    color: #cbd5e1;
-    font-size: 15px;
-}
-
-.dashboard-welcome h1 {
-    margin: 0 0 12px;
-    color: #ffffff;
-    font-size: clamp(23px, 3vw, 32px);
-    overflow-wrap: anywhere;
-}
-
-.status {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 12px;
-    border-radius: 30px;
-    background: rgba(34, 197, 94, .14);
-    color: #86efac;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #22c55e;
-}
-
-.today-date {
-    margin: 0;
-    color: #cbd5e1;
-    font-size: 13px;
-    text-transform: capitalize;
-}
-
-/* ==========================================
-   CARTES DE RACCOURCIS
-   ========================================== */
-
+/* Cartes de navigation */
 .quick-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
-    margin-bottom: 30px;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 25px;
+}
+
+.quick-grid > *,
+#trainingAccessContainer {
+    min-width: 0;
+    max-width: 100%;
 }
 
 .quick-card {
-    box-sizing: border-box;
-    min-width: 0;
-    min-height: 150px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     justify-content: center;
-    gap: 10px;
-    padding: 20px;
-    border-radius: 18px;
-    text-decoration: none !important;
-    color: inherit;
-    background: var(--card-bg, #ffffff);
-    border: 1px solid rgba(148, 163, 184, .2);
-    box-shadow: 0 7px 22px rgba(15, 23, 42, .06);
-    transition: transform .2s, box-shadow .2s;
+    gap: 9px;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 125px;
+    height: 100%;
+    padding: 15px;
+    border: 1px solid #e8edf4;
+    border-radius: 15px;
+    background: #fff;
+    color: #263449;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, .035);
+    transition: transform .2s ease, box-shadow .2s ease;
 }
 
 .quick-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, .11);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
 }
 
 .quick-icon {
-    width: 44px;
-    height: 44px;
-    display: grid;
-    place-items: center;
-    border-radius: 13px;
-    background: rgba(59, 130, 246, .12);
-    font-size: 22px;
-}
-
-.quick-title {
-    font-size: 16px;
-    font-weight: 750;
-}
-
-.quick-action {
-    color: #64748b;
-    font-size: 12px;
-}
-
-.quick-action i {
-    margin-left: 4px;
-}
-
-.training-access-grid {
-    display: contents;
-}
-
-.training-access-grid .quick-card {
-    height: 100%;
-}
-
-.training-card .btn-primary {
-    width: 100%;
-    margin-top: 5px;
-}
-
-/* ==========================================
-   SECTIONS ET TITRES
-   ========================================== */
-
-.section-block,
-.profile-section {
-    box-sizing: border-box;
-    min-width: 0;
-    margin: 0 0 24px;
-    padding: 25px;
-    border-radius: 20px;
-    background: var(--card-bg, #ffffff);
-    border: 1px solid rgba(148, 163, 184, .2);
-    box-shadow: 0 7px 22px rgba(15, 23, 42, .05);
-}
-
-.section-heading {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 3px;
+    border-radius: 13px;
+    background: #edf3ff;
+    font-size: 19px;
 }
 
-.section-heading h2,
-.profile-section h2 {
-    margin: 4px 0 0;
-    font-size: 21px;
+.quick-card h3 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 0 7px;
+    padding: 8px 11px;
+    border: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 700;
+    text-align: center;
+    overflow-wrap: anywhere;
 }
 
-.eyebrow {
-    color: #16a34a;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.2px;
+.quick-card p {
+    margin: 0;
+    color: #718096;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
-/* ==========================================
-   CARTES STATISTIQUES
-   ========================================== */
+/* Accès à la formation : titre neutre, sans fond vert */
+#trainingAccessContainer .quick-card h3 {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    margin: 0 0 8px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent !important;
+    color: #263449 !important;
+    box-shadow: none !important;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+}
 
+#trainingAccessContainer .quick-card:hover h3 {
+    background: transparent !important;
+    color: #263449 !important;
+    box-shadow: none !important;
+}
+
+/* Bouton d'accès formation */
+#trainingAccessContainer .quick-card a,
+#trainingAccessContainer .quick-card button,
+#trainingAccessContainer .quick-card .btn,
+#trainingAccessContainer .quick-card .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
+    padding: 10px 15px;
+    border: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: #fff !important;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Grille des statistiques */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 14px;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 30px;
 }
 
 .stats-grid .card {
-    box-sizing: border-box;
     min-width: 0;
-    padding: 20px 16px;
-    border-radius: 16px;
-    background: linear-gradient(145deg, #f8fafc, #eef4ff);
-    border: 1px solid #e2e8f0;
+    padding: 18px;
+    border: 1px solid #e8edf4;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, .035);
 }
 
-.stats-grid .card .icon {
+.stats-grid .icon {
+    display: block;
+    margin-bottom: 13px;
     font-size: 23px;
 }
 
 .stats-grid .card h3 {
-    margin: 12px 0 8px;
-    color: #64748b;
-    font-size: 12px;
-    font-weight: 600;
+    margin: 0 0 9px;
+    color: #718096;
+    font-size: 13px;
+    font-weight: 550;
 }
 
 .stats-grid .card h2 {
     margin: 0;
-    color: #14213d;
+    color: #1e293b;
     font-size: clamp(17px, 2vw, 23px);
+    font-weight: 750;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Sections de la page d'accueil */
+.profile-section,
+.affiliate-box,
+.activity {
+    min-width: 0;
+    margin: 0 0 25px;
+    padding: 26px;
+    border: 1px solid #e8edf4;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, .035);
+}
+
+.profile-section h2,
+.affiliate-box h2,
+.activity h2 {
+    margin: 0 0 22px;
+    color: #1e293b;
+    font-size: 19px;
     overflow-wrap: anywhere;
 }
 
-/* ==========================================
-   PROFIL REPLIABLE
-   ========================================== */
-
-.collapsible-section {
-    padding: 0;
-    overflow: hidden;
+.activity-description {
+    margin: -12px 0 20px;
+    color: #718096;
+    font-size: 14px;
 }
 
-.collapsible-section summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 21px 24px;
-    cursor: pointer;
-    list-style: none;
-    font-size: 17px;
-    font-weight: 750;
-}
-
-.collapsible-section summary::-webkit-details-marker {
-    display: none;
-}
-
-.collapsible-section[open] summary {
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.collapsible-section summary i:last-child {
-    color: #64748b;
-    transition: transform .2s;
-}
-
-.collapsible-section[open] summary i:last-child {
-    transform: rotate(180deg);
-}
-
+/* Profil */
 .profile-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-    padding: 22px 24px 24px;
+    gap: 20px;
 }
 
 .profile-grid > div {
     min-width: 0;
     padding: 15px;
-    border-radius: 12px;
-    background: #f8fafc;
+    border: 1px solid #edf1f7;
+    border-radius: 13px;
+    background: #f8faff;
 }
 
 .profile-grid label {
     display: block;
-    margin-bottom: 6px;
-    color: #64748b;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
+    margin-bottom: 7px;
+    color: #718096;
+    font-size: 12px;
 }
 
 .profile-grid p {
     margin: 0;
-    color: #1e293b;
+    color: #263449;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 650;
     overflow-wrap: anywhere;
 }
 
-/* ==========================================
-   LIEN D'AFFILIATION ET QR CODE
-   ========================================== */
-
-.affiliate-box h2 {
-    margin: 0;
+/* Affiliation et QR code */
+.affiliate-box {
+    background: linear-gradient(120deg, #fff, #f0f6ff);
 }
 
+.affiliate-box input,
 #affiliateLink {
-    box-sizing: border-box;
     display: block;
     width: 100%;
+    max-width: 100%;
     min-width: 0;
+    margin-bottom: 14px;
     padding: 14px;
-    border: 1px solid #dbe3ef;
+    border: 1px solid #dce5f1;
     border-radius: 12px;
-    background: #f8fafc;
-    color: #334155;
+    background: #fff;
+    color: #344256;
+    font-size: 14px;
 }
 
-.btn-primary {
-    min-height: 44px;
-    padding: 12px 18px;
-    border: 0;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 700;
+.affiliate-box .btn-primary {
+    background: #2563eb;
+    color: #fff;
+}
+
+.affiliate-box .btn-primary:hover {
+    background: #1e40af;
 }
 
 .qr-section {
-    margin-top: 22px;
-    text-align: center;
+    margin-top: 25px;
+}
+
+.qr-section h3 {
+    margin-bottom: 12px;
+    font-size: 15px;
 }
 
 #qrcode {
-    display: flex;
-    justify-content: center;
-    margin-top: 12px;
+    display: inline-block;
     max-width: 100%;
+    padding: 12px;
     overflow: hidden;
+    border: 1px solid #e8edf4;
+    border-radius: 12px;
+    background: #fff;
 }
 
 #qrcode img,
 #qrcode canvas {
+    display: block;
     max-width: 100%;
     height: auto !important;
 }
 
-/* ==========================================
-   AUTRES FORMATIONS
-   ========================================== */
-
-.activity-description {
-    margin: -8px 0 18px;
-    color: #64748b;
-}
-
+/* Autres formations */
 #otherProductsContainer {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-}
-
-.other-product-card {
-    box-sizing: border-box;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 235px), 1fr));
+    align-items: stretch;
+    gap: 12px;
     min-width: 0;
-    padding: 20px;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    background: #f8fafc;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 16px;
 }
 
-.other-product-card h3 {
-    margin: 8px 0;
-    font-size: 16px;
+#otherProductsContainer > * {
+    min-width: 0;
+    max-width: 100%;
+    margin-bottom: 0 !important;
+    padding: 13px !important;
+    border-radius: 13px !important;
+    overflow-wrap: anywhere;
 }
 
-.other-product-card p {
-    color: #64748b;
+#otherProductsContainer h3 {
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+#otherProductsContainer p {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+#otherProductsContainer strong {
     font-size: 13px;
-    line-height: 1.5;
 }
 
-.other-product-card .product-price {
-    font-size: 16px;
-    color: #0f172a;
-}
-
-.other-product-card .btn-primary {
-    width: 100%;
-}
-
+/* Conteneurs de tableaux */
 .table-container {
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
-/* ==========================================
-   MODE SOMBRE
-   ========================================== */
-
+/* Mode sombre */
 body.dark-theme .quick-card,
-body.dark-theme .section-block,
-body.dark-theme .profile-section {
+body.dark-theme .profile-section,
+body.dark-theme .affiliate-box,
+body.dark-theme .activity {
+    border-color: #334155;
     background: #1e293b;
     color: #f8fafc;
-    border-color: #334155;
 }
 
 body.dark-theme .stats-grid .card,
-body.dark-theme .profile-grid > div,
-body.dark-theme .other-product-card {
-    background: #0f172a;
+body.dark-theme .profile-grid > div {
     border-color: #334155;
+    background: #0f172a;
 }
 
 body.dark-theme .stats-grid .card h2,
-body.dark-theme .profile-grid p,
-body.dark-theme .other-product-card .product-price {
+body.dark-theme .profile-grid p {
     color: #f8fafc;
 }
 
-body.dark-theme #affiliateLink {
+body.dark-theme #affiliateLink,
+body.dark-theme .affiliate-box input {
+    border-color: #334155;
     background: #0f172a;
     color: #e2e8f0;
-    border-color: #334155;
 }
 
-/* ==========================================
-   TABLETTES
-   ========================================== */
-
+/* Tablettes et petits ordinateurs */
 @media (max-width: 1200px) {
+    .quick-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .stats-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .quick-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    #otherProductsContainer {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
     }
 }
 
-/* ==========================================
-   TÉLÉPHONES
-   ========================================== */
-
+/* Téléphones et tablettes portrait */
 @media (max-width: 768px) {
-    .dashboard {
-        display: block;
-        width: 100%;
-        min-height: 100vh;
-    }
-
-    .content {
-        box-sizing: border-box;
-        width: 100%;
-        margin: 0;
-        padding: 16px 13px 30px;
-        overflow-x: hidden;
-    }
-
-    .dashboard-welcome {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 20px;
-        gap: 10px;
-        border-radius: 17px;
-    }
-
-    .dashboard-welcome h1 {
-        font-size: 23px;
-    }
-
     .quick-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
-        margin-bottom: 20px;
     }
 
     .quick-card {
-        min-height: 125px;
-        padding: 14px 12px;
-        border-radius: 14px;
+        min-height: 115px;
+        padding: 12px;
     }
 
-    .quick-title {
-        font-size: 14px;
-    }
-
-    .quick-action {
-        font-size: 11px;
+    .quick-icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 5px;
+        font-size: 18px;
     }
 
     .stats-grid {
@@ -508,31 +400,91 @@ body.dark-theme #affiliateLink {
         font-size: 18px;
     }
 
-    .section-block {
-        padding: 17px 14px;
+    .profile-section,
+    .affiliate-box,
+    .activity {
+        padding: 17px;
         border-radius: 16px;
     }
 
-    .section-heading h2 {
-        font-size: 18px;
+    .profile-section h2,
+    .affiliate-box h2,
+    .activity h2 {
+        font-size: 17px;
+        line-height: 1.4;
     }
 
     .profile-grid {
         grid-template-columns: 1fr;
         gap: 10px;
-        padding: 15px;
+    }
+}
+
+/* Petits téléphones */
+@media (max-width: 480px) {
+    .quick-grid {
+        gap: 8px;
+        margin-bottom: 18px;
     }
 
-    .collapsible-section summary {
-        padding: 17px 15px;
-        font-size: 15px;
+    .quick-card {
+        min-height: 108px;
+        padding: 10px;
+        border-radius: 13px;
+    }
+
+    .quick-card h3 {
+        padding: 7px 8px;
+        font-size: 12px;
+        line-height: 1.3;
+    }
+
+    .quick-card p {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    #trainingAccessContainer .quick-card h3 {
+        padding: 0;
+        font-size: 13px;
+    }
+
+    .stats-grid {
+        gap: 8px;
+    }
+
+    .stats-grid .card {
+        padding: 12px;
+        border-radius: 13px;
+    }
+
+    .stats-grid .card h3 {
+        font-size: 11px;
+        line-height: 1.35;
+    }
+
+    .stats-grid .card h2 {
+        font-size: clamp(15px, 4vw, 18px);
     }
 
     #otherProductsContainer {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
     }
 
+    #otherProductsContainer > * {
+        padding: 10px !important;
+    }
+
+    .profile-section,
+    .affiliate-box,
+    .activity {
+        padding: 14px;
+    }
+
+    .affiliate-box input,
     #affiliateLink {
+        padding: 12px;
         font-size: 12px;
     }
 
@@ -541,222 +493,33 @@ body.dark-theme #affiliateLink {
     }
 }
 
-/* ==========================================
-   PETITS TÉLÉPHONES
-   ========================================== */
-
+/* Très petits téléphones */
 @media (max-width: 380px) {
-    .content {
-        padding: 13px 10px 24px;
-    }
-
-    .quick-grid {
-        gap: 8px;
+    .quick-grid,
+    #otherProductsContainer {
+        grid-template-columns: 1fr;
     }
 
     .quick-card {
-        padding: 12px 9px;
+        min-height: 0;
     }
 
-    .quick-title {
-        font-size: 12px;
-    }
-
-    .stats-grid .card h2 {
-        font-size: 16px;
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-/* Désactivation de l'effet hover sur écran tactile */
-
+/* Désactiver le déplacement au survol sur écran tactile */
 @media (hover: none) {
     .quick-card:hover {
         transform: none;
     }
 }
 
-/* ==========================================
-   CORRECTION STRUCTURELLE DU DASHBOARD
-   PROF IA MEDIA PARTNERS
-========================================== */
-
-/* Organisation générale */
-.dashboard {
-    display: grid !important;
-    grid-template-columns: 250px minmax(0, 1fr) !important;
-    align-items: stretch;
-    width: 100%;
-    min-height: 100vh;
-    overflow: visible;
-}
-
-/* Conteneur du menu chargé par sidebar.js */
-#sidebar-container {
-    width: 250px !important;
-    min-width: 250px !important;
-    min-height: 100vh;
-    position: relative;
-    z-index: 10;
-}
-
-/* Menu latéral réellement injecté */
-#sidebar-container .sidebar {
-    position: sticky !important;
-    top: 0 !important;
-    left: auto !important;
-    width: 250px !important;
-    min-width: 250px !important;
-    height: 100vh !important;
-    margin: 0 !important;
-    box-sizing: border-box;
-}
-
-/* Zone principale */
-.dashboard > .content {
-    position: relative !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 36px !important;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
-
-/* En-tête */
-.top-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    margin-bottom: 32px;
-}
-
-/* Grille des raccourcis */
-.quick-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 20px;
-    width: 100%;
-    margin-bottom: 30px;
-}
-
-/* Grille des statistiques */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 18px;
-    width: 100%;
-    margin-bottom: 30px;
-}
-
-/* Empêcher les cartes de déborder */
-.quick-card,
-.stats-grid .card {
-    min-width: 0;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-}
-
-/* Tablettes et petits ordinateurs */
-@media (max-width: 1100px) {
-    .dashboard {
-        grid-template-columns: 220px minmax(0, 1fr) !important;
-    }
-
-    #sidebar-container {
-        width: 220px !important;
-        min-width: 220px !important;
-    }
-
-    #sidebar-container .sidebar {
-        width: 220px !important;
-        min-width: 220px !important;
-    }
-
-    .dashboard > .content {
-        padding: 25px !important;
-    }
-
-    .quick-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-/* Téléphones */
-@media (max-width: 768px) {
-    .dashboard {
-        display: flex !important;
-        flex-direction: column;
-    }
-
-    #sidebar-container {
-        width: 100% !important;
-        min-width: 0 !important;
-        min-height: auto;
-    }
-
-    #sidebar-container .sidebar {
-        position: relative !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        height: auto !important;
-    }
-
-    .dashboard > .content {
-        width: 100% !important;
-        padding: 20px 15px !important;
-    }
-
-    .top-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
+/* Grands écrans */
+@media (min-width: 1600px) {
     .quick-grid,
     .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 18px;
     }
-}
-/* ==========================================
-   BOUTONS D'ACTION DES CARTES DU DASHBOARD
-========================================== */
-
-.card-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    background: #16a34a !important;
-    color: #ffffff !important;
-
-    padding: 12px 20px;
-    border: none;
-    border-radius: 10px;
-
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none !important;
-
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.card-action:hover {
-    background: #15803d !important;
-    color: #ffffff !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(22, 163, 74, 0.20);
-}
-
-.card-action:focus-visible {
-    outline: 3px solid rgba(22, 163, 74, 0.30);
-    outline-offset: 3px;
 }

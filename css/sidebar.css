@@ -1,343 +1,46 @@
 
-/* ==========================================
-   PROF IA MEDIA PARTNERS
-   SIDEBAR RESPONSIVE
-   ========================================== */
+/* =====================================================
+   PROF IA MEDIA PARTNERS — SIDEBAR RESPONSIVE
+   Responsabilité : menu, hamburger, overlay et défilement.
+   ===================================================== */
 
-.sidebar {
+#sidebar-container {
     position: fixed;
     top: 0;
     left: 0;
+    bottom: 0;
+    z-index: 1200;
     width: 250px;
     height: 100vh;
     height: 100dvh;
-    background: #14213d;
-    color: #ffffff;
-    padding: 28px 18px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+}
+
+.sidebar {
+    position: absolute;
+    inset: 0 auto 0 0;
     display: flex;
     flex-direction: column;
-    z-index: 1200;
-    box-shadow: 4px 0 18px rgba(15, 23, 42, .12);
+    width: 250px;
+    height: 100%;
+    margin: 0;
+    padding: 15px 18px 20px;
     box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: auto;
+    scrollbar-color: #8295b5 #263957;
+    background: #14213d;
+    color: #fff;
+    box-shadow: 4px 0 18px rgba(15, 23, 42, .12);
+    pointer-events: auto;
     transition: transform .3s ease, width .3s ease;
 }
 
-.sidebar::-webkit-scrollbar {
-    width: 5px;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background: #475569;
-    border-radius: 10px;
-}
-
-/* LOGO */
-
-.logo {
-    text-align: center;
-    margin-bottom: 35px;
-    flex-shrink: 0;
-}
-
-.logo img {
-    width: 76px;
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
-    margin-bottom: 12px;
-    border-radius: 12px;
-}
-
-.logo-text h2 {
-    font-size: 20px;
-    color: #ffffff;
-    font-weight: 700;
-}
-
-.logo-text p {
-    color: #aebbd0;
-    font-size: 12px;
-    letter-spacing: 1px;
-    margin-top: 3px;
-}
-
-/* MENU */
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-}
-
-.sidebar li {
-    margin-bottom: 8px;
-    width: 100%;
-}
-
-.sidebar a {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 13px 15px;
-    color: #cbd5e1;
-    text-decoration: none;
-    border-radius: 11px;
-    transition: all .2s ease;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.sidebar a:hover {
-    background: rgba(34, 197, 94, .13);
-    color: #ffffff;
-}
-
-.sidebar a.active {
-    background: #16a34a;
-    color: #ffffff;
-    box-shadow: 0 5px 15px rgba(22, 163, 94, .2);
-}
-
-.sidebar i {
-    width: 22px;
-    min-width: 22px;
-    text-align: center;
-    font-size: 17px;
-}
-
-.sidebar a span:not(.notification-badge) {
-    min-width: 0;
-    overflow-wrap: anywhere;
-}
-
-/* NOTIFICATIONS */
-
-.notification-badge {
-    margin-left: auto;
-    min-width: 21px;
-    height: 21px;
-    padding: 0 6px;
-    border-radius: 50px;
-    background: #ef4444;
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* DECONNEXION */
-
-.logout {
-    margin-top: auto;
-    padding-top: 25px;
-    flex-shrink: 0;
-}
-
-.logout a {
-    color: #fca5a5;
-}
-
-.logout a:hover {
-    background: #b91c1c;
-    color: #ffffff;
-}
-
-/* BOUTON HAMBURGER */
-
-.sidebar-toggle {
-    display: none;
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: none;
-    border-radius: 12px;
-    background: #14213d;
-    color: #ffffff;
-    cursor: pointer;
-    z-index: 1301;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 5px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
-}
-
-.sidebar-toggle span {
-    display: block;
-    width: 21px;
-    height: 2px;
-    background: #ffffff;
-    border-radius: 5px;
-    transition: .25s ease;
-}
-
-/* ANIMATION DU BOUTON */
-
-.sidebar-toggle.is-open span:first-child {
-    transform: translateY(7px) rotate(45deg);
-}
-
-.sidebar-toggle.is-open span:nth-child(2) {
-    opacity: 0;
-}
-
-.sidebar-toggle.is-open span:last-child {
-    transform: translateY(-7px) rotate(-45deg);
-}
-
-/* FOND SOMBRE MOBILE */
-
-.sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(8, 15, 30, .6);
-    backdrop-filter: blur(2px);
-    z-index: 1100;
-}
-
-.sidebar-overlay.is-visible {
-    display: block;
-}
-
-body.sidebar-open {
-    overflow: hidden;
-}
-
-/* TABLETTES ET PETITS ORDINATEURS */
-
-@media (min-width: 769px) and (max-width: 1100px) {
-
-    .sidebar {
-        width: 220px;
-        padding: 22px 13px;
-    }
-
-    .logo img {
-        width: 65px;
-    }
-
-    .logo {
-        margin-bottom: 25px;
-    }
-
-    .sidebar a {
-        padding: 12px 10px;
-        gap: 10px;
-        font-size: 13px;
-    }
-
-}
-
-/* TELEPHONES ET TABLETTES EN MODE PORTRAIT */
-
-@media (max-width: 768px) {
-
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: min(300px, 85vw);
-        max-width: 85vw;
-        height: 100vh;
-        height: 100dvh;
-        padding: 24px 18px;
-        padding-top: 75px;
-        transform: translateX(-105%);
-        visibility: hidden;
-        transition:
-            transform .3s ease,
-            visibility .3s ease;
-        z-index: 1200;
-    }
-
-    .sidebar.is-open {
-        transform: translateX(0);
-        visibility: visible;
-    }
-
-    .sidebar-toggle {
-        display: flex;
-    }
-
-    .logo {
-        margin-bottom: 25px;
-    }
-
-    .logo img {
-        width: 65px;
-    }
-
-    .sidebar ul {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-    }
-
-    .sidebar li {
-        margin-bottom: 8px;
-    }
-
-    .sidebar a {
-        padding: 13px 15px;
-        font-size: 14px;
-        gap: 13px;
-    }
-
-    .logout {
-        margin-top: auto;
-        padding-top: 20px;
-    }
-
-    /* LIBERER L'ESPACE DU CONTENU PRINCIPAL */
-
-    .dashboard > .content,
-    .dashboard > main.content {
-        margin-left: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-}
-
-/* PETITS TELEPHONES */
-
-@media (max-width: 380px) {
-
-    .sidebar {
-        width: 280px;
-        max-width: 85vw;
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    .sidebar-toggle {
-        width: 42px;
-        height: 42px;
-    }
-
-}
-
-/* ==========================================
-   AMELIORATION DE LA BARRE DE DEFILEMENT
-   ========================================== */
-
-.sidebar {
-    scrollbar-width: auto;
-    scrollbar-color: #8295b5 #263957;
-    overscroll-behavior: contain;
-}
-
+/* Barre de défilement */
 .sidebar::-webkit-scrollbar {
     width: 10px;
 }
@@ -357,102 +60,252 @@ body.sidebar-open {
     background: #b7c5dc;
 }
 
-/* ==========================================
-   REDUCTION DE L'ESPACE DU LOGO
-   ========================================== */
-
-.sidebar {
-    padding-top: 15px;
-}
-
+/* Logo */
 .logo {
-    margin-bottom: 18px;
+    flex: 0 0 auto;
+    margin: 0 0 18px;
+    text-align: center;
 }
 
 .logo img {
-    margin-bottom: 6px;
+    width: 76px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 0 6px;
+    object-fit: contain;
+    border-radius: 12px;
 }
 
-/* ==========================================
-   CORRECTION DU CONTENEUR MOBILE
-   ========================================== */
-
-@media (max-width: 768px) {
-
-    /* Le conteneur ne doit plus réserver
-       une hauteur dans la page */
-
-    #sidebar-container {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-        min-width: 0 !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: 0 !important;
-        z-index: 1300;
-        pointer-events: none;
-    }
-
-    /* Le bouton reste accessible */
-
-    #sidebar-container .sidebar-toggle {
-        position: fixed;
-        top: 14px;
-        left: 14px;
-        pointer-events: auto;
-    }
-
-    /* Le menu reste indépendant du contenu */
-
-    #sidebar-container .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        height: 100dvh;
-        pointer-events: auto;
-    }
-
-    /* Le fond sombre */
-
-    #sidebar-container .sidebar-overlay {
-        position: fixed;
-        inset: 0;
-        pointer-events: auto;
-    }
-
-    /* Le contenu reprend toute la largeur */
-
-    .dashboard {
-        display: block !important;
-        width: 100% !important;
-        min-height: 100vh;
-    }
-
-    .dashboard > .content,
-    .dashboard > main.content {
-        position: relative;
-        display: block;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding-top: 75px !important;
-    }
+.logo-text h2 {
+    margin: 4px 0;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
 }
 
-@media (max-width: 768px) {
+.logo-text p {
+    margin: 0;
+    color: #aebbd0;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+/* Navigation */
+.sidebar ul {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar li {
+    width: 100%;
+    margin: 0 0 6px;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    width: 100%;
+    min-width: 0;
+    padding: 12px 13px;
+    box-sizing: border-box;
+    border-radius: 11px;
+    color: #cbd5e1;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .2s ease, color .2s ease;
+}
+
+.sidebar a:hover {
+    background: rgba(34, 197, 94, .13);
+    color: #fff;
+}
+
+.sidebar a.active {
+    background: #16a34a;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(22, 163, 94, .2);
+}
+
+.sidebar i {
+    flex: 0 0 22px;
+    width: 22px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.sidebar a span:not(.notification-badge) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Badge de notifications */
+.notification-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 21px;
+    height: 21px;
+    margin-left: auto;
+    padding: 0 6px;
+    border-radius: 50px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* Déconnexion en bas du menu */
+.logout {
+    flex: 0 0 auto;
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.logout a {
+    color: #fca5a5;
+}
+
+.logout a:hover {
+    background: #b91c1c;
+    color: #fff;
+}
+
+/* Bouton hamburger : caché sur ordinateur */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 1301;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: #14213d;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
+    pointer-events: auto;
+}
+
+.sidebar-toggle span {
+    display: block;
+    width: 21px;
+    height: 2px;
+    border-radius: 5px;
+    background: #fff;
+    transition: .25s ease;
+}
+
+.sidebar-toggle.is-open span:first-child {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.sidebar-toggle.is-open span:nth-child(2) {
+    opacity: 0;
+}
+
+.sidebar-toggle.is-open span:last-child {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Overlay mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background: rgba(8, 15, 30, .6);
+    backdrop-filter: blur(2px);
+    pointer-events: auto;
+}
+
+.sidebar-overlay.is-visible {
+    display: block;
+}
+
+body.sidebar-open {
+    overflow: hidden;
+}
+
+/* Tablettes et petits ordinateurs */
+@media (min-width: 769px) and (max-width: 1100px) {
+    #sidebar-container,
+    .sidebar {
+        width: 220px;
+    }
 
     .sidebar {
-        padding-top: 65px;
+        padding: 18px 13px;
     }
 
     .logo {
-        margin-top: 0;
-        margin-bottom: 15px;
+        margin-bottom: 16px;
+    }
+
+    .logo img {
+        width: 65px;
+    }
+
+    .sidebar a {
+        gap: 10px;
+        padding: 11px 10px;
+        font-size: 13px;
+    }
+}
+
+/* Mobile : panneau coulissant */
+@media (max-width: 768px) {
+    #sidebar-container {
+        position: fixed;
+        inset: 0 auto auto 0;
+        width: 0;
+        height: 0;
+        min-width: 0;
+        min-height: 0;
+        pointer-events: none;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: auto;
+        bottom: 0;
+        left: 0;
+        width: min(300px, 85vw);
+        max-width: 85vw;
+        height: 100vh;
+        height: 100dvh;
+        padding: 65px 18px 20px;
+        overflow-y: auto;
+        transform: translateX(-105%);
+        visibility: hidden;
+        z-index: 1200;
+        pointer-events: auto;
+        transition: transform .3s ease, visibility .3s ease;
+    }
+
+    .sidebar.is-open {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .sidebar-toggle {
+        display: flex;
+    }
+
+    .logo {
+        margin: 0 0 15px;
     }
 
     .logo img {
@@ -461,12 +314,7 @@ body.sidebar-open {
     }
 
     .logo-text h2 {
-        margin: 4px 0;
         font-size: 18px;
-    }
-
-    .logo-text p {
-        margin: 0;
     }
 
     .sidebar li {
@@ -475,77 +323,26 @@ body.sidebar-open {
 
     .sidebar a {
         padding: 11px 13px;
+        font-size: 14px;
+    }
+
+    .logout {
+        margin-top: auto;
+        padding-top: 18px;
     }
 }
 
-/* ==========================================
-   FIX SIDEBAR FIXE SUR ORDINATEUR
-   PROF IA MEDIA PARTNERS
-   ========================================== */
-
-@media (min-width: 769px) {
-
-    /* Conteneur fixé à la fenêtre */
-
-    #sidebar-container {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        bottom: 0 !important;
-        width: 250px !important;
-        height: 100vh !important;
-        height: 100dvh !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        z-index: 1200 !important;
-        pointer-events: none;
+/* Très petits téléphones */
+@media (max-width: 380px) {
+    .sidebar {
+        width: min(280px, 85vw);
+        max-width: 85vw;
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
-    /* Sidebar indépendante du défilement */
-
-    #sidebar-container .sidebar {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 250px !important;
-        height: 100% !important;
-        max-height: 100% !important;
-        margin: 0 !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        transform: none !important;
-        visibility: visible !important;
-        pointer-events: auto;
+    .sidebar-toggle {
+        width: 42px;
+        height: 42px;
     }
-
-    /* Le contenu reste à droite */
-
-    .dashboard > .content,
-    .dashboard > main.content,
-    .content {
-        margin-left: 250px !important;
-        width: calc(100% - 250px) !important;
-    }
-
-}
-
-/* TABLETTES */
-
-@media (min-width: 769px) and (max-width: 1100px) {
-
-    #sidebar-container {
-        width: 220px !important;
-    }
-
-    #sidebar-container .sidebar {
-        width: 220px !important;
-    }
-
-    .dashboard > .content,
-    .dashboard > main.content,
-    .content {
-        margin-left: 220px !important;
-        width: calc(100% - 220px) !important;
-    }
-
 }

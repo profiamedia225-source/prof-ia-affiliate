@@ -1,120 +1,131 @@
 
-/* ==========================================
-   PROF IA MEDIA PARTNERS
-   LAYOUT GLOBAL RESPONSIVE
-   ========================================== */
+/* =====================================================
+   PROF IA MEDIA PARTNERS — LAYOUT GLOBAL
+   Responsabilité : structure générale et contenu principal
+   Le sidebar est positionné indépendamment dans sidebar.css.
+   ===================================================== */
 
-* {
-    margin: 0;
-    padding: 0;
+*,
+*::before,
+*::after {
     box-sizing: border-box;
-    font-family: "Segoe UI", Arial, sans-serif;
 }
 
 html {
     width: 100%;
     min-height: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 body {
     width: 100%;
     min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
     background: #f4f7fb;
     color: #263247;
     line-height: 1.6;
-    overflow-x: hidden;
+    font-family: "Segoe UI", Arial, sans-serif;
+    overflow-x: clip;
 }
 
-/* ==========================================
-   STRUCTURE GENERALE
-   ========================================== */
-
+/* Structure générale */
 .dashboard {
     display: flex;
+    align-items: flex-start;
     width: 100%;
     min-height: 100vh;
     min-height: 100dvh;
 }
 
-/* ==========================================
-   CONTENEUR SIDEBAR
-   ========================================== */
-
+/* Conteneur injecté par sidebar.js */
 #sidebar-container {
-    flex-shrink: 0;
+    flex: 0 0 0;
+    width: 0;
+    min-width: 0;
+    height: 0;
 }
 
-/* ==========================================
-   CONTENU PRINCIPAL
-   ========================================== */
-
+/* Contenu principal : sidebar fixe de 250 px sur ordinateur */
+.dashboard > .content,
+.dashboard > main.content,
 .content {
-    margin-left: 250px;
-    flex: 1 1 0;
+    flex: 1 1 auto;
     width: calc(100% - 250px);
+    max-width: calc(100% - 250px);
     min-width: 0;
     min-height: 100vh;
-    padding: 35px 40px;
-    overflow-x: hidden;
+    min-height: 100dvh;
+    margin: 0 0 0 250px;
+    padding: 32px clamp(20px, 3vw, 40px);
     background: #f4f7fb;
+    overflow-x: clip;
 }
 
-/* ==========================================
-   TITRES
-   ========================================== */
+/* Médias et éléments larges */
+.content img,
+.content video,
+.content canvas,
+.content svg {
+    max-width: 100%;
+}
 
+.content > *,
+.content section,
+.content header {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Titres généraux */
 .content h1 {
     color: #172554;
-    font-size: 28px;
+    font-size: clamp(22px, 2.2vw, 28px);
     font-weight: 700;
-    margin-bottom: 8px;
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
 }
 
 .content h2 {
     color: #1e293b;
-    font-size: 21px;
-    margin-bottom: 15px;
+    font-size: clamp(18px, 1.8vw, 21px);
+    margin: 0 0 15px;
+    overflow-wrap: anywhere;
 }
 
 .content p {
     color: #64748b;
 }
 
-/* ==========================================
-   CARTES
-   ========================================== */
-
+/* Cartes génériques */
 .card,
 .dashboard-card,
 .settings-card,
 .profile-card {
-    background: #ffffff;
-    border: 1px solid #e8edf5;
-    border-radius: 18px;
-    padding: 24px;
-    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.04);
-    transition: transform .2s ease, box-shadow .2s ease;
     min-width: 0;
     max-width: 100%;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #e8edf5;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, .04);
+    transition: transform .2s ease, box-shadow .2s ease;
 }
 
 .card:hover,
 .dashboard-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
 }
 
-/* ==========================================
-   BOUTONS
-   ========================================== */
-
+/* Boutons génériques */
 button,
 .btn-primary,
 .save-btn {
-    border: none;
+    border: 0;
     border-radius: 10px;
     padding: 12px 20px;
+    font: inherit;
     font-weight: 600;
     cursor: pointer;
     transition: .2s ease;
@@ -123,7 +134,7 @@ button,
 .btn-primary,
 .save-btn {
     background: #16a34a;
-    color: #ffffff;
+    color: #fff;
 }
 
 .btn-primary:hover,
@@ -132,24 +143,19 @@ button,
     transform: translateY(-1px);
 }
 
-/* ==========================================
-   TABLEAUX
-   ========================================== */
-
+/* Tableaux */
 table {
     width: 100%;
     border-collapse: collapse;
-    background: #ffffff;
-    border-radius: 12px;
-    overflow: hidden;
+    background: #fff;
 }
 
 th {
+    padding: 14px;
     background: #f1f5f9;
     color: #334155;
     font-weight: 700;
     text-align: left;
-    padding: 14px;
 }
 
 td {
@@ -158,19 +164,15 @@ td {
     color: #475569;
 }
 
-/* ==========================================
-   FORMULAIRES
-   ========================================== */
-
+/* Formulaires */
 input,
 select,
 textarea {
-    width: 100%;
     max-width: 100%;
     padding: 13px 15px;
     border: 1px solid #dbe3ee;
     border-radius: 10px;
-    background: #ffffff;
+    background: #fff;
     color: #263247;
     outline: none;
 }
@@ -182,72 +184,58 @@ textarea:focus {
     box-shadow: 0 0 0 3px rgba(22, 163, 74, .10);
 }
 
-/* ==========================================
-   PETITS ORDINATEURS ET TABLETTES
-   ========================================== */
-
+/* Tablettes et petits ordinateurs */
 @media (min-width: 769px) and (max-width: 1100px) {
-
+    .dashboard > .content,
+    .dashboard > main.content,
     .content {
-        margin-left: 220px;
         width: calc(100% - 220px);
-        padding: 25px 22px;
+        max-width: calc(100% - 220px);
+        margin-left: 220px;
+        padding: 26px 22px;
     }
-
 }
 
-/* ==========================================
-   TELEPHONES ET TABLETTES
-   ========================================== */
-
+/* Téléphones et tablettes portrait */
 @media (max-width: 768px) {
-
     html,
     body {
         width: 100%;
-        overflow-x: hidden;
+        overflow-x: clip;
     }
 
-    /* La sidebar ne doit plus participer
-       à la disposition du dashboard */
-
     .dashboard {
-        display: block !important;
-        width: 100% !important;
+        display: block;
+        width: 100%;
         min-height: 100vh;
         min-height: 100dvh;
     }
 
     #sidebar-container {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: 0 !important;
-        flex: none !important;
+        position: fixed;
+        inset: 0 auto auto 0;
         z-index: 1300;
+        width: 0;
+        height: 0;
+        min-width: 0;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        pointer-events: none;
     }
 
-    /* Le contenu utilise toute la largeur */
-
+    .dashboard > .content,
+    .dashboard > main.content,
     .content {
-        position: relative;
         display: block;
-        margin: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 100%;
+        max-width: 100%;
         min-height: 100vh;
         min-height: 100dvh;
-        padding: 75px 16px 22px !important;
-        overflow-x: hidden;
-    }
-
-    .content h1 {
-        font-size: 23px;
+        margin: 0;
+        padding: 76px 16px 24px;
+        overflow-x: clip;
     }
 
     .card,
@@ -257,23 +245,14 @@ textarea:focus {
         padding: 18px;
         border-radius: 14px;
     }
-
-    table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
 }
 
-/* ==========================================
-   PETITS TELEPHONES
-   ========================================== */
-
+/* Petits téléphones */
 @media (max-width: 480px) {
-
+    .dashboard > .content,
+    .dashboard > main.content,
     .content {
-        padding: 72px 12px 18px !important;
+        padding: 72px 12px 20px;
     }
 
     .content h1 {
@@ -283,17 +262,13 @@ textarea:focus {
     .content h2 {
         font-size: 18px;
     }
-
 }
 
-/* ==========================================
-   GRANDS ECRANS
-   ========================================== */
-
+/* Grands écrans */
 @media (min-width: 1600px) {
-
+    .dashboard > .content,
+    .dashboard > main.content,
     .content {
-        padding: 40px 50px;
+        padding: 38px 48px;
     }
-
 }
