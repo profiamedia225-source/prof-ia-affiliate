@@ -1,32 +1,242 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Notifications | PROF IA MEDIA PARTNERS</title>
 
+    <!-- CSS COMMUNS -->
     <link rel="stylesheet" href="css/style.css">
-
     <link rel="stylesheet" href="css/layout.css">
-
     <link rel="stylesheet" href="css/sidebar.css">
-
     <link rel="stylesheet" href="css/theme.css">
 
+    <!-- CSS DES NOTIFICATIONS -->
     <link rel="stylesheet" href="css/notifications.css">
+
+    <!-- RESPONSIVE SPÉCIFIQUE -->
+    <style>
+
+        /* =====================================
+           PAGE NOTIFICATIONS
+        ===================================== */
+
+        .main-content {
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .main-content *,
+        .main-content *::before,
+        .main-content *::after {
+            box-sizing: border-box;
+        }
+
+        /* En-tête */
+
+        .page-header {
+            width: 100%;
+            min-width: 0;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 10px;
+            color: #1e293b;
+            font-size: clamp(20px, 2.2vw, 27px);
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Liste des notifications */
+
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        /* Chargement */
+
+        .notifications-list .loading {
+            width: 100%;
+            padding: 35px 20px;
+            border-radius: 15px;
+            background: #fff;
+            color: #64748b;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Éléments de notification
+           Les classes sont prévues pour les cartes
+           générées dynamiquement par notifications.js.
+        */
+
+        .notifications-list > * {
+            min-width: 0;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+
+        .notifications-list .notification-item,
+        .notifications-list .notification-card {
+            width: 100%;
+            min-width: 0;
+            padding: 17px;
+            border: 1px solid #e8edf4;
+            border-radius: 15px;
+            background: #fff;
+            overflow-wrap: anywhere;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
+        }
+
+        .notifications-list .notification-item p,
+        .notifications-list .notification-card p {
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .notifications-list button {
+            max-width: 100%;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        /* =====================================
+           MODE SOMBRE
+        ===================================== */
+
+        body.dark-theme .page-header h1 {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .page-header p {
+            color: #94a3b8;
+        }
+
+        body.dark-theme .notifications-list .loading {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .notifications-list .notification-item,
+        body.dark-theme .notifications-list .notification-card {
+            border-color: #334155;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        /* =====================================
+           TABLETTES
+        ===================================== */
+
+        @media (max-width: 1024px) {
+
+            .page-header {
+                margin-bottom: 20px;
+            }
+
+            .notifications-list {
+                gap: 10px;
+            }
+
+        }
+
+        /* =====================================
+           TÉLÉPHONES
+        ===================================== */
+
+        @media (max-width: 768px) {
+
+            .main-content {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .page-header {
+                margin-bottom: 17px;
+            }
+
+            .page-header h1 {
+                font-size: 21px;
+            }
+
+            .page-header p {
+                font-size: 13px;
+            }
+
+            .notifications-list {
+                gap: 10px;
+            }
+
+            .notifications-list .notification-item,
+            .notifications-list .notification-card {
+                padding: 14px;
+                border-radius: 13px;
+            }
+
+            .notifications-list .loading {
+                padding: 25px 12px;
+                font-size: 13px;
+            }
+
+        }
+
+        /* =====================================
+           PETITS TÉLÉPHONES
+        ===================================== */
+
+        @media (max-width: 480px) {
+
+            .page-header h1 {
+                font-size: 19px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+            }
+
+            .notifications-list {
+                gap: 8px;
+            }
+
+            .notifications-list .notification-item,
+            .notifications-list .notification-card {
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
 <body>
 
+    <!-- SIDEBAR COMMUN -->
     <div id="sidebar-container"></div>
 
+    <!-- CONTENU PRINCIPAL -->
     <main class="main-content">
 
+        <!-- EN-TÊTE -->
         <div class="page-header">
 
             <h1>🔔 Notifications</h1>
@@ -37,20 +247,20 @@
 
         </div>
 
+        <!-- LISTE DES NOTIFICATIONS -->
         <div
             id="notificationsContainer"
             class="notifications-list">
 
             <div class="loading">
-
                 Chargement des notifications...
-
             </div>
 
         </div>
 
     </main>
 
+    <!-- SCRIPTS EXISTANTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
     <script src="js/config.js"></script>
