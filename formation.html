@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,36 +16,62 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        /* CONTENU PRINCIPAL */
         .course-content {
             padding: 30px;
             max-width: 1250px;
             margin: auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
+        /* CARTE D'EN-TÊTE */
         .course-header {
             padding: 30px;
             border-radius: 16px;
             background: linear-gradient(135deg, #101c3a, #263e73);
-            color: white;
+            color: #FFFFFF !important;
             margin-bottom: 25px;
         }
 
-        .course-header h1 {
-            margin-bottom: 12px;
+        /* TITRE PRINCIPAL : BLANC PUR */
+        .course-header h1,
+        .course-header h1 *,
+        #courseTitle {
+            color: #FFFFFF !important;
             font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            opacity: 1 !important;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
         }
 
-        .course-header p {
-            opacity: .85;
+        /* DESCRIPTION */
+        .course-header p,
+        #courseDescription {
+            color: #E2E8F0 !important;
+            font-size: 15px;
+            line-height: 1.6;
+            opacity: 1 !important;
         }
 
+        /* PROGRESSION */
         .course-progress {
             margin-top: 22px;
+            color: #FFFFFF !important;
+        }
+
+        .course-progress strong,
+        .course-progress span {
+            color: #FFFFFF !important;
+            font-weight: 700;
+            opacity: 1 !important;
         }
 
         .progress-track {
             height: 9px;
-            background: rgba(255,255,255,.2);
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 20px;
             overflow: hidden;
             margin-top: 10px;
@@ -54,9 +81,16 @@
             height: 100%;
             width: 0%;
             background: #21c77a;
-            transition: width .3s;
+            transition: width 0.3s;
         }
 
+        /* TEXTE SECONDAIRE DE LA PROGRESSION */
+        .course-header small,
+        .course-header .progress-info {
+            color: #CBD5E1 !important;
+        }
+
+        /* ORGANISATION DES MODULES ET LEÇONS */
         .course-layout {
             display: grid;
             grid-template-columns: 300px 1fr;
@@ -69,6 +103,8 @@
             border-radius: 15px;
             padding: 22px;
             border: 1px solid #e5e7eb;
+            min-width: 0;
+            box-sizing: border-box;
         }
 
         .module-item {
@@ -82,17 +118,19 @@
             background: transparent;
             cursor: pointer;
             color: inherit;
+            box-sizing: border-box;
         }
 
         .module-item.active {
             border-color: #3157b7;
-            background: rgba(49,87,183,.08);
+            background: rgba(49, 87, 183, 0.08);
         }
 
         .module-item.completed {
             border-color: #21a66b;
         }
 
+        /* VIDÉO */
         .lesson-video {
             position: relative;
             width: 100%;
@@ -109,6 +147,7 @@
             border: 0;
         }
 
+        /* RESSOURCES */
         .lesson-resources {
             margin-top: 25px;
         }
@@ -126,6 +165,7 @@
             font-weight: 600;
         }
 
+        /* BOUTON DE VALIDATION */
         .complete-button {
             margin-top: 25px;
             padding: 14px 22px;
@@ -138,22 +178,77 @@
         }
 
         .complete-button:disabled {
-            opacity: .6;
+            opacity: 0.6;
             cursor: not-allowed;
         }
 
+        /* CHARGEMENT */
         #courseLoading {
             text-align: center;
             padding: 60px 20px;
         }
 
-        @media(max-width: 850px) {
+        /* TABLETTES */
+        @media (max-width: 850px) {
             .course-layout {
                 grid-template-columns: 1fr;
             }
 
             .course-content {
                 padding: 15px;
+            }
+        }
+
+        /* TÉLÉPHONES */
+        @media (max-width: 600px) {
+            .course-content {
+                padding: 12px;
+            }
+
+            .course-header {
+                padding: 22px 18px;
+                border-radius: 13px;
+                margin-bottom: 18px;
+            }
+
+            .course-header h1,
+            #courseTitle {
+                font-size: 22px;
+                line-height: 1.4;
+            }
+
+            .course-header p,
+            #courseDescription {
+                font-size: 14px;
+            }
+
+            .course-progress {
+                margin-top: 18px;
+                font-size: 13px;
+            }
+
+            .course-layout {
+                gap: 16px;
+            }
+
+            .modules-panel,
+            .lesson-panel {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .lesson-video {
+                margin: 15px 0;
+            }
+
+            .resource-link {
+                width: 100%;
+                box-sizing: border-box;
+                justify-content: center;
+            }
+
+            .complete-button {
+                width: 100%;
             }
         }
     </style>
