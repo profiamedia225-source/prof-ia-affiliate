@@ -1,182 +1,255 @@
+
 /* ==========================================
-   NOTIFICATIONS
+   NOTIFICATIONS - PROF IA MEDIA PARTNERS
+   Compatible avec le layout et sidebar communs
 ========================================== */
 
-.main-content{
-    margin-left:260px;
-    padding:40px;
-    min-height:100vh;
-    background:#f5f7fb;
+/* CONTENU PRINCIPAL */
+
+.main-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 100vh;
+    padding: 25px;
+    background: #f5f7fb;
+    box-sizing: border-box;
 }
 
-/* ========================= */
+/* EN-TÊTE */
 
-.page-header{
-
-    margin-bottom:30px;
-
+.page-header {
+    width: 100%;
+    margin-bottom: 25px;
 }
 
-.page-header h1{
-
-    font-size:32px;
-
-    color:#111827;
-
-    margin-bottom:8px;
-
+.page-header h1 {
+    font-size: 26px;
+    line-height: 1.4;
+    color: #111827;
+    margin: 0 0 8px;
 }
 
-.page-header p{
-
-    color:#6b7280;
-
+.page-header p {
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.6;
 }
 
-/* ========================= */
+/* LISTE DES NOTIFICATIONS */
 
-.notifications-list{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:20px;
-
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    min-width: 0;
 }
 
-/* ========================= */
+/* CARTES */
 
-.notification-card{
-
-    background:white;
-
-    border-radius:15px;
-
-    padding:20px;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-
-    border-left:6px solid #2563eb;
-
-    transition:.3s;
-
+.notification-card {
+    width: 100%;
+    min-width: 0;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.06);
+    border-left: 6px solid #2563eb;
+    transition: .3s;
+    overflow-wrap: anywhere;
 }
 
-.notification-card:hover{
-
-    transform:translateY(-2px);
-
+.notification-card:hover {
+    transform: translateY(-2px);
 }
 
-/* ========================= */
+/* TITRE */
 
-.notification-title{
-
-    font-size:18px;
-
-    font-weight:700;
-
-    margin-bottom:8px;
-
-    color:#111827;
-
+.notification-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #111827;
+    overflow-wrap: anywhere;
 }
 
-.notification-message{
+/* MESSAGE */
 
-    color:#4b5563;
-
-    line-height:1.6;
-
-    margin-bottom:15px;
-
+.notification-message {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    overflow-wrap: anywhere;
 }
 
-.notification-date{
+/* DATE */
 
-    color:#9ca3af;
-
-    font-size:14px;
-
+.notification-date {
+    color: #9ca3af;
+    font-size: 14px;
 }
 
-/* ========================= */
+/* NOTIFICATIONS NON LUES */
 
-.notification-unread{
-
-    border-left:6px solid #22c55e;
-
+.notification-unread {
+    border-left: 6px solid #22c55e;
 }
 
-/* ========================= */
+/* CHARGEMENT */
 
-.loading{
-
-    text-align:center;
-
-    padding:50px;
-
-    color:#6b7280;
-
+.loading {
+    text-align: center;
+    padding: 35px 20px;
+    color: #6b7280;
 }
 
-/* ========================= */
+/* LISTE VIDE */
 
-.empty{
-
-    background:white;
-
-    border-radius:15px;
-
-    padding:50px;
-
-    text-align:center;
-
-    color:#6b7280;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-
+.empty {
+    width: 100%;
+    background: white;
+    border-radius: 15px;
+    padding: 40px 20px;
+    text-align: center;
+    color: #6b7280;
+    box-shadow: 0 8px 20px rgba(0,0,0,.06);
 }
 
-/* ========================= */
+/* BOUTON MARQUER COMME LU */
 
-.mark-read-btn{
-
-    margin-top:15px;
-
-    background:#2563eb;
-
-    color:white;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    transition:.3s;
-
+.mark-read-btn {
+    margin-top: 15px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .3s;
 }
 
-.mark-read-btn:hover{
-
-    background:#1d4ed8;
-
+.mark-read-btn:hover {
+    background: #1d4ed8;
 }
 
-/* ========================= */
+/* ==========================================
+   MODE SOMBRE
+========================================== */
 
-@media(max-width:900px){
+body.dark-theme .main-content {
+    background: #0f172a;
+}
 
-    .main-content{
+body.dark-theme .page-header h1 {
+    color: #f1f5f9;
+}
 
-        margin-left:0;
+body.dark-theme .page-header p {
+    color: #94a3b8;
+}
 
-        padding:20px;
+body.dark-theme .notification-card,
+body.dark-theme .empty {
+    background: #1e293b;
+    color: #e2e8f0;
+    box-shadow: 0 8px 20px rgba(0,0,0,.15);
+}
 
+body.dark-theme .notification-title {
+    color: #f1f5f9;
+}
+
+body.dark-theme .notification-message {
+    color: #cbd5e1;
+}
+
+body.dark-theme .notification-date {
+    color: #94a3b8;
+}
+
+body.dark-theme .loading {
+    color: #cbd5e1;
+}
+
+/* ==========================================
+   TABLETTES
+========================================== */
+
+@media (max-width: 1024px) {
+    .main-content {
+        padding: 20px;
     }
 
+    .notifications-list {
+        gap: 13px;
+    }
+}
+
+/* ==========================================
+   TÉLÉPHONES
+========================================== */
+
+@media (max-width: 768px) {
+    .main-content {
+        width: 100%;
+        min-width: 0;
+        padding: 16px;
+    }
+
+    .page-header {
+        margin-bottom: 18px;
+    }
+
+    .page-header h1 {
+        font-size: 21px;
+    }
+
+    .page-header p {
+        font-size: 13px;
+    }
+
+    .notification-card {
+        padding: 15px;
+        border-radius: 13px;
+    }
+
+    .notification-title {
+        font-size: 16px;
+    }
+
+    .notification-message {
+        font-size: 14px;
+    }
+
+    .notification-date {
+        font-size: 12px;
+    }
+
+    .empty {
+        padding: 30px 15px;
+    }
+}
+
+/* ==========================================
+   PETITS TÉLÉPHONES
+========================================== */
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 12px;
+    }
+
+    .page-header h1 {
+        font-size: 19px;
+    }
+
+    .notification-card {
+        padding: 13px;
+    }
+
+    .mark-read-btn {
+        max-width: 100%;
+        white-space: normal;
+    }
 }
