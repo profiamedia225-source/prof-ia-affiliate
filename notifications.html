@@ -9,14 +9,20 @@
 
     <title>Notifications | PROF IA MEDIA PARTNERS</title>
 
-    <!-- CSS COMMUNS -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/theme.css">
+   
+<!-- CSS COMMUNS : IDENTIQUES AU DASHBOARD -->
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/dashboard.css">
 
-    <!-- CSS DES NOTIFICATIONS -->
-    <link rel="stylesheet" href="css/notifications.css">
+<!-- FONT AWESOME : ICÔNES DU SIDEBAR -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<!-- CSS SPÉCIFIQUE AUX NOTIFICATIONS -->
+<link rel="stylesheet" href="css/notifications.css">
+
 
     <!-- RESPONSIVE SPÉCIFIQUE -->
     <style>
@@ -229,6 +235,7 @@
 </head>
 
 
+
 <body>
 
     <div class="dashboard">
@@ -237,20 +244,16 @@
         <div id="sidebar-container"></div>
 
         <!-- CONTENU PRINCIPAL -->
-        <main class="content main-content">
+        <main class="content">
 
-            <!-- EN-TÊTE -->
             <div class="page-header">
 
                 <h1>🔔 Notifications</h1>
 
-                <p>
-                    Consultez toutes vos notifications.
-                </p>
+                <p>Consultez toutes vos notifications.</p>
 
             </div>
 
-            <!-- LISTE DES NOTIFICATIONS -->
             <div
                 id="notificationsContainer"
                 class="notifications-list">
@@ -265,8 +268,8 @@
 
     </div>
 
-    <!-- SCRIPTS EXISTANTS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="js/config.js"></script>
     <script src="js/theme.js"></script>
@@ -276,6 +279,5 @@
 
 </body>
 </html>
-
 
 </html>
