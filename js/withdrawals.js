@@ -206,11 +206,6 @@ method.addEventListener("change", () => {
             paymentDetails.placeholder = "Ex : CI12 1234 5678...";
             break;
 
-            case "Djamo":
-
-    paymentLabel.textContent = "Numéro Djamo";
-    paymentDetails.placeholder = "Ex : 0101234567";
-    break;
 
         default:
 
