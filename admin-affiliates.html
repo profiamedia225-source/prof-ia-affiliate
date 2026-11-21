@@ -1,395 +1,263 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Affiliés | PROF IA MEDIA PARTNERS</title>
 
-    <title>Gestion des Affiliés</title>
-
+    <!-- Styles communs -->
     <link rel="stylesheet" href="css/sidebar.css">
+
+    <!-- Styles spécifiques -->
     <link rel="stylesheet" href="css/admin-affiliates.css">
     <link rel="stylesheet" href="css/toast.css">
 
+    <!-- Icônes -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 </head>
 
 <body>
 
-<div id="sidebar-container"></div>
-
-<main class="dashboard">
-
-<header class="page-header">
-
-<h1>👥 Gestion des Affiliés</h1>
-
-<p>Administration complète des partenaires.</p>
-
-</header>
-
-<!-- =========================================
-     STATISTIQUES AFFILIÉS
-========================================= -->
-
-<div class="affiliate-stats">
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            👥
-        </div>
-
-        <div>
-
-            <span class="stat-label">
-                Total affiliés
-            </span>
-
-            <strong id="totalAffiliates">
-                0
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            🟢
-        </div>
-
-        <div>
-
-            <span class="stat-label">
-                Actifs
-            </span>
-
-            <strong id="activeAffiliates">
-                0
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            🟡
-        </div>
-
-        <div>
-
-            <span class="stat-label">
-                En attente
-            </span>
-
-            <strong id="pendingAffiliates">
-                0
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            🔴
-        </div>
-
-        <div>
-
-            <span class="stat-label">
-                Inactifs
-            </span>
-
-            <strong id="inactiveAffiliates">
-                0
-            </strong>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="toolbar">
-
-    <input
-        type="text"
-        id="searchAffiliate"
-        placeholder="Rechercher un affilié...">
-
-    <select id="statusFilter">
-
-        <option value="all">
-            Tous les affiliés
-        </option>
-
-        <option value="active">
-            🟢 Actifs
-        </option>
-
-        <option value="pending">
-            🟡 En attente
-        </option>
-
-        <option value="inactive">
-            🔴 Inactifs
-        </option>
-
-    </select>
-
-</div>
-
-<div
-    id="affiliateResultsCount"
-    class="affiliate-results-count">
-
-    0 affilié
-
-</div>
-
-<div class="table-card">
-
-<table id="affiliatesTable">
-
-<thead>
-
-<tr>
-
-<th>Nom</th>
-
-<th>Email</th>
-
-<th>Pays</th>
-
-<th>Solde</th>
-
-<th>Commissions</th>
-
-<th>Statut</th>
-
-<th>Actions</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-</tbody>
-
-</table>
-
-</div>
-
-<!-- =========================
-     MODAL FICHE AFFILIÉ
-========================== -->
-
-<div id="affiliateModal" class="modal">
-
-    <div class="modal-content affiliate-modal">
-
-        <div class="modal-header">
-
-            <h2>👤 Fiche affilié</h2>
-
-            <button id="closeModal">&times;</button>
-
-        </div>
-
-        <div id="affiliateDetails">
-
-            Chargement...
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- =========================================
-     MODALE MODIFICATION AFFILIÉ
-========================================= -->
-
-<div
-    id="editAffiliateModal"
-    class="modal">
-
-    <div class="modal-content affiliate-modal">
-
-        <div class="modal-header">
-
-            <h2>✏️ Modifier l'affilié</h2>
-
-            <button
-                id="closeEditAffiliateModal"
-                type="button">
-
-                &times;
-
-            </button>
-
-        </div>
-
-        <form id="editAffiliateForm">
+    <!-- SIDEBAR ADMINISTRATEUR -->
+    <div id="sidebar-container"></div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="dashboard">
+
+        <header class="page-header">
+            <h1>👥 Gestion des Affiliés</h1>
+            <p>Administration complète des partenaires.</p>
+        </header>
+
+        <!-- STATISTIQUES AFFILIÉS -->
+        <section class="affiliate-stats">
+
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div>
+                    <span class="stat-label">Total affiliés</span>
+                    <strong id="totalAffiliates">0</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🟢</div>
+                <div>
+                    <span class="stat-label">Actifs</span>
+                    <strong id="activeAffiliates">0</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🟡</div>
+                <div>
+                    <span class="stat-label">En attente</span>
+                    <strong id="pendingAffiliates">0</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🔴</div>
+                <div>
+                    <span class="stat-label">Inactifs</span>
+                    <strong id="inactiveAffiliates">0</strong>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- RECHERCHE ET FILTRES -->
+        <section class="toolbar">
 
             <input
-                type="hidden"
-                id="editAffiliateId">
+                type="text"
+                id="searchAffiliate"
+                placeholder="Rechercher un affilié..."
+                aria-label="Rechercher un affilié">
 
-            <div class="profile-grid">
+            <select id="statusFilter" aria-label="Filtrer par statut">
+                <option value="all">Tous les affiliés</option>
+                <option value="active">🟢 Actifs</option>
+                <option value="pending">🟡 En attente</option>
+                <option value="inactive">🔴 Inactifs</option>
+            </select>
 
-                <!-- ========================= -->
-                <!-- INFORMATIONS MODIFIABLES -->
-                <!-- ========================= -->
+        </section>
 
-                <div class="profile-card">
+        <div id="affiliateResultsCount" class="affiliate-results-count">
+            0 affilié
+        </div>
 
-                    <h3>👤 Informations</h3>
+        <!-- TABLEAU DES AFFILIÉS -->
+        <section class="table-card">
 
-                    <div class="form-group">
+            <div class="table-responsive">
 
-                        <label for="editFullname">
-                            Nom complet
-                        </label>
+                <table id="affiliatesTable">
 
-                        <input
-                            type="text"
-                            id="editFullname"
-                            required>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Pays</th>
+                            <th>Solde</th>
+                            <th>Commissions</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-                    </div>
+                    <tbody>
+                    </tbody>
 
-                    <div class="form-group">
+                </table>
 
-                        <label for="editPhone">
-                            Téléphone
-                        </label>
+            </div>
 
-                        <input
-                            type="text"
-                            id="editPhone">
+        </section>
 
-                    </div>
+        <!-- MODAL FICHE AFFILIÉ -->
+        <div id="affiliateModal" class="modal">
 
-                    <div class="form-group">
+            <div class="modal-content affiliate-modal">
 
-                        <label for="editCountry">
-                            Pays
-                        </label>
+                <div class="modal-header">
+                    <h2>👤 Fiche affilié</h2>
 
-                        <input
-                            type="text"
-                            id="editCountry">
-
-                    </div>
-
+                    <button
+                        id="closeModal"
+                        type="button"
+                        aria-label="Fermer la fiche">
+                        &times;
+                    </button>
                 </div>
 
-                <!-- ========================= -->
-                <!-- STATUT -->
-                <!-- ========================= -->
-
-                <div class="profile-card">
-
-                    <h3>⚙️ Statut</h3>
-
-                    <div class="form-group">
-
-                        <label for="editStatus">
-                            Statut de l'affilié
-                        </label>
-
-                        <select id="editStatus">
-
-                            <option value="active">
-                                Actif
-                            </option>
-
-                            <option value="pending">
-                                En attente
-                            </option>
-
-                            <option value="inactive">
-                                Inactif
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <p style="
-                        margin-top:20px;
-                        color:#64748b;
-                        font-size:14px;
-                    ">
-
-                        Le code affilié, le lien affilié,
-                        le rôle et les données financières
-                        ne sont pas modifiables ici.
-
-                    </p>
-
+                <div id="affiliateDetails">
+                    Chargement...
                 </div>
 
             </div>
 
-            <div class="modal-footer">
+        </div>
 
-                <button
-                    type="button"
-                    id="cancelEditAffiliate"
-                    class="btn-secondary">
+        <!-- MODALE MODIFICATION AFFILIÉ -->
+        <div id="editAffiliateModal" class="modal">
 
-                    Annuler
+            <div class="modal-content affiliate-modal">
 
-                </button>
+                <div class="modal-header">
+                    <h2>✏️ Modifier l'affilié</h2>
 
-                <button
-                    type="submit"
-                    id="saveAffiliate"
-                    class="btn-primary">
+                    <button
+                        id="closeEditAffiliateModal"
+                        type="button"
+                        aria-label="Fermer la modification">
+                        &times;
+                    </button>
+                </div>
 
-                    💾 Enregistrer
+                <form id="editAffiliateForm">
 
-                </button>
+                    <input
+                        type="hidden"
+                        id="editAffiliateId">
+
+                    <div class="profile-grid">
+
+                        <!-- INFORMATIONS MODIFIABLES -->
+                        <div class="profile-card">
+
+                            <h3>👤 Informations</h3>
+
+                            <div class="form-group">
+                                <label for="editFullname">Nom complet</label>
+                                <input
+                                    type="text"
+                                    id="editFullname"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editPhone">Téléphone</label>
+                                <input
+                                    type="text"
+                                    id="editPhone">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editCountry">Pays</label>
+                                <input
+                                    type="text"
+                                    id="editCountry">
+                            </div>
+
+                        </div>
+
+                        <!-- STATUT -->
+                        <div class="profile-card">
+
+                            <h3>⚙️ Statut</h3>
+
+                            <div class="form-group">
+                                <label for="editStatus">
+                                    Statut de l'affilié
+                                </label>
+
+                                <select id="editStatus">
+                                    <option value="active">Actif</option>
+                                    <option value="pending">En attente</option>
+                                    <option value="inactive">Inactif</option>
+                                </select>
+                            </div>
+
+                            <p class="edit-restriction-note">
+                                Le code affilié, le lien affilié,
+                                le rôle et les données financières
+                                ne sont pas modifiables ici.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button
+                            type="button"
+                            id="cancelEditAffiliate"
+                            class="btn-secondary">
+                            Annuler
+                        </button>
+
+                        <button
+                            type="submit"
+                            id="saveAffiliate"
+                            class="btn-primary">
+                            💾 Enregistrer
+                        </button>
+
+                    </div>
+
+                </form>
 
             </div>
 
-        </form>
+        </div>
 
-    </div>
+    </main>
 
-</div>
+    <!-- SCRIPTS ORIGINAUX -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="js/config.js"></script>
-
-<script src="js/admin-auth.js"></script>
-
-<script src="js/admin-sidebar.js"></script>
-
-<script src="js/toast.js"></script>
-
-<script src="js/admin-affiliates.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-sidebar.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/admin-affiliates.js"></script>
 
 </body>
-
 </html>
