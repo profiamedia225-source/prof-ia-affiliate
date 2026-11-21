@@ -1,270 +1,454 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrateur | PROF IA MEDIA PARTNERS</title>
 
-    <title>
-        Dashboard Administrateur
-    </title>
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    <link rel="stylesheet" href="css/sidebar.css">
 
-    <link
-        rel="stylesheet"
-        href="css/admin-dashboard.css">
-
-    <link
-        rel="stylesheet"
-        href="css/sidebar.css">
-
-    <link
-        rel="stylesheet"
+    <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+    <style>
+        /* STRUCTURE GÉNÉRALE */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .admin-layout {
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        main.dashboard {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-width: 0;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        /* EN-TÊTE */
+        .dashboard-header {
+            margin-bottom: 28px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 27px;
+            line-height: 1.35;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-header p {
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* CARTES STATISTIQUES */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            min-width: 0;
+            padding: 22px 18px;
+            border-radius: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .kpi-card i {
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .kpi-card h3 {
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0 0 10px;
+        }
+
+        .kpi-card span {
+            font-size: 21px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        /* GRAPHIQUES */
+        .charts {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            min-width: 0;
+            width: 100%;
+            padding: 22px;
+            border-radius: 13px;
+            overflow: hidden;
+        }
+
+        .chart-card h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .chart-card canvas {
+            display: block;
+            max-width: 100%;
+        }
+
+        /* TABLEAUX */
+        .dashboard-tables {
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .table-card {
+            width: 100%;
+            min-width: 0;
+            padding: 22px;
+            border-radius: 13px;
+            overflow: hidden;
+        }
+
+        .table-card h2 {
+            font-size: 19px;
+            margin-bottom: 20px;
+        }
+
+        .table-card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-card th,
+        .table-card td {
+            padding: 13px 14px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        /* Conteneur de défilement des tableaux */
+        .table-card {
+            overflow-x: auto;
+        }
+
+        /* TABLETTES */
+        @media (max-width: 1100px) {
+            main.dashboard {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 22px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 15px;
+            }
+
+            .charts {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* PETITS ÉCRANS ET TÉLÉPHONES */
+        @media (max-width: 700px) {
+            main.dashboard {
+                margin-left: 0;
+                width: 100%;
+                padding: 16px;
+            }
+
+            .dashboard-header {
+                margin-bottom: 20px;
+            }
+
+            .dashboard-header h1 {
+                font-size: 22px;
+            }
+
+            .dashboard-header p {
+                font-size: 13px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                margin-bottom: 22px;
+            }
+
+            .kpi-card {
+                padding: 16px 12px;
+                border-radius: 11px;
+            }
+
+            .kpi-card i {
+                font-size: 20px;
+                margin-bottom: 9px;
+            }
+
+            .kpi-card h3 {
+                font-size: 12px;
+            }
+
+            .kpi-card span {
+                font-size: 17px;
+            }
+
+            .charts {
+                gap: 16px;
+                margin-bottom: 22px;
+            }
+
+            .chart-card {
+                padding: 16px 12px;
+                border-radius: 11px;
+            }
+
+            .chart-card h2 {
+                font-size: 16px;
+                line-height: 1.4;
+            }
+
+            .table-card {
+                padding: 16px 12px;
+                border-radius: 11px;
+            }
+
+            .table-card h2 {
+                font-size: 16px;
+            }
+
+            .table-card table {
+                min-width: 550px;
+            }
+
+            .table-card th,
+            .table-card td {
+                padding: 11px 12px;
+                font-size: 12px;
+            }
+        }
+
+        /* TRÈS PETITS TÉLÉPHONES */
+        @media (max-width: 360px) {
+            main.dashboard {
+                padding: 12px;
+            }
+
+            .kpi-grid {
+                gap: 9px;
+            }
+
+            .kpi-card {
+                padding: 13px 9px;
+            }
+
+            .kpi-card h3 {
+                font-size: 11px;
+            }
+
+            .kpi-card span {
+                font-size: 15px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Sidebar -->
+    <div class="admin-layout">
 
-    <div id="sidebar-container"></div>
+        <!-- SIDEBAR ADMINISTRATEUR -->
+        <div id="sidebar-container"></div>
 
-    <!-- Contenu -->
+        <!-- CONTENU PRINCIPAL -->
+        <main class="dashboard">
 
-    <main class="dashboard">
+            <header class="dashboard-header">
 
-        <header class="dashboard-header">
+                <h1>Dashboard Administrateur</h1>
 
-            <h1>
-                Dashboard Administrateur
-            </h1>
+                <p>
+                    Vue globale de la plateforme PROF IA MEDIA PARTNERS
+                </p>
 
-            <p>
-                Vue globale de la plateforme PROF IA MEDIA PARTNERS
-            </p>
+            </header>
 
-        </header>
+            <!-- INDICATEURS CLÉS -->
+            <section class="kpi-grid">
 
-        <!-- KPI -->
+                <div class="kpi-card">
+                    <i class="fa-solid fa-users"></i>
+                    <h3>Utilisateurs</h3>
+                    <span id="totalProfiles">0</span>
+                </div>
 
-        <section class="kpi-grid">
+                <div class="kpi-card">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <h3>Commandes</h3>
+                    <span id="totalOrders">0</span>
+                </div>
 
-            <div class="kpi-card">
+                <div class="kpi-card">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                    <h3>Chiffre d'affaires</h3>
+                    <span id="totalRevenue">0 FCFA</span>
+                </div>
 
-                <i class="fa-solid fa-users"></i>
+                <div class="kpi-card">
+                    <i class="fa-solid fa-coins"></i>
+                    <h3>Commissions</h3>
+                    <span id="totalCommissions">0 FCFA</span>
+                </div>
 
-                <h3>Utilisateurs</h3>
+                <div class="kpi-card">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    <h3>Retraits en attente</h3>
+                    <span id="pendingWithdrawals">0</span>
+                </div>
 
-                <span id="totalProfiles">0</span>
+                <div class="kpi-card">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <h3>Retraits validés</h3>
+                    <span id="paidWithdrawals">0</span>
+                </div>
 
-            </div>
+                <div class="kpi-card">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    <h3>Retraits refusés</h3>
+                    <span id="rejectedWithdrawals">0</span>
+                </div>
 
-            <div class="kpi-card">
+                <div class="kpi-card">
+                    <i class="fa-solid fa-bell"></i>
+                    <h3>Notifications</h3>
+                    <span id="unreadNotifications">0</span>
+                </div>
 
-                <i class="fa-solid fa-cart-shopping"></i>
+                <div class="kpi-card">
+                    <i class="fa-solid fa-computer-mouse"></i>
+                    <h3>Clics</h3>
+                    <span id="totalClicks">0</span>
+                </div>
 
-                <h3>Commandes</h3>
+                <div class="kpi-card">
+                    <i class="fa-solid fa-box"></i>
+                    <h3>Produits</h3>
+                    <span id="totalProducts">0</span>
+                </div>
 
-                <span id="totalOrders">0</span>
+            </section>
 
-            </div>
+            <!-- GRAPHIQUES -->
+            <section class="charts">
 
-            <div class="kpi-card">
+                <div class="chart-card">
 
-                <i class="fa-solid fa-money-bill-wave"></i>
+                    <h2>Évolution des ventes</h2>
 
-                <h3>Chiffre d'affaires</h3>
+                    <canvas id="salesChart" height="280"></canvas>
 
-                <span id="totalRevenue">0 FCFA</span>
+                </div>
 
-            </div>
+                <div class="chart-card">
 
-            <div class="kpi-card">
+                    <h2>Évolution des commissions</h2>
 
-                <i class="fa-solid fa-coins"></i>
+                    <canvas id="commissionChart"></canvas>
 
-                <h3>Commissions</h3>
+                </div>
 
-                <span id="totalCommissions">0 FCFA</span>
+            </section>
 
-            </div>
+            <!-- TOP AFFILIÉS -->
+            <section class="dashboard-tables">
 
-            <div class="kpi-card">
+                <div class="table-card">
 
-                <i class="fa-solid fa-hourglass-half"></i>
+                    <h2>🏆 Top Affiliés</h2>
 
-                <h3>Retraits en attente</h3>
+                    <table id="topAffiliatesTable">
 
-                <span id="pendingWithdrawals">0</span>
+                        <thead>
+                            <tr>
+                                <th>Rang</th>
+                                <th>Affilié</th>
+                                <th>Ventes</th>
+                                <th>Commissions</th>
+                            </tr>
+                        </thead>
 
-            </div>
+                        <tbody>
+                        </tbody>
 
-            <div class="kpi-card">
+                    </table>
 
-                <i class="fa-solid fa-circle-check"></i>
+                </div>
 
-                <h3>Retraits validés</h3>
+            </section>
 
-                <span id="paidWithdrawals">0</span>
+            <!-- TOP PRODUITS -->
+            <section class="dashboard-tables">
 
-            </div>
+                <div class="table-card">
 
-            <div class="kpi-card">
+                    <h2>📦 Top Produits</h2>
 
-                <i class="fa-solid fa-circle-xmark"></i>
+                    <table id="topProductsTable">
 
-                <h3>Retraits refusés</h3>
+                        <thead>
+                            <tr>
+                                <th>Rang</th>
+                                <th>Produit</th>
+                                <th>Ventes</th>
+                                <th>Chiffre d'affaires</th>
+                            </tr>
+                        </thead>
 
-                <span id="rejectedWithdrawals">0</span>
+                        <tbody>
+                        </tbody>
 
-            </div>
+                    </table>
 
-            <div class="kpi-card">
+                </div>
 
-                <i class="fa-solid fa-bell"></i>
+            </section>
 
-                <h3>Notifications</h3>
-
-                <span id="unreadNotifications">0</span>
-
-            </div>
-
-            <div class="kpi-card">
-
-                <i class="fa-solid fa-computer-mouse"></i>
-
-                <h3>Clics</h3>
-
-                <span id="totalClicks">0</span>
-
-            </div>
-
-            <div class="kpi-card">
-
-                <i class="fa-solid fa-box"></i>
-
-                <h3>Produits</h3>
-
-                <span id="totalProducts">0</span>
-
-            </div>
-
-        </section>
-
-        <!-- Zone graphique -->
-
-        <section class="charts">
-
-    <div class="chart-card">
-
-        <h2>Évolution des ventes</h2>
-
-        <canvas id="salesChart" height="280"></canvas>
+        </main>
 
     </div>
 
-    <div class="chart-card">
-
-        <h2>Évolution des commissions</h2>
-
-        <canvas id="commissionChart"></canvas>
-
-    </div>
-
-</section>
-
-<section class="dashboard-tables">
-
-    <div class="table-card">
-
-        <h2>🏆 Top Affiliés</h2>
-
-        <table id="topAffiliatesTable">
-
-            <thead>
-
-                <tr>
-
-                    <th>Rang</th>
-
-                    <th>Affilié</th>
-
-                    <th>Ventes</th>
-
-                    <th>Commissions</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-<section class="dashboard-tables">
-
-    <div class="table-card">
-
-        <h2>📦 Top Produits</h2>
-
-        <table id="topProductsTable">
-
-            <thead>
-
-                <tr>
-
-                    <th>Rang</th>
-
-                    <th>Produit</th>
-
-                    <th>Ventes</th>
-
-                    <th>Chiffre d'affaires</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-    </main>
-
+    <!-- SCRIPTS ORIGINAUX CONSERVÉS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="js/config.js"></script>
-
     <script src="js/admin-auth.js"></script>
-
     <script src="js/admin-sidebar.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="js/admin-dashboard.js"></script>
-    
     <script src="js/charts.js"></script>
-
     <script src="js/top-affiliates.js"></script>
-
     <script src="js/top-products.js"></script>
 
 </body>
-
 </html>
