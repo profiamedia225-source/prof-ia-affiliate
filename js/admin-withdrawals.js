@@ -102,42 +102,40 @@ function displayWithdrawals(withdrawals) {
             statusLabel = "🔴 Refusé";
         }
 
-        // ACTIONS COMMUNES
-        let actionButtons = `
-            <button onclick="openAffiliateCRM('${withdrawal.affiliate_id}')">
-                👁 Voir le CRM
-            </button>
+      
+// ACTIONS COMMUNES
+// Le CRM et le menu à trois points sont supprimés.
+let actionButtons = `
+    <button onclick="copyPaymentNumber('${withdrawal.payment_details}')">
+        📋 Copier le numéro
+    </button>
+`;
 
-            <button onclick="copyPaymentNumber('${withdrawal.payment_details}')">
-                📋 Copier le numéro
-            </button>
-        `;
+// RETRAIT EN ATTENTE
+if (withdrawal.status === "En attente") {
+    actionButtons += `
+        <button onclick="updateWithdrawal('${withdrawal.id}', 'En traitement')">
+            🔵 Mettre en traitement
+        </button>
 
-        // RETRAIT EN ATTENTE
-        if (withdrawal.status === "En attente") {
-            actionButtons += `
-                <button onclick="updateWithdrawal('${withdrawal.id}', 'En traitement')">
-                    🔵 Mettre en traitement
-                </button>
+        <button onclick="updateWithdrawal('${withdrawal.id}', 'Refusé')">
+            ❌ Refuser
+        </button>
+    `;
+}
 
-                <button onclick="updateWithdrawal('${withdrawal.id}', 'Refusé')">
-                    ❌ Refuser
-                </button>
-            `;
-        }
+// RETRAIT EN TRAITEMENT
+else if (withdrawal.status === "En traitement") {
+    actionButtons += `
+        <button onclick="payWithdrawalWithJeko('${withdrawal.id}')">
+            💸 Payer avec Jèko
+        </button>
 
-        // RETRAIT EN TRAITEMENT
-        else if (withdrawal.status === "En traitement") {
-            actionButtons += `
-                <button onclick="payWithdrawalWithJeko('${withdrawal.id}')">
-                    💸 Payer avec Jèko
-                </button>
-
-                <button onclick="updateWithdrawal('${withdrawal.id}', 'Refusé')">
-                    ❌ Refuser
-                </button>
-            `;
-        }
+        <button onclick="updateWithdrawal('${withdrawal.id}', 'Refusé')">
+            ❌ Refuser
+        </button>
+    `;
+}
 
         tr.innerHTML = `
             <td>
@@ -190,18 +188,13 @@ function displayWithdrawals(withdrawals) {
                 </span>
             </td>
 
-            <td>
-                <div class="action-menu">
-                    <button class="action-toggle"
-                        onclick="toggleActionMenu('${withdrawal.id}')">
-                        ⋮
-                    </button>
+        
+<td>
+    <div class="withdrawal-actions">
+        ${actionButtons}
+    </div>
+</td>
 
-                    <div id="menu-${withdrawal.id}" class="action-dropdown">
-                        ${actionButtons}
-                    </div>
-                </div>
-            </td>
         `;
 
         tbody.appendChild(tr);
@@ -647,3 +640,85 @@ if (rowsSelect) {
         updatePagination(filteredWithdrawals.length);
     });
 }
+
+
+/* =====================================================
+   BARRE DE DÉFILEMENT HORIZONTALE FIXE
+   GESTION DES RETRAITS
+   ===================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const tableContainer = document.querySelector(".table-container");
+    const table = document.querySelector(".withdrawals-table");
+
+    if (!tableContainer || !table) return;
+
+    // Création de la barre fixe
+    const fixedScrollbar = document.createElement("div");
+    fixedScrollbar.id = "withdrawals-fixed-scrollbar";
+
+    const scrollbarContent = document.createElement("div");
+    scrollbarContent.id = "withdrawals-fixed-scrollbar-content";
+
+    fixedScrollbar.appendChild(scrollbarContent);
+    document.body.appendChild(fixedScrollbar);
+
+    let syncing = false;
+
+    function refreshFixedScrollbar() {
+
+        scrollbarContent.style.width = table.scrollWidth + "px";
+
+        const hasOverflow =
+            table.scrollWidth > tableContainer.clientWidth + 1;
+
+        fixedScrollbar.style.display =
+            hasOverflow ? "block" : "none";
+
+        if (hasOverflow) {
+            fixedScrollbar.scrollLeft = tableContainer.scrollLeft;
+        }
+    }
+
+    // Synchronisation : barre fixe vers tableau
+    fixedScrollbar.addEventListener("scroll", () => {
+
+        if (syncing) return;
+
+        syncing = true;
+        tableContainer.scrollLeft = fixedScrollbar.scrollLeft;
+        syncing = false;
+
+    });
+
+    // Synchronisation : tableau vers barre fixe
+    tableContainer.addEventListener("scroll", () => {
+
+        if (syncing) return;
+
+        syncing = true;
+        fixedScrollbar.scrollLeft = tableContainer.scrollLeft;
+        syncing = false;
+
+    });
+
+    // Actualisation après chargement des lignes
+    const observer = new MutationObserver(() => {
+        refreshFixedScrollbar();
+    });
+
+    observer.observe(
+        document.getElementById("withdrawalsTable"),
+        {
+            childList: true,
+            subtree: true
+        }
+    );
+
+    // Actualisation lorsque la fenêtre change de taille
+    window.addEventListener("resize", refreshFixedScrollbar);
+
+    refreshFixedScrollbar();
+
+});
