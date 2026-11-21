@@ -272,7 +272,7 @@ main.dashboard {
    TÉLÉPHONES
 ========================================== */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
     main.dashboard {
         width: 100%;
         max-width: 100%;

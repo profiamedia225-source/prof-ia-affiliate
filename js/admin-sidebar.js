@@ -1,7 +1,7 @@
 
 /* ==========================================
    PROF IA MEDIA PARTNERS
-   ADMIN SIDEBAR
+   ADMIN SIDEBAR RESPONSIVE
 ========================================== */
 
 (async function initAdminSidebar() {
@@ -12,20 +12,79 @@
 
     try {
 
-        /* CHARGEMENT DU SIDEBAR */
-        const response = await fetch("admin-sidebar.html", {
-            cache: "force-cache"
-        });
+        const response = await fetch("admin-sidebar.html");
 
         if (!response.ok) {
-            throw new Error(
-                "Impossible de charger le sidebar : " + response.status
-            );
+            throw new Error("Erreur HTTP : " + response.status);
         }
 
         const sidebarHTML = await response.text();
 
         container.innerHTML = sidebarHTML;
+
+        const sidebar = document.getElementById("adminSidebar");
+        const toggle = document.getElementById("adminSidebarToggle");
+        const overlay = document.getElementById("adminSidebarOverlay");
+
+        if (!sidebar || !toggle || !overlay) {
+            throw new Error("Éléments du menu administrateur introuvables.");
+        }
+
+        /* ======================================
+           OUVERTURE ET FERMETURE DU MENU
+        ====================================== */
+
+        function openSidebar() {
+            sidebar.classList.add("is-open");
+            toggle.classList.add("is-open");
+            overlay.classList.add("is-visible");
+            document.body.classList.add("sidebar-open");
+
+            toggle.setAttribute("aria-expanded", "true");
+            toggle.setAttribute("aria-label", "Fermer le menu");
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove("is-open");
+            toggle.classList.remove("is-open");
+            overlay.classList.remove("is-visible");
+            document.body.classList.remove("sidebar-open");
+
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.setAttribute("aria-label", "Ouvrir le menu");
+        }
+
+        toggle.addEventListener("click", () => {
+            if (sidebar.classList.contains("is-open")) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        overlay.addEventListener("click", closeSidebar);
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                closeSidebar();
+            }
+        });
+
+        /* Fermer le menu après sélection d'une page */
+        sidebar.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                if (window.innerWidth <= 768) {
+                    closeSidebar();
+                }
+            });
+        });
+
+        /* Réinitialiser l'état si l'écran redevient large */
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
 
         /* ======================================
            PAGE ACTIVE
@@ -36,12 +95,10 @@
             .pop()
             .replace(".html", "");
 
-        container.querySelectorAll(".sidebar a[data-page]").forEach(link => {
-
+        sidebar.querySelectorAll("a[data-page]").forEach(link => {
             if (link.dataset.page === currentPage) {
                 link.classList.add("active");
             }
-
         });
 
         /* ======================================
@@ -52,9 +109,9 @@
 
         if (logoutBtn) {
 
-            logoutBtn.addEventListener("click", async (e) => {
+            logoutBtn.addEventListener("click", async (event) => {
 
-                e.preventDefault();
+                event.preventDefault();
 
                 if (!confirm("Voulez-vous vraiment vous déconnecter ?")) {
                     return;
@@ -63,14 +120,12 @@
                 try {
 
                     if (!window.sb || !window.sb.auth) {
-                        throw new Error("Service d'authentification indisponible.");
+                        throw new Error("Service Supabase indisponible.");
                     }
 
                     const { error } = await window.sb.auth.signOut();
 
-                    if (error) {
-                        throw error;
-                    }
+                    if (error) throw error;
 
                     window.location.replace("login.html");
 
@@ -78,7 +133,7 @@
 
                     console.error("Erreur de déconnexion :", error);
 
-                    alert("Erreur lors de la déconnexion. Veuillez réessayer.");
+                    alert("Impossible de vous déconnecter. Veuillez réessayer.");
 
                 }
 
@@ -87,22 +142,16 @@
         }
 
         /* ======================================
-           BADGE DES NOTIFICATIONS
-           Chargement indépendant du sidebar
+           BADGE NOTIFICATIONS
         ====================================== */
 
         loadNotificationBadge().catch(error => {
-            console.error(
-                "Erreur lors du chargement des notifications :",
-                error
-            );
+            console.error("Erreur badge notifications :", error);
         });
 
     } catch (error) {
 
         console.error("Erreur de chargement du sidebar :", error);
-
-        /* Le reste du dashboard reste accessible. */
 
     }
 
@@ -110,7 +159,7 @@
 
 
 /* ==========================================
-   CHARGEMENT DU BADGE NOTIFICATIONS
+   BADGE DES NOTIFICATIONS
 ========================================== */
 
 async function loadNotificationBadge() {
@@ -119,10 +168,7 @@ async function loadNotificationBadge() {
 
     if (!badge) return;
 
-    if (!window.sb || !window.sb.auth) {
-        console.warn("Supabase n'est pas encore disponible.");
-        return;
-    }
+    if (!window.sb || !window.sb.auth) return;
 
     try {
 
@@ -131,9 +177,7 @@ async function loadNotificationBadge() {
             error: userError
         } = await window.sb.auth.getUser();
 
-        if (userError) {
-            throw userError;
-        }
+        if (userError) throw userError;
 
         if (!user) {
             badge.style.display = "none";
@@ -149,11 +193,9 @@ async function loadNotificationBadge() {
             .eq("user_id", user.id)
             .eq("is_read", false);
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
-        if (!count || count === 0) {
+        if (!count) {
             badge.style.display = "none";
             return;
         }
@@ -163,10 +205,7 @@ async function loadNotificationBadge() {
 
     } catch (error) {
 
-        console.error(
-            "Impossible de charger le badge des notifications :",
-            error
-        );
+        console.error("Impossible de charger les notifications :", error);
 
     }
 
