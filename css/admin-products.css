@@ -1,442 +1,798 @@
-/* ==========================
-   MODALE
-========================== */
+
+/* =====================================================
+   GESTION DES PRODUITS - RESPONSIVE
+   PROF IA MEDIA PARTNERS
+===================================================== */
+
+/* =====================================================
+   STRUCTURE GÉNÉRALE
+===================================================== */
+
+.content,
+.profile-section {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.profile-section {
+    padding-bottom: 30px;
+}
+
+.product-stats-grid,
+.product-filters-grid {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   EN-TÊTE DE PAGE
+===================================================== */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.page-header > div {
+    min-width: 0;
+}
+
+.page-header h1 {
+    margin-bottom: 8px;
+    overflow-wrap: anywhere;
+}
+
+.page-header p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.page-header .btn-primary {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* =====================================================
+   CARTES STATISTIQUES
+===================================================== */
+
+.product-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.product-stats-grid .settings-card {
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 22px;
+}
+
+.product-stats-grid h3 {
+    font-size: 15px;
+    line-height: 1.5;
+    margin-top: 0;
+    overflow-wrap: anywhere;
+}
+
+.product-stats-grid h2 {
+    font-size: 27px;
+    margin-bottom: 0;
+    overflow-wrap: anywhere;
+}
+
+/* =====================================================
+   RECHERCHE ET FILTRES
+===================================================== */
+
+.product-filters-card {
+    margin-bottom: 22px;
+}
+
+.product-filters-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr);
+    gap: 16px;
+    margin: 0;
+}
+
+.product-filters-grid > div {
+    min-width: 0;
+}
+
+.product-filters-grid input,
+.product-filters-grid select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   TABLEAU DES PRODUITS
+===================================================== */
+
+.products-table-card {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    overscroll-behavior-x: contain;
+}
+
+.table-responsive .table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.table-responsive th,
+.table-responsive td {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.table-responsive td:first-child {
+    white-space: normal;
+    min-width: 160px;
+}
+
+.table-responsive th {
+    font-size: 13px;
+}
+
+.table-responsive td {
+    font-size: 14px;
+}
+
+.table-responsive .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+/* =====================================================
+   PAGINATION
+===================================================== */
+
+.products-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#paginationInfo {
+    font-size: 14px;
+    color: #64748b;
+}
+
+#pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+/* =====================================================
+   MODALES
+===================================================== */
 
 .modal {
-
     display: none;
-
     position: fixed;
-
     inset: 0;
-
-    background: rgba(0,0,0,.45);
-
-    justify-content: center;
-
-    align-items: center;
-
     z-index: 9999;
 
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: rgba(0, 0, 0, 0.55);
+    overflow-y: auto;
 }
 
 .modal-content {
-
     width: 900px;
-
-    max-width: 95%;
-
-    background: white;
-
-    border-radius: 18px;
-
-    padding: 30px;
-
+    max-width: 100%;
     max-height: 90vh;
 
-    overflow: auto;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 30px;
 
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 .modal-header {
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
+    gap: 15px;
 
     margin-bottom: 25px;
+}
 
+.modal-header h2 {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .modal-header button {
-
     background: none;
-
     border: none;
-
-    font-size: 30px;
-
+    font-size: 28px;
     cursor: pointer;
-
+    flex-shrink: 0;
 }
 
-/* ===========================================
-   CHAMPS DU FORMULAIRE
-=========================================== */
+/* =====================================================
+   MODALE PRINCIPALE PRODUIT
+===================================================== */
 
-.form-row{
+.product-modal {
+    width: 1200px;
+    max-width: 100%;
 
-    display:flex;
+    height: 85vh;
+    max-height: 900px;
 
-    gap:18px;
+    display: flex;
+    flex-direction: column;
 
-    margin-bottom:18px;
+    padding: 0;
+    overflow: hidden;
 
+    border-radius: 18px;
 }
 
-.form-group{
+.product-modal .modal-header {
+    flex-shrink: 0;
+    padding: 22px 30px;
+    margin-bottom: 0;
 
-    flex:1;
+    border-bottom: 1px solid #ececec;
+    background: #fafafa;
+}
 
-    display:flex;
+.product-modal .modal-header h2 {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 700;
+}
 
-    flex-direction:column;
+#productForm {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+
+    overflow: hidden;
+}
+
+.form-body {
+    flex: 1;
+    min-height: 0;
+
+    padding: 25px 30px;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* =====================================================
+   GRILLE DU FORMULAIRE
+===================================================== */
+
+.product-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    min-width: 0;
+    height: auto;
+    box-sizing: border-box;
+
+    padding: 24px;
+
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 16px;
+
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+
+    transition: border-color 0.25s ease;
+}
+
+.form-card:hover {
+    border-color: #22c55e;
+}
+
+.form-card h3 {
+    margin-top: 0;
+    margin-bottom: 22px;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.form-row {
+    display: flex;
+    gap: 18px;
     margin-bottom: 18px;
-
 }
 
-.form-group label{
+.form-group {
+    flex: 1;
+    min-width: 0;
 
-    font-size:14px;
+    display: flex;
+    flex-direction: column;
 
-    font-weight:600;
+    margin-bottom: 18px;
+}
 
-    color:#4a5568;
+.form-group label {
+    margin-bottom: 8px;
 
-    margin-bottom:8px;
-
+    color: #4a5568;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .form-group input,
 .form-group textarea,
-.form-group select{
+.form-group select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 
-    width:100%;
+    padding: 12px 14px;
 
-    padding:12px 14px;
+    border: 1px solid #dcdfe6;
+    border-radius: 10px;
 
-    border:1px solid #dcdfe6;
-
-    border-radius:10px;
-
-    font-size:15px;
-
-    transition:.25s;
-
-    box-sizing:border-box;
-
+    font-size: 15px;
+    transition: 0.25s;
 }
+
 .form-group input:focus,
 .form-group textarea:focus,
-.form-group select:focus{
-
-    border-color:#22c55e;
-
-    outline:none;
-
-    box-shadow:0 0 0 4px rgba(34,197,94,.15);
-
+.form-group select:focus {
+    border-color: #22c55e;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
 }
 
-.form-group textarea{
-
-    resize:vertical;
-
-    min-height:120px;
-
-}
-/* ===========================================
-   FOOTER DE LA MODALE
-=========================================== */
-
-.modal-footer{
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    gap:15px;
-
-    padding:20px 30px;
-
-    border-top:1px solid #e5e7eb;
-
-    background:#fff;
-
-    flex-shrink:0;
-}
-.btn-primary,
-.btn-secondary{
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 24px;
-
-    font-size:15px;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:.25s;
-
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
 }
 
-.btn-primary{
+/* =====================================================
+   CASE À COCHER
+===================================================== */
 
-    background:#22c55e;
-
-    color:#fff;
-
-}
-
-.btn-primary:hover{
-
-    background:#16a34a;
-
-}
-
-.btn-secondary{
-
-    background:#f3f4f6;
-
-    color:#374151;
-
-}
-
-.btn-secondary:hover{
-
-    background:#e5e7eb;
-
-}
-.close-btn{
-
-    background:none;
-
-    border:none;
-
-    font-size:28px;
-
-    cursor:pointer;
-
-    color:#6b7280;
-
-    transition:.2s;
-
-}
-
-.close-btn:hover{
-
-    color:#ef4444;
-
-    transform:rotate(90deg);
-
-}
-/* ===========================================
-   MODALE SaaS
-=========================================== */
-
-.product-modal{
-
-    width: 1200px;
-    max-width:95vw;
-
-   height: 88vh;
-    max-height:85vh;
-
-    display:flex;
-    flex-direction:column;
-
-    overflow:hidden;
-
-    border-radius:18px;
-}
-
-.modal-header{
-
-    padding:24px 30px;
-
-    border-bottom:1px solid #ececec;
-
-    background:#fafafa;
-
-}
-
-.modal-header h2{
-
-    margin:0;
-
-    font-size:24px;
-
-    font-weight:700;
-
-}
-
-.product-form-grid{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:24px;
-
-    padding:30px;
-
-}
-.form-card{
-
-    background:white;
-
-    border:1px solid #e8e8e8;
-
-    border-radius:16px;
-
-    padding:24px;
-
-    box-shadow:0 6px 18px rgba(0,0,0,.05);
-
+.form-card .checkbox {
     display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 
-    flex-direction: column;
-
-    justify-content: flex-start;
-
-    height: 100%;
-
-    transition: .25s;
-
-}
-.form-card:hover{
-
-    border-color:#22c55e;
-
-    transition:.25s;
-
-}
-@media(max-width:900px){
-
-.product-form-grid{
-
-grid-template-columns:1fr;
-
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
 }
 
-}
-#productForm{
-
-    display:flex;
-
-    flex-direction:column;
-
-    height:100%;
-
-    overflow:hidden;
-
-}
-.form-body{
-
-    flex:1;
-
-    overflow-y:auto;
-
-    padding:30px;
-
-}
-/* ===========================================
-   ACTIONS TABLEAU
-=========================================== */
-
-.action-buttons{
-
-    display:flex;
-
-    gap:8px;
-
+.form-card .checkbox input {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: #22c55e;
 }
 
-.btn-danger{
+/* =====================================================
+   PIED DE MODALE
+===================================================== */
 
-    background:#ef4444;
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
 
-    color:white;
+    padding: 20px 30px;
 
-    border:none;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
 
-    border-radius:8px;
-
-    padding:8px 14px;
-
-    cursor:pointer;
-
-    font-size:14px;
-
-    transition:.25s;
-
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
 
-.btn-danger:hover{
+.btn-primary,
+.btn-secondary {
+    border: none;
+    border-radius: 10px;
 
-    background:#dc2626;
+    padding: 12px 24px;
 
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.25s;
 }
-/* ==========================================
+
+.btn-primary {
+    background: #22c55e;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #16a34a;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+
+    font-size: 28px;
+    color: #6b7280;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.close-btn:hover {
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+/* =====================================================
+   BOUTON SUPPRESSION
+===================================================== */
+
+.btn-danger {
+    padding: 9px 15px;
+
+    background: #ef4444;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 14px;
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+/* =====================================================
+   ACTIONS DU TABLEAU
+===================================================== */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* =====================================================
    FORMULAIRE MODIFICATION AFFILIÉ
-========================================== */
+   RÈGLES EXISTANTES CONSERVÉES
+===================================================== */
 
 #editAffiliateForm .form-group {
-
     margin-bottom: 18px;
-
 }
 
 #editAffiliateForm label {
-
     display: block;
-
     margin-bottom: 7px;
 
     font-weight: 600;
-
     color: #334155;
-
 }
 
 #editAffiliateForm input,
 #editAffiliateForm select {
-
     width: 100%;
-
     box-sizing: border-box;
 
     padding: 11px 13px;
 
     border: 1px solid #d1d5db;
-
     border-radius: 9px;
 
     font-size: 14px;
-
-    background: white;
-
+    background: #ffffff;
 }
 
 #editAffiliateForm input:focus,
 #editAffiliateForm select:focus {
-
     outline: none;
-
     border-color: #2563eb;
-
-    box-shadow: 0 0 0 3px rgba(37,99,235,.10);
-
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
 #editAffiliateForm .modal-footer {
-
     display: flex;
-
     justify-content: flex-end;
-
+    flex-wrap: wrap;
     gap: 12px;
 
     margin-top: 25px;
-
     padding-top: 20px;
 
     border-top: 1px solid #e5e7eb;
+}
+
+/* =====================================================
+   TABLETTES ET PETITS ORDINATEURS
+===================================================== */
+
+@media screen and (max-width: 1100px) {
+
+    .product-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .product-form-grid {
+        gap: 16px;
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+
+}
+
+/* =====================================================
+   TABLETTES
+===================================================== */
+
+@media screen and (max-width: 768px) {
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .page-header .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .product-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .product-stats-grid .settings-card {
+        padding: 17px;
+    }
+
+    .product-stats-grid h3 {
+        font-size: 14px;
+    }
+
+    .product-stats-grid h2 {
+        font-size: 23px;
+    }
+
+    .product-filters-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .product-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .product-modal {
+        width: 100%;
+        height: 90vh;
+        max-height: 90vh;
+    }
+
+    .product-modal .modal-header {
+        padding: 18px 20px;
+    }
+
+    .form-body {
+        padding: 20px;
+    }
+
+    .modal-footer {
+        padding: 16px 20px;
+    }
+
+}
+
+/* =====================================================
+   TÉLÉPHONES
+===================================================== */
+
+@media screen and (max-width: 480px) {
+
+    .profile-section {
+        padding-bottom: 20px;
+    }
+
+    .page-header h1 {
+        font-size: 22px;
+    }
+
+    .page-header p {
+        font-size: 13px;
+    }
+
+    .product-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .product-stats-grid .settings-card {
+        padding: 14px 12px;
+    }
+
+    .product-stats-grid h3 {
+        font-size: 12px;
+    }
+
+    .product-stats-grid h2 {
+        font-size: 20px;
+    }
+
+    .product-filters-card,
+    .products-table-card {
+        padding: 14px;
+    }
+
+    .products-pagination {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #pagination {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .modal {
+        padding: 10px;
+        align-items: center;
+    }
+
+    .modal-content {
+        padding: 20px;
+        max-height: 92vh;
+    }
+
+    .product-modal {
+        height: 94vh;
+        max-height: 94vh;
+        padding: 0;
+        border-radius: 14px;
+    }
+
+    .product-modal .modal-header {
+        padding: 15px;
+    }
+
+    .product-modal .modal-header h2 {
+        font-size: 19px;
+    }
+
+    .form-body {
+        padding: 15px;
+    }
+
+    .form-card {
+        padding: 17px;
+    }
+
+    .form-card h3 {
+        font-size: 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 14px;
+    }
+
+    .modal-footer {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .modal-footer button {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+
+}
+
+/* =====================================================
+   TRÈS PETITS ÉCRANS
+===================================================== */
+
+@media screen and (max-width: 360px) {
+
+    .product-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-stats-grid .settings-card {
+        padding: 15px;
+    }
+
+    .product-stats-grid h2 {
+        font-size: 22px;
+    }
+
+    .page-header h1 {
+        font-size: 20px;
+    }
 
 }

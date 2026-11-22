@@ -285,27 +285,51 @@
 }
 
 
-/* =====================================================
-   BARRE HORIZONTALE FIXE EN BAS DE L'ÉCRAN
-   ===================================================== */
+/* BARRE DE DÉFILEMENT PLUS FLUIDE */
 
 #withdrawals-fixed-scrollbar {
     position: fixed;
     bottom: 0;
     left: 250px;
     width: calc(100% - 250px);
-    height: 20px;
+    height: 24px;
+
     overflow-x: auto;
     overflow-y: hidden;
+
     z-index: 9998;
     background: #f1f5f9;
     border-top: 1px solid #cbd5e1;
+
     box-sizing: border-box;
+
+    scroll-behavior: auto;
+    overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
 }
 
 #withdrawals-fixed-scrollbar-content {
     height: 1px;
+}
+
+/* Barre plus visible sur Chrome et Opera */
+#withdrawals-fixed-scrollbar::-webkit-scrollbar {
+    height: 14px;
+}
+
+#withdrawals-fixed-scrollbar::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+#withdrawals-fixed-scrollbar::-webkit-scrollbar-thumb {
+    background: #64748b;
+    border-radius: 10px;
+}
+
+#withdrawals-fixed-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #334155;
 }
 
 /* Tablettes */
@@ -322,27 +346,4 @@
         left: 0;
         width: 100%;
     }
-}
-
-/* Présentation des actions sans menu déroulant */
-.withdrawal-actions {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    min-width: 160px;
-}
-
-.withdrawal-actions button {
-    padding: 8px 10px;
-    border: 1px solid #dbe2ea;
-    border-radius: 8px;
-    background: #fff;
-    color: #334155;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.withdrawal-actions button:hover {
-    background: #f1f5f9;
 }

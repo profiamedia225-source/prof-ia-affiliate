@@ -1,530 +1,442 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Gestion des Produits</title>
 
-<title>Administration - Paramètres</title>
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin-products.css">
+    <link rel="stylesheet" href="css/toast.css">
 
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/sidebar.css">
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/dashboard.css">
-<link rel="stylesheet" href="css/admin-products.css">
-<link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
 <div class="dashboard">
 
-<div id="sidebar-container"></div>
+    <div id="sidebar-container"></div>
 
-<main class="content">
+    <main class="content">
 
-<section class="profile-section">
+        <section class="profile-section">
 
-<div class="page-header">
+            <!-- EN-TÊTE -->
+            <div class="page-header">
 
-    <div>
+                <div>
+                    <h1>📦 Gestion des Produits</h1>
 
-        <h1>
+                    <p>
+                        Gérez les produits vendus sur
+                        PROF IA MEDIA PARTNERS.
+                    </p>
+                </div>
 
-            📦 Gestion des Produits
+                <button
+                    id="btnNewProduct"
+                    class="btn-primary"
+                    type="button">
 
-        </h1>
+                    ➕ Nouveau produit
 
-        <p>
-
-            Gérez les produits vendus sur
-            PROF IA MEDIA PARTNERS.
-
-        </p>
-
-    </div>
-
-    <button
-       id="btnNewProduct"
-        class="btn-primary">
-
-        ➕ Nouveau produit
-
-    </button>
-
-</div>
-
-<!-- ========================= -->
-<!-- STATISTIQUES -->
-<!-- ========================= -->
-
-<div class="profile-grid">
-
-    <div class="settings-card">
-
-        <h3>📦 Total Produits</h3>
-
-        <h2 id="totalProducts">0</h2>
-
-    </div>
-
-    <div class="settings-card">
-
-        <h3>✅ Produits actifs</h3>
-
-        <h2 id="activeProducts">0</h2>
-
-    </div>
-
-    <div class="settings-card">
-
-        <h3>⛔ Produits inactifs</h3>
-
-        <h2 id="inactiveProducts">0</h2>
-
-    </div>
-
-    <div class="settings-card">
-
-        <h3>💰 Valeur totale</h3>
-
-        <h2 id="totalValue">0 FCFA</h2>
-
-    </div>
-
-</div>
-
-<!-- ========================= -->
-<!-- RECHERCHE -->
-<!-- ========================= -->
-
-<div class="settings-card">
-
-    <div class="profile-grid">
-
-        <div>
-
-            <input
-                id="searchProduct"
-                type="text"
-                class="settings-input"
-                placeholder="🔍 Rechercher un produit...">
-
-        </div>
-
-        <div>
-
-            <select
-                id="statusFilter"
-                class="settings-input">
-
-                <option value="all">
-
-                    Tous les produits
-
-                </option>
-
-                <option value="true">
-
-                    Produits actifs
-
-                </option>
-
-                <option value="false">
-
-                    Produits inactifs
-
-                </option>
-
-            </select>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- ========================= -->
-<!-- TABLEAU -->
-<!-- ========================= -->
-
-<div class="settings-card">
-
-    <table class="table">
-
-        <thead>
-
-            <tr>
-
-                <th>Produit</th>
-
-                <th>Prix</th>
-
-                <th>Commission</th>
-
-                <th>Devise</th>
-
-                <th>Statut</th>
-
-                <th>Créé le</th>
-
-                <th style="width:180px">
-
-                    Actions
-
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="productsTableBody">
-
-            <tr>
-
-                <td
-                    colspan="7"
-                    style="text-align:center;padding:40px;">
-
-                    Aucun produit disponible.
-
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
-</div>
-
-<!-- ========================= -->
-<!-- PAGINATION -->
-<!-- ========================= -->
-
-<div
-    style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-top:20px;
-    ">
-
-    <span
-        id="paginationInfo">
-
-        0 produit
-
-    </span>
-
-    <div id="pagination"></div>
-
-</div>
-
-</section>
-
-<!-- ==========================
-MODAL PRODUIT
-========================== -->
-
-<div id="productModal" class="modal">
-
-    <div class="modal-content product-modal">
-
-        <div class="modal-header">
-
-            <h2 id="modalTitle">
-                Nouveau produit
-            </h2>
-
-            <button
-                id="closeProductModal"
-                class="close-btn">
-                ✕
-            </button>
-
-        </div>
-
-<form id="productForm">
-
-    <input
-        type="hidden"
-        id="productId">
-    <div class="form-body">
-    <div class="product-form-grid">
-
-        <!-- ========================================= -->
-        <!-- INFORMATIONS GÉNÉRALES -->
-        <!-- ========================================= -->
-
-        <div class="form-card">
-
-            <h3>📦 Informations générales</h3>
-
-            <div class="form-group">
-
-                <label for="productName">
-
-                    Nom du produit
-
-                </label>
-
-                <input
-                    id="productName"
-                    type="text"
-                    class="settings-input"
-                    placeholder="Ex : Formation IA de A à Z"
-                    required>
+                </button>
 
             </div>
 
-            <div class="form-group">
+            <!-- STATISTIQUES -->
+            <div class="profile-grid product-stats-grid">
 
-                <label for="productCode">
+                <div class="settings-card">
+                    <h3>📦 Total Produits</h3>
+                    <h2 id="totalProducts">0</h2>
+                </div>
 
-                    Code produit
+                <div class="settings-card">
+                    <h3>✅ Produits actifs</h3>
+                    <h2 id="activeProducts">0</h2>
+                </div>
 
-                </label>
+                <div class="settings-card">
+                    <h3>⛔ Produits inactifs</h3>
+                    <h2 id="inactiveProducts">0</h2>
+                </div>
 
-                <input
-                    id="productCode"
-                    type="text"
-                    class="settings-input"
-                    placeholder="Ex : FIA001">
-
-            </div>
-
-            <div class="form-group">
-
-                <label for="description">
-
-                    Description
-
-                </label>
-
-                <textarea
-                    id="description"
-                    class="settings-input"
-                    rows="5"
-                    placeholder="Décrivez votre produit..."></textarea>
+                <div class="settings-card">
+                    <h3>💰 Valeur totale</h3>
+                    <h2 id="totalValue">0 FCFA</h2>
+                </div>
 
             </div>
 
+            <!-- RECHERCHE ET FILTRES -->
+            <div class="settings-card product-filters-card">
+
+                <div class="profile-grid product-filters-grid">
+
+                    <div>
+                        <input
+                            id="searchProduct"
+                            type="text"
+                            class="settings-input"
+                            placeholder="🔍 Rechercher un produit...">
+                    </div>
+
+                    <div>
+                        <select
+                            id="statusFilter"
+                            class="settings-input">
+
+                            <option value="all">
+                                Tous les produits
+                            </option>
+
+                            <option value="true">
+                                Produits actifs
+                            </option>
+
+                            <option value="false">
+                                Produits inactifs
+                            </option>
+
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TABLEAU DES PRODUITS -->
+            <div class="settings-card products-table-card">
+
+                <div class="table-responsive">
+
+                    <table class="table">
+
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Prix</th>
+                                <th>Commission</th>
+                                <th>Devise</th>
+                                <th>Statut</th>
+                                <th>Créé le</th>
+                                <th style="width:180px">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="productsTableBody">
+
+                            <tr>
+                                <td colspan="7"
+                                    style="text-align:center;padding:40px;">
+
+                                    Aucun produit disponible.
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="products-pagination">
+
+                <span id="paginationInfo">
+                    0 produit
+                </span>
+
+                <div id="pagination"></div>
+
+            </div>
+
+        </section>
+
+        <!-- MODALE PRODUIT -->
+        <div id="productModal" class="modal">
+
+            <div class="modal-content product-modal">
+
+                <div class="modal-header">
+
+                    <h2 id="modalTitle">
+                        Nouveau produit
+                    </h2>
+
+                    <button
+                        id="closeProductModal"
+                        class="close-btn"
+                        type="button">
+
+                        ✕
+
+                    </button>
+
+                </div>
+
+                <form id="productForm">
+
+                    <input
+                        type="hidden"
+                        id="productId">
+
+                    <div class="form-body">
+
+                        <div class="product-form-grid">
+
+                            <!-- INFORMATIONS GÉNÉRALES -->
+                            <div class="form-card">
+
+                                <h3>📦 Informations générales</h3>
+
+                                <div class="form-group">
+
+                                    <label for="productName">
+                                        Nom du produit
+                                    </label>
+
+                                    <input
+                                        id="productName"
+                                        type="text"
+                                        class="settings-input"
+                                        placeholder="Ex : Formation IA de A à Z"
+                                        required>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="productCode">
+                                        Code produit
+                                    </label>
+
+                                    <input
+                                        id="productCode"
+                                        type="text"
+                                        class="settings-input"
+                                        placeholder="Ex : FIA001">
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="description">
+                                        Description
+                                    </label>
+
+                                    <textarea
+                                        id="description"
+                                        class="settings-input"
+                                        rows="5"
+                                        placeholder="Décrivez votre produit..."></textarea>
+
+                                </div>
+
+                            </div>
+
+                            <!-- TARIFICATION -->
+                            <div class="form-card">
+
+                                <h3>💰 Tarification</h3>
+
+                                <div class="form-row">
+
+                                    <div class="form-group">
+
+                                        <label for="productPrice">
+                                            Prix
+                                        </label>
+
+                                        <input
+                                            id="productPrice"
+                                            type="number"
+                                            class="settings-input"
+                                            required>
+
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="currency">
+                                            Devise
+                                        </label>
+
+                                        <select
+                                            id="currency"
+                                            class="settings-input">
+
+                                            <option value="XOF">XOF</option>
+                                            <option value="EUR">EUR</option>
+                                            <option value="USD">USD</option>
+
+                                        </select>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="commissionRate">
+                                        Commission (%)
+                                    </label>
+
+                                    <input
+                                        id="commissionRate"
+                                        type="number"
+                                        class="settings-input"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <!-- ACCÈS -->
+                            <div class="form-card">
+
+                                <h3>🔗 Accès</h3>
+
+                                <div class="form-group">
+
+                                    <label for="courseUrl">
+                                        URL du cours Système.io
+                                    </label>
+
+                                    <input
+                                        id="courseUrl"
+                                        type="url"
+                                        class="settings-input"
+                                        placeholder="https://...">
+
+                                </div>
+
+                            </div>
+
+                            <!-- PARAMÈTRES -->
+                            <div class="form-card">
+
+                                <h3>⚙️ Paramètres</h3>
+
+                                <label class="checkbox">
+
+                                    <input
+                                        type="checkbox"
+                                        id="productStatus"
+                                        checked>
+
+                                    Produit actif
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ACTIONS DU FORMULAIRE -->
+                    <div class="modal-footer">
+
+                        <button
+                            type="button"
+                            id="cancelProduct"
+                            class="btn-secondary">
+
+                            Annuler
+
+                        </button>
+
+                        <button
+                            type="submit"
+                            id="saveProduct"
+                            class="btn-primary">
+
+                            💾 Enregistrer
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
         </div>
 
-    
+    </main>
 
-<!-- ========================================= -->
-<!-- TARIFICATION -->
-<!-- ========================================= -->
-
-<div class="form-card">
-
-    <h3>💰 Tarification</h3>
-
-    <div class="form-row">
-
-        <div class="form-group">
-
-            <label for="productPrice">
-
-                Prix
-
-            </label>
-
-            <input
-                id="productPrice"
-                type="number"
-                class="settings-input"
-                required>
-
-        </div>
-
-        <div class="form-group">
-
-            <label for="currency">
-
-                Devise
-
-            </label>
-
-            <select
-                id="currency"
-                class="settings-input">
-
-                <option value="XOF">XOF</option>
-                <option value="EUR">EUR</option>
-                <option value="USD">USD</option>
-
-            </select>
-
-        </div>
-
-    </div>
-
-    <div class="form-group">
-
-        <label for="commissionRate">
-
-            Commission (%)
-
-        </label>
-
-        <input
-            id="commissionRate"
-            type="number"
-            class="settings-input"
-            required>
-
-    </div>
-
-</div>
-
-<!-- ========================================= -->
-<!-- ACCÈS -->
-<!-- ========================================= -->
-
-<div class="form-card">
-
-    <h3>🔗 Accès</h3>
-
-    <div class="form-group">
-
-        <label for="courseUrl">
-
-            URL du cours Système.io
-
-        </label>
-
-        <input
-            id="courseUrl"
-            type="url"
-            class="settings-input"
-            placeholder="https://...">
-
-    </div>
-
-</div>
-
-<!-- ========================================= -->
-<!-- PARAMÈTRES -->
-<!-- ========================================= -->
-
-<div class="form-card">
-
-    <h3>⚙️ Paramètres</h3>
-
-    <label class="checkbox">
-
-        <input
-            type="checkbox"
-            id="productStatus"
-            checked>
-
-        Produit actif
-
-    </label>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="modal-footer">
-
-    <button
-        type="button"
-        id="cancelProduct"
-        class="btn-secondary">
-
-        Annuler
-
-    </button>
-
-    <button
-        type="submit"
-        id="saveProduct"
-        class="btn-primary">
-
-        💾 Enregistrer
-
-    </button>
-
-</div>
-
-</form>
-
-</div>
-
-</main>
-
-<!-- ========================================= -->
-<!-- MODALE CONFIRMATION SUPPRESSION -->
-<!-- ========================================= -->
-
-<div
-    id="deleteProductModal"
-    class="modal">
-
+    <!-- MODALE DE CONFIRMATION DE SUPPRESSION -->
     <div
-        class="modal-content"
-        style="max-width:500px;">
+        id="deleteProductModal"
+        class="modal">
 
-        <div class="modal-header">
+        <div
+            class="modal-content"
+            style="max-width:500px;">
 
-            <h2>
+            <div class="modal-header">
 
-                ⚠️ Confirmation
+                <h2>⚠️ Confirmation</h2>
 
-            </h2>
+                <button
+                    id="closeDeleteModal"
+                    class="close-btn"
+                    type="button">
 
-            <button
-                id="closeDeleteModal"
-                class="close-btn">
+                    ✕
 
-                ✕
+                </button>
 
-            </button>
+            </div>
 
-        </div>
+            <p
+                id="deleteProductMessage"
+                style="
+                    margin:25px 0;
+                    font-size:16px;
+                    line-height:1.6;
+                ">
 
-        <p
-            id="deleteProductMessage"
-            style="
-                margin:25px 0;
-                font-size:16px;
-                line-height:1.6;
-            ">
+                Voulez-vous vraiment supprimer ce produit ?
 
-            Voulez-vous vraiment supprimer ce produit ?
+            </p>
 
-        </p>
+            <div class="modal-footer">
 
-        <div class="modal-footer">
+                <button
+                    id="cancelDelete"
+                    class="btn-secondary"
+                    type="button">
 
-            <button
-                id="cancelDelete"
-                class="btn-secondary">
+                    Annuler
 
-                Annuler
+                </button>
 
-            </button>
+                <button
+                    id="confirmDelete"
+                    class="btn-danger"
+                    type="button">
 
-            <button
-                id="confirmDelete"
-                class="btn-danger">
+                    🗑 Supprimer
 
-                🗑 Supprimer
+                </button>
 
-            </button>
+            </div>
 
         </div>
 
@@ -532,8 +444,7 @@ MODAL PRODUIT
 
 </div>
 
-</div>
-
+<!-- SCRIPTS -->
 <script src="js/config.js"></script>
 <script src="js/admin-auth.js"></script>
 <script src="js/admin-sidebar.js"></script>
@@ -545,5 +456,4 @@ MODAL PRODUIT
 <script src="js/admin-products.js"></script>
 
 </body>
-
 </html>

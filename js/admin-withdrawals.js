@@ -641,20 +641,18 @@ if (rowsSelect) {
     });
 }
 
-
 /* =====================================================
-   BARRE DE DÉFILEMENT HORIZONTALE FIXE
-   GESTION DES RETRAITS
+   BARRE HORIZONTALE FIXE — VERSION FLUIDE
    ===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const tableContainer = document.querySelector(".table-container");
     const table = document.querySelector(".withdrawals-table");
+    const tbody = document.getElementById("withdrawalsTable");
 
-    if (!tableContainer || !table) return;
+    if (!tableContainer || !table || !tbody) return;
 
-    // Création de la barre fixe
     const fixedScrollbar = document.createElement("div");
     fixedScrollbar.id = "withdrawals-fixed-scrollbar";
 
@@ -664,10 +662,10 @@ document.addEventListener("DOMContentLoaded", () => {
     fixedScrollbar.appendChild(scrollbarContent);
     document.body.appendChild(fixedScrollbar);
 
-    let syncing = false;
+    let animationFrame = null;
+    let lastSource = null;
 
-    function refreshFixedScrollbar() {
-
+    function refreshScrollbar() {
         scrollbarContent.style.width = table.scrollWidth + "px";
 
         const hasOverflow =
@@ -681,44 +679,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Synchronisation : barre fixe vers tableau
-    fixedScrollbar.addEventListener("scroll", () => {
+    function synchronize(source, target) {
 
-        if (syncing) return;
+        if (lastSource === source) return;
 
-        syncing = true;
-        tableContainer.scrollLeft = fixedScrollbar.scrollLeft;
-        syncing = false;
+        lastSource = source;
 
-    });
-
-    // Synchronisation : tableau vers barre fixe
-    tableContainer.addEventListener("scroll", () => {
-
-        if (syncing) return;
-
-        syncing = true;
-        fixedScrollbar.scrollLeft = tableContainer.scrollLeft;
-        syncing = false;
-
-    });
-
-    // Actualisation après chargement des lignes
-    const observer = new MutationObserver(() => {
-        refreshFixedScrollbar();
-    });
-
-    observer.observe(
-        document.getElementById("withdrawalsTable"),
-        {
-            childList: true,
-            subtree: true
+        if (animationFrame) {
+            cancelAnimationFrame(animationFrame);
         }
-    );
 
-    // Actualisation lorsque la fenêtre change de taille
-    window.addEventListener("resize", refreshFixedScrollbar);
+        animationFrame = requestAnimationFrame(() => {
 
-    refreshFixedScrollbar();
+            if (Math.abs(target.scrollLeft - source.scrollLeft) > 1) {
+                target.scrollLeft = source.scrollLeft;
+            }
+
+            animationFrame = null;
+            lastSource = null;
+
+        });
+    }
+
+    fixedScrollbar.addEventListener("scroll", () => {
+        synchronize(fixedScrollbar, tableContainer);
+    }, { passive: true });
+
+    tableContainer.addEventListener("scroll", () => {
+        synchronize(tableContainer, fixedScrollbar);
+    }, { passive: true });
+
+    const observer = new MutationObserver(refreshScrollbar);
+
+    observer.observe(tbody, {
+        childList: true,
+        subtree: true
+    });
+
+    window.addEventListener("resize", refreshScrollbar, {
+        passive: true
+    });
+
+    refreshScrollbar();
 
 });
+
